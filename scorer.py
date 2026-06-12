@@ -226,6 +226,11 @@ def fetch_active_fixtures():
         "status": status_str,
     })
     all_fixtures = data.get("response", [])
+    logging.info(f"  API raw count: {len(all_fixtures)} fixtures (league={WC_LEAGUE_ID}, season={WC_SEASON})")
+    if not all_fixtures:
+        errors = data.get("errors", {})
+        if errors:
+            logging.warning(f"  API errors: {errors}")
     live_fixtures = [f for f in all_fixtures
                      if (f.get("fixture") or {}).get("status", {}).get("short") in LIVE_STATUSES]
     ft_fixtures   = [f for f in all_fixtures
