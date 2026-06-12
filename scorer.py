@@ -654,13 +654,20 @@ def init_firebase():
     firebase_admin.initialize_app(cred, {"databaseURL": FIREBASE_DB_URL})
 
 
+def _fb_to_dict(val):
+    """Firebase returns a list when all keys are sequential integers. Normalize to dict."""
+    if isinstance(val, list):
+        return {str(i): v for i, v in enumerate(val) if v is not None}
+    return val or {}
+
+
 def get_finalized_match_ids():
     """Return set of match IDs already finalized (non-live) in Firebase."""
     codes = list(db.reference("leagues").get(shallow=True) or {})
     if not codes:
         return set()
     ref  = db.reference(f"leagues/{codes[0]}/data/results")
-    data = ref.get() or {}
+    data = _fb_to_dict(ref.get())
     return {k for k, v in data.items() if not (v or {}).get("live", True)}
 
 
@@ -668,7 +675,7 @@ def write_results(results_by_match_id):
     codes = db.reference("leagues").get(shallow=True) or {}
     for code in codes:
         results_ref = db.reference(f"leagues/{code}/data/results")
-        existing    = results_ref.get() or {}
+        existing    = _fb_to_dict(results_ref.get())
         n_written   = 0
         for match_id, result in results_by_match_id.items():
             key = str(match_id)
