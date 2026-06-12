@@ -659,7 +659,7 @@ def get_finalized_match_ids():
     codes = list(db.reference("leagues").get(shallow=True) or {})
     if not codes:
         return set()
-    ref  = db.reference(f"leagues/{codes[0]}/results")
+    ref  = db.reference(f"leagues/{codes[0]}/data/results")
     data = ref.get() or {}
     return {k for k, v in data.items() if not (v or {}).get("live", True)}
 
@@ -667,7 +667,7 @@ def get_finalized_match_ids():
 def write_results(results_by_match_id):
     codes = db.reference("leagues").get(shallow=True) or {}
     for code in codes:
-        results_ref = db.reference(f"leagues/{code}/results")
+        results_ref = db.reference(f"leagues/{code}/data/results")
         existing    = results_ref.get() or {}
         n_written   = 0
         for match_id, result in results_by_match_id.items():
