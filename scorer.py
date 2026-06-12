@@ -305,6 +305,74 @@ def pass_accuracy_bonus(pct):
 
 
 # ─────────────────────────────────────────────
+# UNDERDOG BONUS
+# ─────────────────────────────────────────────
+
+def _extract_odds(summary, home, away):
+    """
+    Extract pre-match moneylines from ESPN pickcenter.
+    Returns (home_ml, away_ml, provider_name) or (None, None, None).
+    Prefers DraftKings; falls back to first available provider.
+    """
+    pickcenter = summary.get("pickcenter", [])
+    if not pickcenter:
+        return None, None, None
+
+    entry = None
+    for pc in pickcenter:
+        pname = (pc.get("provider") or {}).get("name", "")
+        if "DraftKings" in pname:
+            entry = pc
+            break
+    if entry is None:
+        entry = pickcenter[0]
+
+    home_odds = entry.get("homeTeamOdds") or {}
+    away_odds = entry.get("awayTeamOdds") or {}
+    home_ml = home_odds.get("moneyLine")
+    away_ml = away_odds.get("moneyLine")
+    provider = (entry.get("provider") or {}).get("name", "unknown")
+    return home_ml, away_ml, provider
+
+
+def underdog_bonus(summary, home, away, home_won, away_won):
+    """
+    Calculate underdog bonus for the team that won or drew as the underdog.
+    Underdog = team with higher (less negative / more positive) moneyline.
+    If both negative, the less-negative team is the underdog.
+    Formula (win or draw): ML ÷ 150 × 2, rounded to nearest 0.5.
+    Returns (underdog_team_or_None, bonus_pts_or_0, label_or_None, odds_dict).
+    odds_dict is always returned (for storage) even when no bonus applies.
+    """
+    home_ml, away_ml, provider = _extract_odds(summary, home, away)
+    odds_stored = {"home_ml": home_ml, "away_ml": away_ml, "provider": provider} if home_ml is not None else {}
+
+    if home_ml is None or away_ml is None:
+        logging.info(f"    No odds data found for {home} vs {away}.")
+        return None, 0, None, odds_stored
+
+    # Underdog = higher moneyline (least negative or most positive)
+    if home_ml >= away_ml:
+        underdog, ud_ml = home, home_ml
+        ud_result = home_won or (not home_won and not away_won)  # won or drew
+    else:
+        underdog, ud_ml = away, away_ml
+        ud_result = away_won or (not home_won and not away_won)
+
+    if not ud_result:
+        return None, 0, None, odds_stored
+
+    raw_bonus = ud_ml / 150 * 2
+    bonus = round(raw_bonus * 2) / 2  # round to nearest 0.5
+    if bonus <= 0:
+        return None, 0, None, odds_stored
+
+    sign = "+" if ud_ml >= 0 else ""
+    label = f"Underdog ({sign}{ud_ml} ML) +{bonus}"
+    return underdog, bonus, label, odds_stored
+
+
+# ─────────────────────────────────────────────
 # EVENT PARSING (from competition.details)
 # ─────────────────────────────────────────────
 
@@ -596,6 +664,14 @@ def score_match(competition, summary, is_live=False):
         if win_goal_secs and max(win_goal_secs) >= 88 * 60:
             add(ft_winner, 4, "Last-Min Winner +4")
 
+    # ── 18. Underdog bonus (win or draw as underdog) ─────────
+    is_draw = not home_won and not away_won
+    ud_team, ud_pts, ud_label, odds_stored = underdog_bonus(
+        summary, home, away, home_won, away_won
+    )
+    if ud_team and ud_pts > 0:
+        add(ud_team, ud_pts, ud_label)
+
     # ── Stats summary string ─────────────────────────────────
     if is_live:
         status_str = "LIVE"
@@ -622,6 +698,7 @@ def score_match(competition, summary, is_live=False):
         },
         "stats": stats_str,
         "finalScore": {"home": home_ft, "away": away_ft},
+        "underdogOdds": odds_stored,
     }
 
 
@@ -671,13 +748,22 @@ def _fb_key(name: str) -> str:
 
 
 def get_finalized_match_ids():
-    """Return set of match IDs already finalized (non-live) in Firebase."""
+    """
+    Return set of match IDs that are fully finalized and need no re-scoring.
+    A match is skipped only if it is non-live AND already has underdogOdds stored.
+    Matches missing underdogOdds are re-scored so the bonus gets applied retroactively.
+    """
     codes = list(db.reference("leagues").get(shallow=True) or {})
     if not codes:
         return set()
     ref  = db.reference(f"leagues/{codes[0]}/data/results")
     data = _fb_to_dict(ref.get())
-    return {k for k, v in data.items() if not (v or {}).get("live", True)}
+    finalized = set()
+    for k, v in data.items():
+        v = v or {}
+        if not v.get("live", True) and v.get("underdogOdds") is not None:
+            finalized.add(k)
+    return finalized
 
 
 def write_results(results_by_match_id):
