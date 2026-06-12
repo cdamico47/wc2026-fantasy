@@ -676,6 +676,8 @@ def write_results(results_by_match_id):
                json.dumps(result, sort_keys=True):
                 results_ref.child(key).set(result)
                 n_written += 1
+        if n_written > 0:
+            db.reference(f"leagues/{code}/data/_ts").set(int(time.time() * 1000))
         logging.info(f"  League {code}: {n_written} result(s) written.")
 
 
@@ -779,3 +781,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
