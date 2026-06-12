@@ -614,6 +614,8 @@ def score_match(competition, summary, is_live=False):
 
     return {
         "live": is_live,
+        "homeScore": home_ft,
+        "awayScore": away_ft,
         "teams": {
             home: {"fantasyPoints": round(pts[home], 2), "breakdown": bd[home]},
             away: {"fantasyPoints": round(pts[away], 2), "breakdown": bd[away]},
