@@ -617,8 +617,8 @@ def score_match(competition, summary, is_live=False):
         "homeScore": home_ft,
         "awayScore": away_ft,
         "teams": {
-            home: {"fantasyPoints": round(pts[home], 2), "breakdown": bd[home]},
-            away: {"fantasyPoints": round(pts[away], 2), "breakdown": bd[away]},
+            _fb_key(home): {"fantasyPoints": round(pts[home], 2), "breakdown": bd[home]},
+            _fb_key(away): {"fantasyPoints": round(pts[away], 2), "breakdown": bd[away]},
         },
         "stats": stats_str,
         "finalScore": {"home": home_ft, "away": away_ft},
@@ -661,6 +661,13 @@ def _fb_to_dict(val):
     if isinstance(val, list):
         return {str(i): v for i, v in enumerate(val) if v is not None}
     return val or {}
+
+
+def _fb_key(name: str) -> str:
+    """Sanitize a string for use as a Firebase key (no . # $ [ ] /)."""
+    for ch in '.#$[]/':
+        name = name.replace(ch, '_')
+    return name
 
 
 def get_finalized_match_ids():
@@ -790,4 +797,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
