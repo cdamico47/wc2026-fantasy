@@ -340,7 +340,10 @@ def underdog_bonus(summary, home, away, home_won, away_won):
     Calculate underdog bonus for the team that won or drew as the underdog.
     Underdog = team with higher (less negative / more positive) moneyline.
     If both negative, the less-negative team is the underdog.
-    Formula (win or draw): ML ÷ 150 × 2, rounded to nearest 0.5.
+    Formula uses the WIN moneyline as input; divisor depends on result:
+      Win  as underdog: ML ÷ 150 × 2
+      Draw as underdog: ML ÷ 300 × 2
+    Rounded to nearest 0.5.
     Returns (underdog_team_or_None, bonus_pts_or_0, label_or_None, odds_dict).
     odds_dict is always returned (for storage) even when no bonus applies.
     """
@@ -351,24 +354,28 @@ def underdog_bonus(summary, home, away, home_won, away_won):
         logging.info(f"    No odds data found for {home} vs {away}.")
         return None, 0, None, odds_stored
 
+    is_draw = not home_won and not away_won
+
     # Underdog = higher moneyline (least negative or most positive)
     if home_ml >= away_ml:
         underdog, ud_ml = home, home_ml
-        ud_result = home_won or (not home_won and not away_won)  # won or drew
+        ud_result = home_won or is_draw
     else:
         underdog, ud_ml = away, away_ml
-        ud_result = away_won or (not home_won and not away_won)
+        ud_result = away_won or is_draw
 
     if not ud_result:
         return None, 0, None, odds_stored
 
-    raw_bonus = ud_ml / 150 * 2
+    divisor = 300 if is_draw else 150
+    raw_bonus = ud_ml / divisor * 2
     bonus = round(raw_bonus * 2) / 2  # round to nearest 0.5
     if bonus <= 0:
         return None, 0, None, odds_stored
 
+    result_tag = "draw" if is_draw else "win"
     sign = "+" if ud_ml >= 0 else ""
-    label = f"Underdog ({sign}{ud_ml} ML) +{bonus}"
+    label = f"Underdog {result_tag} ({sign}{ud_ml} ML) +{bonus}"
     return underdog, bonus, label, odds_stored
 
 
@@ -883,3 +890,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
