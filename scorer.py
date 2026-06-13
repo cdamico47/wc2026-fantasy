@@ -757,16 +757,16 @@ def _fb_key(name: str) -> str:
 def get_finalized_match_ids():
     """
     Return set of match IDs that are fully finalized and need no re-scoring.
+    Reads from the shared top-level /results node (all leagues share match data).
     A match is skipped only if it is non-live AND already has underdogOdds stored.
     Matches missing underdogOdds are re-scored so the bonus gets applied retroactively.
     """
-    codes = list(db.reference("leagues").get(shallow=True) or {})
-    if not codes:
-        return set()
-    ref  = db.reference(f"leagues/{codes[0]}/data/results")
+    ref  = db.reference("results")
     data = _fb_to_dict(ref.get())
     finalized = set()
     for k, v in data.items():
+        if k == "_ts":
+            continue
         v = v or {}
         if not v.get("live", True) and v.get("underdogOdds") is not None:
             finalized.add(k)
@@ -774,20 +774,19 @@ def get_finalized_match_ids():
 
 
 def write_results(results_by_match_id):
-    codes = db.reference("leagues").get(shallow=True) or {}
-    for code in codes:
-        results_ref = db.reference(f"leagues/{code}/data/results")
-        existing    = _fb_to_dict(results_ref.get())
-        n_written   = 0
-        for match_id, result in results_by_match_id.items():
-            key = str(match_id)
-            if json.dumps(existing.get(key), sort_keys=True) != \
-               json.dumps(result, sort_keys=True):
-                results_ref.child(key).set(result)
-                n_written += 1
-        if n_written > 0:
-            db.reference(f"leagues/{code}/data/_ts").set(int(time.time() * 1000))
-        logging.info(f"  League {code}: {n_written} result(s) written.")
+    """Write match results to the shared top-level /results node."""
+    results_ref = db.reference("results")
+    existing    = _fb_to_dict(results_ref.get())
+    n_written   = 0
+    for match_id, result in results_by_match_id.items():
+        key = str(match_id)
+        if json.dumps(existing.get(key), sort_keys=True) != \
+           json.dumps(result, sort_keys=True):
+            results_ref.child(key).set(result)
+            n_written += 1
+    if n_written > 0:
+        results_ref.child("_ts").set(int(time.time() * 1000))
+    logging.info(f"  {n_written} result(s) written to shared /results.")
 
 
 # ─────────────────────────────────────────────
