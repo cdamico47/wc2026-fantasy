@@ -1,0 +1,26 @@
+name: Migrate Results (one-time)
+
+on:
+  # Manual trigger only — run once, then you can delete this file
+  workflow_dispatch:
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run migration
+        env:
+          FIREBASE_ADMIN_SDK_JSON: ${{ secrets.FIREBASE_ADMIN_SDK_JSON }}
+          FIREBASE_DB_URL: https://wc2026-fantasy-m47-default-rtdb.firebaseio.com
+        run: python patch_migrate_results.py
