@@ -425,11 +425,13 @@ def parse_details(details, home, away):
 # SCORING ENGINE
 # ─────────────────────────────────────────────
 
-def score_match(competition, summary, is_live=False):
+def score_match(competition, summary, is_live=False, league_code=None):
     """
     Compute fantasy points for both teams from an ESPN competition block
     and its full summary.
     Returns Firebase-ready result dict.
+    If league_code provided and league has skipFirstGame=true, applies zero points
+    for each team's first match (tracked per league).
     """
     competitors = competition.get("competitors", [])
     home_c = next((c for c in competitors if c.get("homeAway") == "home"), {})
@@ -679,6 +681,24 @@ def score_match(competition, summary, is_live=False):
     if ud_team and ud_pts > 0:
         add(ud_team, ud_pts, ud_label)
 
+    # ── League-specific rules: skip first game ──────────────────
+    skip_points = {}
+    if league_code:
+        config = get_league_config(league_code)
+        if config.get("skipFirstGame"):
+            # Check if this is each team's first game in this league
+            for team in (home, away):
+                games_count = get_games_played_by_team(league_code, team)
+                if games_count == 0:
+                    skip_points[team] = True
+                    logging.info(f"    {team}: first game in {league_code} — points zeroed.")
+
+    # Apply skip rule by zeroing points for first game
+    for team in skip_points:
+        if team in pts:
+            bd[team] = ["First game — 0 points"] + bd[team]
+            pts[team] = 0
+
     # ── Stats summary string ─────────────────────────────────
     if is_live:
         status_str = "LIVE"
@@ -754,6 +774,26 @@ def _fb_key(name: str) -> str:
     return name
 
 
+def get_league_config(league_code):
+    """Return config dict for a league (e.g., skipFirstGame, custom rules)."""
+    ref = db.reference(f"leagueConfigs/{league_code}")
+    return _fb_to_dict(ref.get()) or {}
+
+
+def get_games_played_by_team(league_code, team):
+    """Return count of games played by a team in a league (from finalized matches)."""
+    leagues_ref = db.reference(f"leagues/{league_code}/data")
+    data = _fb_to_dict(leagues_ref.get()) or {}
+    count = 0
+    for match_id_str, match_data in data.items():
+        match_data = match_data or {}
+        teams_data = match_data.get("teams") or {}
+        # If team appears in this match's teams dict, it played
+        if any(_fb_key(team) == k for k in teams_data.keys()):
+            count += 1
+    return count
+
+
 def get_finalized_match_ids():
     """
     Return set of match IDs that are fully finalized and need no re-scoring.
@@ -787,6 +827,22 @@ def write_results(results_by_match_id):
     if n_written > 0:
         results_ref.child("_ts").set(int(time.time() * 1000))
     logging.info(f"  {n_written} result(s) written to shared /results.")
+
+
+def write_league_results(league_code, results_by_match_id):
+    """Write match results to a league's /leagues/{code}/data node."""
+    league_ref = db.reference(f"leagues/{league_code}/data")
+    existing   = _fb_to_dict(league_ref.get())
+    n_written  = 0
+    for match_id, result in results_by_match_id.items():
+        key = str(match_id)
+        if json.dumps(existing.get(key), sort_keys=True) != \
+           json.dumps(result, sort_keys=True):
+            league_ref.child(key).set(result)
+            n_written += 1
+    if n_written > 0:
+        league_ref.child("_ts").set(int(time.time() * 1000))
+    logging.info(f"  {n_written} result(s) written to league {league_code}.")
 
 
 # ─────────────────────────────────────────────
