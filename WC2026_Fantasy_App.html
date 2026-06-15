@@ -4719,9 +4719,8 @@ function _getRes(results, matchId) {
 function _loadLeagueConfig(code) {
   _leagueSkipMatchIds = new Set();
   if (!_fbDb || !code) return;
-  _fbDb.ref('leagueConfigs/' + code).once('value', snap => {
-    const cfg = snap.val() || {};
-    if (cfg.skipFirstGame) {
+  _fbDb.ref('leagues/' + code + '/skipFirstGame').once('value', snap => {
+    if (snap.val() === true) {
       // MD1 = match IDs 1–24 (first game for every team)
       for (let i = 1; i <= 24; i++) _leagueSkipMatchIds.add(String(i));
     }
