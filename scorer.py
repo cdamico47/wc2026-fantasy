@@ -864,8 +864,9 @@ def main():
     events = fetch_scoreboard_events(DAYS_LOOKBACK)
     logging.info(f"  Found {len(events)} WC 2026 event(s).")
 
-    live_events = []
-    ft_events   = []
+    live_events   = []
+    ft_events     = []
+    other_events  = []
     for ev in events:
         comp        = ev.get("competitions", [{}])[0]
         status_name = comp.get("status", {}).get("type", {}).get("name", "")
@@ -873,8 +874,17 @@ def main():
             live_events.append((ev["id"], comp))
         elif status_name in FT_STATUSES:
             ft_events.append((ev["id"], comp))
+        else:
+            other_events.append((ev["id"], comp, status_name))
 
-    logging.info(f"  {len(live_events)} live | {len(ft_events)} finished.")
+    logging.info(f"  {len(live_events)} live | {len(ft_events)} finished | {len(other_events)} other.")
+    for eid, comp, sname in other_events:
+        competitors = comp.get("competitors", [])
+        home_c = next((c for c in competitors if c.get("homeAway") == "home"), {})
+        away_c = next((c for c in competitors if c.get("homeAway") == "away"), {})
+        home = _norm(home_c.get("team", {}).get("displayName", "?"))
+        away = _norm(away_c.get("team", {}).get("displayName", "?"))
+        logging.warning(f"  [UNKNOWN STATUS] {home} vs {away} — status: '{sname}' (event {eid})")
 
     results = {}
 
