@@ -472,10 +472,18 @@ def score_match(competition, summary, is_live=False, league_code=None):
             bd[team].append(label)
 
     # ── 1. Result ────────────────────────────────────────────
-    if home_won:
+    # For live games ESPN never sets winner=True — derive from current score
+    if is_live:
+        _home_ahead = home_ft > away_ft
+        _away_ahead = away_ft > home_ft
+    else:
+        _home_ahead = home_won
+        _away_ahead = away_won
+
+    if _home_ahead:
         add(home, 6, "Win +6")
         add(away, 0, "Loss 0")
-    elif away_won:
+    elif _away_ahead:
         add(away, 6, "Win +6")
         add(home, 0, "Loss 0")
     else:
@@ -674,9 +682,9 @@ def score_match(competition, summary, is_live=False, league_code=None):
             add(ft_winner, 4, "Last-Min Winner +4")
 
     # ── 18. Underdog bonus (win or draw as underdog) ─────────
-    is_draw = not home_won and not away_won
+    is_draw = not _home_ahead and not _away_ahead
     ud_team, ud_pts, ud_label, odds_stored = underdog_bonus(
-        summary, home, away, home_won, away_won
+        summary, home, away, _home_ahead, _away_ahead
     )
     if ud_team and ud_pts > 0:
         add(ud_team, ud_pts, ud_label)
