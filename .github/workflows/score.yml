@@ -1,10 +1,10 @@
 name: WC 2026 Fantasy Scorer
 
 on:
-  # Run every 5 min during match hours (13:00–04:00 UTC covers all kick-off windows)
+  # Run every 5 min during match hours 
   schedule:
-    - cron: "*/5 13-23 * * *"
-    - cron: "*/5 0-4 * * *"
+    - cron: "*/5 14-23 * * *"
+    - cron: "*/5 0-3 * * *"
   # Allow manual trigger from GitHub Actions tab
   workflow_dispatch:
 
