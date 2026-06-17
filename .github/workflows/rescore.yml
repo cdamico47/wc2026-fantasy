@@ -1,0 +1,40 @@
+name: Force Rescore Match
+
+on:
+  workflow_dispatch:
+    inputs:
+      match_id:
+        description: "Fantasy match ID (e.g. 21 for England vs Croatia)"
+        required: true
+        type: number
+      start_date:
+        description: "Search start date YYYYMMDD (e.g. 20260611)"
+        required: true
+        default: "20260611"
+      end_date:
+        description: "Search end date YYYYMMDD (e.g. 20260617)"
+        required: true
+        default: "20260617"
+
+jobs:
+  rescore:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run patch rescore
+        env:
+          FIREBASE_DB_URL: ${{ secrets.FIREBASE_DB_URL }}
+          FIREBASE_ADMIN_SDK_JSON: ${{ secrets.FIREBASE_ADMIN_SDK_JSON }}
+        run: |
+          python patch_rescore_match.py \
+            --match-id ${{ github.event.inputs.match_id }} \
+            --start ${{ github.event.inputs.start_date }} \
+            --end ${{ github.event.inputs.end_date }}
