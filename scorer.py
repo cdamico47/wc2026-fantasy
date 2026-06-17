@@ -35,8 +35,8 @@ DAYS_LOOKBACK = 14  # days of scoreboard history to scan each run
 # Remove an ID once the score is confirmed correct in Firebase.
 FORCE_RESCORE: set[int] = set()
 
-FIREBASE_DB_URL = os.environ.get("FIREBASE_DB_URL",
-                  "https://wc2026-fantasy-m47-default-rtdb.firebaseio.com")
+FIREBASE_DB_URL = (os.environ.get("FIREBASE_DB_URL") or
+                   "https://wc2026-fantasy-m47-default-rtdb.firebaseio.com")
 
 # ─────────────────────────────────────────────
 # STATUS SETS
