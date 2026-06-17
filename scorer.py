@@ -549,10 +549,22 @@ def score_match(competition, summary, is_live=False, league_code=None):
         add(away, 3, "Clean Sheet +3")
 
     # ── 5. GK stats ──────────────────────────────────────────
-    # PK saves: opponent's penaltyKickShots - penaltyKickGoals
-    pk_saves = {home: 0, away: 0}
+    # PK saves — two sources; take the max to handle ESPN inconsistencies:
+    #   (a) play-by-play: penaltyKick=True & scoringPlay=False events
+    #   (b) boxscore:     opponent's (penaltyKickShots - penaltyKickGoals)
+    pk_saves_pbp = {home: 0, away: 0}
     for pm in pk_misses:
-        pk_saves[pm["defending_team"]] += 1
+        pk_saves_pbp[pm["defending_team"]] += 1
+
+    pk_saves = {home: 0, away: 0}
+    for team, opponent in ((home, away), (away, home)):
+        opp_stats  = team_stats.get(opponent, {})
+        pk_shots   = _int_stat(opp_stats, "penaltyKickShots")
+        pk_goals   = _int_stat(opp_stats, "penaltyKickGoals")
+        boxscore_saves = max(0, pk_shots - pk_goals)
+        pk_saves[team] = max(pk_saves_pbp[team], boxscore_saves)
+        if pk_saves[team] != pk_saves_pbp[team]:
+            logging.info(f"  PK save for {team}: boxscore={boxscore_saves} > pbp={pk_saves_pbp[team]} — using boxscore")
 
     for team in (home, away):
         tstats       = team_stats.get(team, {})
