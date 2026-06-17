@@ -117,6 +117,23 @@ body{font-family:'Barlow',sans-serif;font-size:15px;background:var(--bg);color:v
 .lsub-panel{display:none;}
 .lsub-panel.active{display:block;}
 
+/* ═══════ COUNTRY STANDINGS ═══════ */
+.ct-wrap{padding:14px 18px;}
+.ct-hdr-row{display:grid;grid-template-columns:32px 1fr 40px 80px 60px;align-items:center;padding:6px 12px;font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--txt3);border-bottom:2px solid var(--border2);}
+.ct-row{display:grid;grid-template-columns:32px 1fr 40px 80px 60px;align-items:center;padding:8px 12px;border-bottom:1px solid var(--border2);cursor:pointer;user-select:none;transition:background 0.12s;}
+.ct-row:hover{background:var(--bg-alt);}
+.ct-row.open{background:rgba(0,80,200,0.04);border-bottom:none;}
+.ct-rk{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;color:var(--txt3);}
+.ct-rk.r1{color:#C9A227;}.ct-rk.r2{color:#8A9EB8;}.ct-rk.r3{color:#a07044;}
+.ct-team{display:flex;align-items:center;gap:7px;min-width:0;}
+.ct-name{font-weight:600;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ct-grp{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;color:var(--txt3);background:var(--bg-alt);border-radius:3px;padding:1px 5px;}
+.ct-owner{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--txt2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ct-owner-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.ct-pts{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;color:var(--blue);text-align:right;}
+.ct-bd{border-bottom:1px solid var(--border2);background:rgba(0,80,200,0.02);}
+.ct-bd-inner{padding:0 12px 8px 44px;}
+
 /* ═══════ SETUP SCREEN ═══════ */
 .setup-screen{
   display:flex;flex-direction:column;align-items:center;padding:40px 24px 60px;gap:24px;
@@ -1167,11 +1184,13 @@ body{font-family:'Barlow',sans-serif;font-size:15px;background:var(--bg);color:v
 <div id="tab-league" class="tab-panel active">
   <div class="league-subnav">
     <button class="sub-tab active" id="lnav-standings" onclick="switchLeagueSub('standings',this)">📊 Standings</button>
+    <button class="sub-tab" id="lnav-countries" onclick="switchLeagueSub('countries',this)">🌍 Countries</button>
     <button class="sub-tab" id="lnav-draft" onclick="switchLeagueSub('draft',this)">🎯 Draft</button>
     <button class="sub-tab" id="lnav-commissioner" onclick="switchLeagueSub('commissioner',this)">⚙️ Commissioner</button>
   </div>
-  <div id="lsub-standings" class="lsub-panel"><div id="league-root" class="league-wrap"></div></div>
-  <div id="lsub-draft"     class="lsub-panel active"><div id="draft-root"></div></div>
+  <div id="lsub-standings"    class="lsub-panel"><div id="league-root" class="league-wrap"></div></div>
+  <div id="lsub-countries"    class="lsub-panel"><div id="country-root" class="ct-wrap"></div></div>
+  <div id="lsub-draft"        class="lsub-panel active"><div id="draft-root"></div></div>
   <div id="lsub-commissioner" class="lsub-panel"><div id="commissioner-root" class="comm-wrap"></div></div>
 </div>
 
@@ -2085,6 +2104,7 @@ function renderAll() {
   updateHeaderLeagueName();
   renderDraft();
   renderLeagueStandings();
+  renderCountryStandings();
   renderMyTeam();
   renderStandings();
 }
@@ -4174,8 +4194,85 @@ function switchLeagueSub(id, btn) {
   document.getElementById('lsub-'+id).classList.add('active');
   if (btn) btn.classList.add('active');
   if (id === 'standings')    renderLeagueStandings();
+  if (id === 'countries')    renderCountryStandings();
   if (id === 'commissioner') renderCommissioner();
   if (id === 'draft' && D.phase === 'setup') renderDraft();
+}
+
+// ─── Country Standings ──────────────────────────────────────────────────────
+let _ctOpenSet = new Set();
+
+function toggleCtTeam(name) {
+  if (_ctOpenSet.has(name)) _ctOpenSet.delete(name);
+  else _ctOpenSet.add(name);
+  renderCountryStandings();
+}
+
+function renderCountryStandings() {
+  const root = document.getElementById('country-root');
+  if (!root) return;
+
+  if (D.phase !== 'done') {
+    root.innerHTML = `<div class="ph-wrap" style="min-height:200px">
+      <div class="ph-icon" style="font-size:32px;opacity:0.3">🌍</div>
+      <div class="ph-title">Country standings available after draft</div>
+    </div>`;
+    return;
+  }
+
+  const flagMap   = _mcTeamFlagMap();
+  const ownerMap  = _mcTeamOwnerMap(); // teamName -> draftPlayerIndex
+
+  // Build sorted list: all teams with their pts
+  const rows = TEAMS.map(t => {
+    const { pts, bds } = _teamPtsFor(t.name);
+    const ownerIdx = ownerMap[t.name];
+    const owner    = (ownerIdx != null) ? D.players[ownerIdx] : null;
+    const ownerCol = owner ? (owner.playerColor || owner.color || P_COLORS[ownerIdx % P_COLORS.length]) : null;
+    const ownerName = owner ? (owner.name || ('Player ' + (ownerIdx + 1))) : null;
+    return { t, pts, ownerIdx, ownerCol, ownerName };
+  });
+
+  rows.sort((a, b) => {
+    if (b.pts !== a.pts) return b.pts - a.pts;
+    return a.t.name.localeCompare(b.t.name);
+  });
+
+  let html = `<div class="ct-hdr-row">
+    <div>#</div>
+    <div>Country</div>
+    <div>Grp</div>
+    <div>Owner</div>
+    <div style="text-align:right">Pts</div>
+  </div>`;
+
+  rows.forEach(({ t, pts, ownerCol, ownerName }, i) => {
+    const isOpen = _ctOpenSet.has(t.name);
+    const rkCls  = i === 0 ? 'r1' : i === 1 ? 'r2' : i === 2 ? 'r3' : '';
+    const escName = t.name.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+    const ownerHtml = ownerCol
+      ? `<div class="ct-owner-dot" style="background:${ownerCol}"></div><span>${esc(ownerName)}</span>`
+      : `<span style="color:var(--txt3);font-size:11px">—</span>`;
+    const ptsHtml = pts > 0
+      ? `<span style="color:var(--blue)">${pts}</span>`
+      : `<span style="color:var(--txt3)">—</span>`;
+
+    html += `<div class="ct-row${isOpen?' open':''}" onclick="toggleCtTeam('${escName}')">
+      <div class="ct-rk ${rkCls}">${i+1}</div>
+      <div class="ct-team">${fi(t.flag,20,14)}<span class="ct-name">${esc(t.name)}</span></div>
+      <div class="ct-grp">${t.group}</div>
+      <div class="ct-owner">${ownerHtml}</div>
+      <div class="ct-pts">${ptsHtml}</div>
+    </div>`;
+
+    if (isOpen) {
+      html += `<div class="ct-bd">
+        <div class="ct-bd-inner">${_mtTeamMatchRowsHTML(t.name, flagMap)}</div>
+      </div>`;
+    }
+  });
+
+  root.innerHTML = html;
 }
 
 // ═══════════════════════════════════
