@@ -29,7 +29,11 @@ from firebase_admin import credentials, db
 # CONFIG
 # ─────────────────────────────────────────────
 ESPN_BASE     = "https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world"
-DAYS_LOOKBACK = 7   # days of scoreboard history to scan each run
+DAYS_LOOKBACK = 14  # days of scoreboard history to scan each run
+
+# Match IDs to always re-score regardless of finalization (manual correction list).
+# Remove an ID once the score is confirmed correct in Firebase.
+FORCE_RESCORE: set[int] = set()
 
 FIREBASE_DB_URL = os.environ.get("FIREBASE_DB_URL",
                   "https://wc2026-fantasy-m47-default-rtdb.firebaseio.com")
@@ -935,9 +939,11 @@ def main():
             logging.warning(f"  No schedule match for: {home} vs {away}")
             continue
 
-        if str(sid) in finalized:
+        if str(sid) in finalized and sid not in FORCE_RESCORE:
             logging.info(f"  Match {sid} ({home} vs {away}): finalized — skipping.")
             continue
+        if sid in FORCE_RESCORE:
+            logging.info(f"  Match {sid} ({home} vs {away}): FORCE_RESCORE override.")
 
         logging.info(f"  [FT]   Match {sid} ({home} vs {away}, event {event_id})…")
         summary      = fetch_game_summary(event_id)
