@@ -29,14 +29,10 @@ from firebase_admin import credentials, db
 # CONFIG
 # ─────────────────────────────────────────────
 ESPN_BASE     = "https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world"
-DAYS_LOOKBACK = 14  # days of scoreboard history to scan each run
+DAYS_LOOKBACK = 7   # days of scoreboard history to scan each run
 
-# Match IDs to always re-score regardless of finalization (manual correction list).
-# Remove an ID once the score is confirmed correct in Firebase.
-FORCE_RESCORE: set[int] = set()
-
-FIREBASE_DB_URL = (os.environ.get("FIREBASE_DB_URL") or
-                   "https://wc2026-fantasy-m47-default-rtdb.firebaseio.com")
+FIREBASE_DB_URL = os.environ.get("FIREBASE_DB_URL",
+                  "https://wc2026-fantasy-m47-default-rtdb.firebaseio.com")
 
 # ─────────────────────────────────────────────
 # STATUS SETS
@@ -429,13 +425,11 @@ def parse_details(details, home, away):
 # SCORING ENGINE
 # ─────────────────────────────────────────────
 
-def score_match(competition, summary, is_live=False, league_code=None):
+def score_match(competition, summary, is_live=False):
     """
     Compute fantasy points for both teams from an ESPN competition block
     and its full summary.
     Returns Firebase-ready result dict.
-    If league_code provided and league has skipFirstGame=true, applies zero points
-    for each team's first match (tracked per league).
     """
     competitors = competition.get("competitors", [])
     home_c = next((c for c in competitors if c.get("homeAway") == "home"), {})
@@ -476,18 +470,10 @@ def score_match(competition, summary, is_live=False, league_code=None):
             bd[team].append(label)
 
     # ── 1. Result ────────────────────────────────────────────
-    # For live games ESPN never sets winner=True — derive from current score
-    if is_live:
-        _home_ahead = home_ft > away_ft
-        _away_ahead = away_ft > home_ft
-    else:
-        _home_ahead = home_won
-        _away_ahead = away_won
-
-    if _home_ahead:
+    if home_won:
         add(home, 6, "Win +6")
         add(away, 0, "Loss 0")
-    elif _away_ahead:
+    elif away_won:
         add(away, 6, "Win +6")
         add(home, 0, "Loss 0")
     else:
@@ -549,22 +535,10 @@ def score_match(competition, summary, is_live=False, league_code=None):
         add(away, 3, "Clean Sheet +3")
 
     # ── 5. GK stats ──────────────────────────────────────────
-    # PK saves — two sources; take the max to handle ESPN inconsistencies:
-    #   (a) play-by-play: penaltyKick=True & scoringPlay=False events
-    #   (b) boxscore:     opponent's (penaltyKickShots - penaltyKickGoals)
-    pk_saves_pbp = {home: 0, away: 0}
-    for pm in pk_misses:
-        pk_saves_pbp[pm["defending_team"]] += 1
-
+    # PK saves: opponent's penaltyKickShots - penaltyKickGoals
     pk_saves = {home: 0, away: 0}
-    for team, opponent in ((home, away), (away, home)):
-        opp_stats  = team_stats.get(opponent, {})
-        pk_shots   = _int_stat(opp_stats, "penaltyKickShots")
-        pk_goals   = _int_stat(opp_stats, "penaltyKickGoals")
-        boxscore_saves = max(0, pk_shots - pk_goals)
-        pk_saves[team] = max(pk_saves_pbp[team], boxscore_saves)
-        if pk_saves[team] != pk_saves_pbp[team]:
-            logging.info(f"  PK save for {team}: boxscore={boxscore_saves} > pbp={pk_saves_pbp[team]} — using boxscore")
+    for pm in pk_misses:
+        pk_saves[pm["defending_team"]] += 1
 
     for team in (home, away):
         tstats       = team_stats.get(team, {})
@@ -698,30 +672,12 @@ def score_match(competition, summary, is_live=False, league_code=None):
             add(ft_winner, 4, "Last-Min Winner +4")
 
     # ── 18. Underdog bonus (win or draw as underdog) ─────────
-    is_draw = not _home_ahead and not _away_ahead
+    is_draw = not home_won and not away_won
     ud_team, ud_pts, ud_label, odds_stored = underdog_bonus(
-        summary, home, away, _home_ahead, _away_ahead
+        summary, home, away, home_won, away_won
     )
     if ud_team and ud_pts > 0:
         add(ud_team, ud_pts, ud_label)
-
-    # ── League-specific rules: skip first game ──────────────────
-    skip_points = {}
-    if league_code:
-        config = get_league_config(league_code)
-        if config.get("skipFirstGame"):
-            # Check if this is each team's first game in this league
-            for team in (home, away):
-                games_count = get_games_played_by_team(league_code, team)
-                if games_count == 0:
-                    skip_points[team] = True
-                    logging.info(f"    {team}: first game in {league_code} — points zeroed.")
-
-    # Apply skip rule by zeroing points for first game
-    for team in skip_points:
-        if team in pts:
-            bd[team] = ["First game — 0 points"] + bd[team]
-            pts[team] = 0
 
     # ── Stats summary string ─────────────────────────────────
     if is_live:
@@ -798,24 +754,38 @@ def _fb_key(name: str) -> str:
     return name
 
 
-def get_league_config(league_code):
-    """Return config dict for a league (e.g., skipFirstGame, custom rules)."""
-    ref = db.reference(f"leagueConfigs/{league_code}")
-    return _fb_to_dict(ref.get()) or {}
+KO_MATCH_START = 73  # first knockout stage match ID
 
 
-def get_games_played_by_team(league_code, team):
-    """Return count of games played by a team in a league (from finalized matches)."""
-    leagues_ref = db.reference(f"leagues/{league_code}/data")
-    data = _fb_to_dict(leagues_ref.get()) or {}
-    count = 0
-    for match_id_str, match_data in data.items():
-        match_data = match_data or {}
-        teams_data = match_data.get("teams") or {}
-        # If team appears in this match's teams dict, it played
-        if any(_fb_key(team) == k for k in teams_data.keys()):
-            count += 1
-    return count
+def get_ko_registry():
+    """
+    Load KO match registry from Firebase: {home_vs_away_key: match_id}.
+    Maps each KO matchup to its app match ID (73, 74, …).
+    """
+    ref = db.reference("results/_ko_registry")
+    return ref.get() or {}
+
+
+def update_ko_registry(registry):
+    """Write KO registry back to Firebase."""
+    db.reference("results/_ko_registry").set(registry)
+
+
+def resolve_ko_id(home, away, registry):
+    """
+    Look up or assign a match ID for a KO match.
+    Mutates registry in-place if a new entry is added.
+    Returns (match_id, is_new).
+    """
+    key = f"{_fb_key(home)}_vs_{_fb_key(away)}"
+    if key in registry:
+        return registry[key], False
+    used = set(registry.values())
+    nxt = KO_MATCH_START
+    while nxt in used:
+        nxt += 1
+    registry[key] = nxt
+    return nxt, True
 
 
 def get_finalized_match_ids():
@@ -829,7 +799,7 @@ def get_finalized_match_ids():
     data = _fb_to_dict(ref.get())
     finalized = set()
     for k, v in data.items():
-        if k == "_ts":
+        if k.startswith("_"):  # skip _ts, _ko_registry, etc.
             continue
         v = v or {}
         if not v.get("live", True) and v.get("underdogOdds") is not None:
@@ -853,22 +823,6 @@ def write_results(results_by_match_id):
     logging.info(f"  {n_written} result(s) written to shared /results.")
 
 
-def write_league_results(league_code, results_by_match_id):
-    """Write match results to a league's /leagues/{code}/data node."""
-    league_ref = db.reference(f"leagues/{league_code}/data")
-    existing   = _fb_to_dict(league_ref.get())
-    n_written  = 0
-    for match_id, result in results_by_match_id.items():
-        key = str(match_id)
-        if json.dumps(existing.get(key), sort_keys=True) != \
-           json.dumps(result, sort_keys=True):
-            league_ref.child(key).set(result)
-            n_written += 1
-    if n_written > 0:
-        league_ref.child("_ts").set(int(time.time() * 1000))
-    logging.info(f"  {n_written} result(s) written to league {league_code}.")
-
-
 # ─────────────────────────────────────────────
 # MAIN
 # ─────────────────────────────────────────────
@@ -888,9 +842,37 @@ def main():
     events = fetch_scoreboard_events(DAYS_LOOKBACK)
     logging.info(f"  Found {len(events)} WC 2026 event(s).")
 
-    live_events   = []
-    ft_events     = []
-    other_events  = []
+    # ── STEP 1: build KO registry (chronological ID assignment) ──────────
+    ko_registry = get_ko_registry()
+    ko_registry_dirty = False
+
+    # Collect every KO event (not in group stage SCHEDULE) across all statuses
+    all_ko_candidates = []
+    for ev in events:
+        comp        = ev.get("competitions", [{}])[0]
+        status_name = comp.get("status", {}).get("type", {}).get("name", "")
+        if status_name not in LIVE_STATUSES and status_name not in FT_STATUSES:
+            continue
+        home_c = next((c for c in comp.get("competitors", []) if c.get("homeAway") == "home"), {})
+        away_c = next((c for c in comp.get("competitors", []) if c.get("homeAway") == "away"), {})
+        home = _norm(home_c.get("team", {}).get("displayName", "?"))
+        away = _norm(away_c.get("team", {}).get("displayName", "?"))
+        if resolve_schedule_id(home, away) is None:
+            ev_date = ev.get("date", "9999")  # ISO string — sorts lexicographically
+            all_ko_candidates.append((ev_date, int(ev["id"]), home, away))
+
+    # Sort by (date, espn_event_id) so IDs are assigned in chronological play order
+    all_ko_candidates.sort()
+    for _dt, _eid, home, away in all_ko_candidates:
+        _, is_new = resolve_ko_id(home, away, ko_registry)
+        if is_new:
+            sid = ko_registry[f"{_fb_key(home)}_vs_{_fb_key(away)}"]
+            logging.info(f"  KO registry: {home} vs {away} → M{sid}")
+            ko_registry_dirty = True
+
+    # ── STEP 2: categorise events ──────────────────────────────────────────
+    live_events = []
+    ft_events   = []
     for ev in events:
         comp        = ev.get("competitions", [{}])[0]
         status_name = comp.get("status", {}).get("type", {}).get("name", "")
@@ -898,19 +880,17 @@ def main():
             live_events.append((ev["id"], comp))
         elif status_name in FT_STATUSES:
             ft_events.append((ev["id"], comp))
-        else:
-            other_events.append((ev["id"], comp, status_name))
 
-    logging.info(f"  {len(live_events)} live | {len(ft_events)} finished | {len(other_events)} other.")
-    for eid, comp, sname in other_events:
-        competitors = comp.get("competitors", [])
-        home_c = next((c for c in competitors if c.get("homeAway") == "home"), {})
-        away_c = next((c for c in competitors if c.get("homeAway") == "away"), {})
-        home = _norm(home_c.get("team", {}).get("displayName", "?"))
-        away = _norm(away_c.get("team", {}).get("displayName", "?"))
-        logging.warning(f"  [UNKNOWN STATUS] {home} vs {away} — status: '{sname}' (event {eid})")
+    logging.info(f"  {len(live_events)} live | {len(ft_events)} finished.")
 
     results = {}
+
+    def _resolve_sid(home, away):
+        """Return app match ID for any match (group stage or KO)."""
+        sid = resolve_schedule_id(home, away)
+        if sid is None:
+            sid, _ = resolve_ko_id(home, away, ko_registry)
+        return sid
 
     # ── LIVE matches ─────────────────────────────────────────
     for event_id, comp in live_events:
@@ -919,14 +899,13 @@ def main():
         away_c = next((c for c in competitors if c.get("homeAway") == "away"), {})
         home = _norm(home_c.get("team", {}).get("displayName", "?"))
         away = _norm(away_c.get("team", {}).get("displayName", "?"))
-        sid  = resolve_schedule_id(home, away)
+        sid  = _resolve_sid(home, away)
         if sid is None:
-            logging.warning(f"  No schedule match for: {home} vs {away}")
+            logging.warning(f"  No match ID for: {home} vs {away}")
             continue
 
         logging.info(f"  [LIVE] Match {sid} ({home} vs {away}, event {event_id})…")
         summary      = fetch_game_summary(event_id)
-        # Use competition block from summary (has details)
         comp_full    = (summary.get("header", {}).get("competitions") or [comp])[0]
         result       = score_match(comp_full, summary, is_live=True)
         results[sid] = result
@@ -946,16 +925,14 @@ def main():
         away_c = next((c for c in competitors if c.get("homeAway") == "away"), {})
         home = _norm(home_c.get("team", {}).get("displayName", "?"))
         away = _norm(away_c.get("team", {}).get("displayName", "?"))
-        sid  = resolve_schedule_id(home, away)
+        sid  = _resolve_sid(home, away)
         if sid is None:
-            logging.warning(f"  No schedule match for: {home} vs {away}")
+            logging.warning(f"  No match ID for: {home} vs {away}")
             continue
 
-        if str(sid) in finalized and sid not in FORCE_RESCORE:
+        if str(sid) in finalized:
             logging.info(f"  Match {sid} ({home} vs {away}): finalized — skipping.")
             continue
-        if sid in FORCE_RESCORE:
-            logging.info(f"  Match {sid} ({home} vs {away}): FORCE_RESCORE override.")
 
         logging.info(f"  [FT]   Match {sid} ({home} vs {away}, event {event_id})…")
         summary      = fetch_game_summary(event_id)
@@ -970,6 +947,10 @@ def main():
             f"  |  {h[0]}: {h[1]['fantasyPoints']} pts"
             f"  |  {a[0]}: {a[1]['fantasyPoints']} pts"
         )
+
+    if ko_registry_dirty:
+        update_ko_registry(ko_registry)
+        logging.info(f"  KO registry saved ({len(ko_registry)} entries).")
 
     if results:
         logging.info(f"Writing {len(results)} result(s) to Firebase…")
