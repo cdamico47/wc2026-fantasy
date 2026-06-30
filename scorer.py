@@ -51,6 +51,7 @@ FT_STATUSES = {
     "STATUS_FINAL",              # standard ESPN status for completed KO matches
     "STATUS_FINAL_AET",
     "STATUS_FINAL_PENALTIES",
+    "STATUS_FINAL_PEN",          # ESPN's actual status for PSO-after-AET matches
     "STATUS_ABANDONED",
     "STATUS_FORFEIT",
 }
@@ -462,8 +463,8 @@ def score_match(competition, summary, is_live=False):
 
     # Match duration type
     status_name = competition.get("status", {}).get("type", {}).get("name", "")
-    in_et  = (status_name == "STATUS_FINAL_AET")
-    in_pso = (status_name == "STATUS_FINAL_PENALTIES")
+    in_et  = status_name in {"STATUS_FINAL_AET", "STATUS_FINAL_PEN"}
+    in_pso = status_name in {"STATUS_FINAL_PENALTIES", "STATUS_FINAL_PEN"}
 
     # Penalty shootout winner detection — multi-tier fallback.
     # ESPN is inconsistent: winner flag unreliable, linescores sometimes 0-0.
@@ -920,9 +921,9 @@ def get_finalized_match_ids():
             mid = int(k)
         except ValueError:
             continue
-        # PSO matches without penalty scores stored are not fully finalized — force re-score
-        # so the scorer can retry winner detection and write penaltyHome/penaltyAway.
-        if v.get("stats", "").startswith("PSO:") and "penaltyHome" not in v:
+        # PSO matches without penalty scores AND no matchWinner — force re-score.
+        # If matchWinner is already set, penaltyHome is optional (ESPN may not provide it).
+        if v.get("stats", "").startswith("PSO:") and "penaltyHome" not in v and not v.get("matchWinner"):
             continue
 
         # KO matches (73+) that ended in a PSO but still have no matchWinner stored
