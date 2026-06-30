@@ -29,8 +29,9 @@ from firebase_admin import credentials, db
 # ─────────────────────────────────────────────
 # CONFIG
 # ─────────────────────────────────────────────
-ESPN_BASE     = "https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world"
-DAYS_LOOKBACK = 7   # days of scoreboard history to scan each run
+ESPN_BASE      = "https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world"
+DAYS_LOOKBACK  = 7   # days of scoreboard history to scan each run
+DAYS_LOOKAHEAD = 7   # days of upcoming fixtures to scan for KO team discovery
 
 FIREBASE_DB_URL = os.environ.get("FIREBASE_DB_URL",
                   "https://wc2026-fantasy-m47-default-rtdb.firebaseio.com")
@@ -233,16 +234,20 @@ def _espn_get(path, params=None, retries=3):
     raise RuntimeError(f"ESPN request failed after {retries} attempts: {path}")
 
 
-def fetch_scoreboard_events(days_back=DAYS_LOOKBACK):
+def fetch_scoreboard_events(days_back=DAYS_LOOKBACK, days_forward=DAYS_LOOKAHEAD):
     """
-    Return all WC 2026 ESPN events from the past N days.
-    Each entry is the raw competition block from the scoreboard.
+    Return all WC 2026 ESPN events from the past N days AND the next M days.
+    Scanning forward is required to discover upcoming KO fixtures before they
+    are played (needed to populate /koRounds/r32 before July 1).
     De-duplicated by event ID.
     """
     seen = {}
     today = datetime.date.today()
-    for i in range(days_back + 1):
-        d = today - datetime.timedelta(days=i)
+    dates = (
+        [today - datetime.timedelta(days=i) for i in range(days_back + 1)]
+        + [today + datetime.timedelta(days=i) for i in range(1, days_forward + 1)]
+    )
+    for d in dates:
         date_str = d.strftime("%Y%m%d")
         try:
             data = _espn_get("/scoreboard", {"dates": date_str})
