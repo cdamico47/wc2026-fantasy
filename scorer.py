@@ -1153,8 +1153,16 @@ def main():
     ft_events   = []
     for ev in events:
         comp        = ev.get("competitions", [{}])[0]
-        status_name = comp.get("status", {}).get("type", {}).get("name", "")
-        if status_name in LIVE_STATUSES:
+        status_type = comp.get("status", {}).get("type", {})
+        status_name = status_type.get("name", "")
+        completed   = bool(status_type.get("completed", False))
+        # ESPN sometimes keeps status_name=STATUS_PENALTY_SHOOTOUT (a live status)
+        # on finalized PSO matches. Trust completed=True over the status name.
+        if completed and status_name in LIVE_STATUSES:
+            logging.info(f"  Reclassifying event {ev['id']} as FT: "
+                         f"status={status_name} but completed=True")
+            ft_events.append((ev["id"], comp))
+        elif status_name in LIVE_STATUSES:
             live_events.append((ev["id"], comp))
         elif status_name in FT_STATUSES:
             ft_events.append((ev["id"], comp))
