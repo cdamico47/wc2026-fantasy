@@ -14,6 +14,7 @@ missed during downtime is automatically caught up.
 """
 
 import os
+import re
 import json
 import logging
 import tempfile
@@ -698,6 +699,9 @@ def score_match(competition, summary, is_live=False):
 
     return {
         "live": is_live,
+        "home": home,
+        "away": away,
+        "matchWinner": home if home_won else (away if away_won else None),
         "homeScore": home_ft,
         "awayScore": away_ft,
         "teams": {
@@ -757,6 +761,25 @@ def _fb_key(name: str) -> str:
 
 KO_MATCH_START = 73  # first knockout stage match ID
 
+# Advancement bonus points per KO round (awarded to the winning team's match result)
+KO_ADVANCE_BONUS = {
+    range(73, 89):  ("Win R32", 8),   # Round of 32  → +8
+    range(89, 97):  ("Win R16", 12),  # Round of 16  → +12
+    range(97, 101): ("Win QF",  18),  # Quarterfinals → +18
+    range(101, 103):("Win SF",  25),  # Semifinals    → +25
+    # Final (104) winner bonus handled separately via champion award
+}
+
+# Match ID ranges for each KO round
+KO_ROUNDS = {
+    "r32":       range(73, 89),   # Round of 32 — 16 matches
+    "r16":       range(89, 97),   # Round of 16 — 8 matches
+    "qf":        range(97, 101),  # Quarterfinals — 4 matches
+    "sf":        range(101, 103), # Semifinals — 2 matches
+    "final":     range(104, 105), # Final (game 104) — 1 match
+    "thirdPlace":range(103, 104), # 3rd Place (game 103) — 1 match
+}
+
 
 def get_ko_registry():
     """
@@ -792,20 +815,143 @@ def resolve_ko_id(home, away, registry):
 def get_finalized_match_ids():
     """
     Return set of match IDs that are fully finalized and need no re-scoring.
-    Reads from the shared top-level /results node (all leagues share match data).
-    A match is skipped only if it is non-live AND already has underdogOdds stored.
-    Matches missing underdogOdds are re-scored so the bonus gets applied retroactively.
+    A match is finalized if non-live AND has underdogOdds stored.
+    For KO matches (id >= 73), also requires the advancement bonus to be present
+    in the winner's breakdown — so old results get re-scored once to apply bonuses.
     """
     ref  = db.reference("results")
     data = _fb_to_dict(ref.get())
     finalized = set()
     for k, v in data.items():
-        if k.startswith("_"):  # skip _ts, _ko_registry, etc.
+        if k.startswith("_"):
             continue
         v = v or {}
-        if not v.get("live", True) and v.get("underdogOdds") is not None:
-            finalized.add(k)
+        if v.get("live", True) or v.get("underdogOdds") is None:
+            continue
+        try:
+            mid = int(k)
+        except ValueError:
+            continue
+        # For KO matches, verify advancement bonus is already in the winner's breakdown
+        if mid >= 73:
+            bonus_label = None
+            for rng, (label, _) in KO_ADVANCE_BONUS.items():
+                if mid in rng:
+                    bonus_label = label
+                    break
+            if bonus_label:
+                bonus_applied = any(
+                    any(bonus_label in s for s in td.get("breakdown", []))
+                    for td in v.get("teams", {}).values()
+                )
+                if not bonus_applied:
+                    continue  # re-score to apply advancement bonus
+        finalized.add(k)
     return finalized
+
+
+def _winner_from_result(result):
+    """Return match winner name from a result dict (new or old format)."""
+    if result.get("matchWinner"):
+        return result["matchWinner"]
+    # Fallback: parse from stats string "FT: TeamA 2-1 TeamB | HT: ..."
+    stats = result.get("stats", "")
+    m = re.match(r'^(?:FT|AET|LIVE): (.+?) (\d+)-(\d+) (.+?) \| HT:', stats)
+    if m:
+        h_score, a_score = int(m.group(2)), int(m.group(3))
+        if h_score > a_score:
+            return m.group(1)
+        elif a_score > h_score:
+            return m.group(4)
+    return None  # draw or PSO without matchWinner field
+
+
+def _teams_from_result(result):
+    """Return (home, away) team names from a result dict."""
+    if result.get("home") and result.get("away"):
+        return result["home"], result["away"]
+    stats = result.get("stats", "")
+    m = re.match(r'^(?:FT|AET|PSO|LIVE): (.+?) (\d+)-(\d+) (.+?) \| HT:', stats)
+    if m:
+        return m.group(1), m.group(4)
+    return None, None
+
+
+def update_ko_rounds():
+    """
+    Read /results for all KO matches, compute round advancement lists,
+    and write to /koRounds.
+
+    Firebase /koRounds structure:
+      r32         — 32 teams that played in Round of 32
+      r16         — 16 winners advancing to Round of 16
+      qf          — 8 winners advancing to Quarterfinals
+      sf          — 4 winners advancing to Semifinals
+      final       — 2 SF winners playing in the Final (game 104)
+      thirdPlace  — 2 SF losers playing in the 3rd Place match (game 103)
+      thirdPlaceWinner — winner of game 103
+      winner      — champion (winner of game 104)
+    """
+    results_ref = db.reference("results")
+    all_results = _fb_to_dict(results_ref.get())
+
+    round_lists = {k: [] for k in
+                   ["r32", "r16", "qf", "sf", "final", "thirdPlace", "thirdPlaceWinner", "winner"]}
+
+    for k, result in all_results.items():
+        if k.startswith("_") or not result:
+            continue
+        if result.get("live"):
+            continue
+        try:
+            mid = int(k)
+        except ValueError:
+            continue
+        if mid < 73:
+            continue
+
+        home, away = _teams_from_result(result)
+        if not home or not away:
+            continue
+        match_winner = _winner_from_result(result)
+        match_loser  = (away if match_winner == home else home) if match_winner else None
+
+        def _add(lst, team):
+            if team and team not in round_lists[lst]:
+                round_lists[lst].append(team)
+
+        if 73 <= mid <= 88:   # R32 — both teams played; winner advances to r16
+            _add("r32", home); _add("r32", away)
+            _add("r16", match_winner)
+        elif 89 <= mid <= 96: # R16 — winner advances to qf
+            _add("qf", match_winner)
+        elif 97 <= mid <= 100:# QF  — winner advances to sf
+            _add("sf", match_winner)
+        elif 101 <= mid <= 102:# SF — winner to Final, loser to 3rd Place
+            _add("final",      match_winner)
+            _add("thirdPlace", match_loser)
+        elif mid == 103:      # 3rd Place match
+            _add("thirdPlaceWinner", match_winner)
+        elif mid == 104:      # Final — champion
+            _add("winner", match_winner)
+
+    ko_ref = db.reference("koRounds")
+    existing = ko_ref.get() or {}
+    changed = False
+    for rnd, teams in round_lists.items():
+        if not teams:
+            continue
+        ex = existing.get(rnd)
+        ex_list = list(_fb_to_dict(ex).values()) if ex else []
+        if sorted(t for t in teams if t) != sorted(t for t in ex_list if t):
+            ko_ref.child(rnd).set(teams)
+            changed = True
+            logging.info(f"  /koRounds/{rnd} → {teams}")
+
+    if changed:
+        logging.info("  KO rounds written to Firebase.")
+    else:
+        logging.info("  KO rounds unchanged.")
 
 
 def write_results(results_by_match_id):
@@ -939,6 +1085,22 @@ def main():
         summary      = fetch_game_summary(event_id)
         comp_full    = (summary.get("header", {}).get("competitions") or [comp])[0]
         result       = score_match(comp_full, summary, is_live=False)
+
+        # Apply KO advancement bonus to the winner's fantasy points
+        if sid >= 73:
+            for rng, (label, bonus_pts) in KO_ADVANCE_BONUS.items():
+                if sid in rng:
+                    wname = result.get("matchWinner")
+                    if wname:
+                        wk = _fb_key(wname)
+                        if wk in result["teams"]:
+                            result["teams"][wk]["fantasyPoints"] = round(
+                                result["teams"][wk]["fantasyPoints"] + bonus_pts, 2
+                            )
+                            result["teams"][wk]["breakdown"].append(f"{label} +{bonus_pts}")
+                            logging.info(f"    Advancement bonus: {wname} {label} +{bonus_pts}")
+                    break
+
         results[sid] = result
         teams_list   = list(result["teams"].items())
         h, a         = teams_list[0], teams_list[1]
@@ -956,9 +1118,12 @@ def main():
     if results:
         logging.info(f"Writing {len(results)} result(s) to Firebase…")
         write_results(results)
-        logging.info("Done.")
     else:
         logging.info("No new results to write.")
+
+    logging.info("Updating KO round advancement lists…")
+    update_ko_rounds()
+    logging.info("Done.")
 
 
 if __name__ == "__main__":
