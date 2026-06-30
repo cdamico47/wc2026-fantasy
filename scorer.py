@@ -465,6 +465,17 @@ def score_match(competition, summary, is_live=False):
     in_et  = (status_name == "STATUS_FINAL_AET")
     in_pso = (status_name == "STATUS_FINAL_PENALTIES")
 
+    # Penalty shootout score — ESPN stores it as the last linescore entry.
+    # 90-min PSO:  [1st half, 2nd half, PSO]
+    # ET PSO:      [1st half, 2nd half, ET1, ET2, PSO]
+    pen_home = pen_away = None
+    if in_pso and home_ls and away_ls:
+        try:
+            pen_home = int(home_ls[-1].get("displayValue", "") or 0)
+            pen_away = int(away_ls[-1].get("displayValue", "") or 0)
+        except (ValueError, TypeError):
+            pen_home = pen_away = None
+
     # Parse events
     details   = competition.get("details", [])
     goals, pk_misses = parse_details(details, home, away)
@@ -706,11 +717,21 @@ def score_match(competition, summary, is_live=False):
         + (" | Partial — stats update at FT" if is_live else "")
     )
 
-    return {
+    # Determine match winner — PSO takes precedence over the winner flag
+    if pen_home is not None and pen_away is not None:
+        match_winner = home if pen_home > pen_away else away
+    elif home_won:
+        match_winner = home
+    elif away_won:
+        match_winner = away
+    else:
+        match_winner = None
+
+    result = {
         "live": is_live,
         "home": home,
         "away": away,
-        "matchWinner": home if home_won else (away if away_won else None),
+        "matchWinner": match_winner,
         "homeScore": home_ft,
         "awayScore": away_ft,
         "teams": {
@@ -721,6 +742,11 @@ def score_match(competition, summary, is_live=False):
         "finalScore": {"home": home_ft, "away": away_ft},
         "underdogOdds": odds_stored,
     }
+    # Store PSO scores so the app can verify the penalty winner
+    if pen_home is not None and pen_away is not None:
+        result["penaltyHome"] = pen_home
+        result["penaltyAway"] = pen_away
+    return result
 
 
 # ─────────────────────────────────────────────
