@@ -117,52 +117,6 @@ body{font-family:'Barlow',sans-serif;font-size:15px;background:var(--bg);color:v
 .lsub-panel{display:none;}
 .lsub-panel.active{display:block;}
 
-/* ═══════ COUNTRY STANDINGS ═══════ */
-.ct-wrap{padding:12px 14px;}
-.ct-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--border2);border-radius:8px;overflow:hidden;}
-.ct-col{border-right:1px solid var(--border2);min-width:0;}
-.ct-col:last-child{border-right:none;}
-.ct-col-hdr{display:grid;grid-template-columns:22px 1fr 22px 42px;align-items:center;padding:5px 8px;font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--txt3);background:var(--bg-alt);border-bottom:2px solid var(--border2);}
-.ct-row{display:grid;grid-template-columns:22px 1fr 22px 42px;align-items:center;padding:5px 8px;border-bottom:1px solid var(--border2);cursor:pointer;user-select:none;transition:background 0.12s;}
-.ct-col .ct-row:last-child{border-bottom:none;}
-.ct-row:hover{background:rgba(0,80,200,0.04);}
-.ct-row.open{background:rgba(0,80,200,0.05);border-bottom:none;}
-.ct-rk{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;color:var(--txt3);padding-top:1px;}
-.ct-rk.r1{color:#C9A227;}.ct-rk.r2{color:#8A9EB8;}.ct-rk.r3{color:#a07044;}
-.ct-team{display:flex;align-items:flex-start;gap:4px;min-width:0;}
-.ct-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:3px;}
-.ct-name-grp{display:flex;flex-direction:column;min-width:0;flex:1;}
-.ct-name{font-weight:600;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.3;}
-.ct-sub{display:flex;align-items:center;gap:3px;font-size:9px;color:var(--txt3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2;}
-.ct-sub-owner{color:var(--txt2);font-weight:600;}
-.ct-grp-badge{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;color:var(--txt3);text-align:center;padding-top:1px;}
-.ct-pts{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;color:var(--blue);text-align:right;padding-top:1px;}
-.ct-bd{border-bottom:1px solid var(--border);background:rgba(0,80,200,0.02);}
-.ct-bd-inner{padding:2px 8px 8px 8px;font-size:12px;}
-.ct-controls{display:flex;align-items:center;justify-content:space-between;padding:0 0 10px 0;}
-.ct-sort-grp,.ct-col-grp{display:flex;gap:4px;}
-.ct-sort-btn,.ct-col-btn{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.5px;padding:3px 9px;border-radius:4px;border:1px solid var(--border);background:var(--bg-card);color:var(--txt2);cursor:pointer;transition:all 0.12s;}
-.ct-sort-btn.active,.ct-col-btn.active{background:var(--blue);color:#fff;border-color:var(--blue);}
-.ct-sort-btn:hover:not(.active),.ct-col-btn:hover:not(.active){background:var(--bg-alt);}
-.ct-sec-hdr{padding:5px 8px;font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;background:var(--bg-alt);border-bottom:2px solid var(--border);color:var(--txt2);display:flex;align-items:center;gap:5px;}
-.ct-stats-wrap{margin-top:14px;}
-.ct-stats-title{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:2px;color:var(--txt3);margin-bottom:8px;}
-.ct-stats-bar{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;}
-.ct-stat-card{background:var(--bg-card);border:1px solid var(--border2);border-radius:8px;padding:10px 10px 8px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:1px;cursor:pointer;transition:all 0.12s;}
-.ct-stat-icon{font-size:18px;line-height:1;margin-bottom:3px;}
-.ct-stat-val{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;color:var(--blue);line-height:1.1;}
-.ct-stat-label{font-family:'Barlow Condensed',sans-serif;font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--txt3);margin-top:2px;}
-.ct-stat-sub{font-size:10px;font-weight:600;color:var(--txt2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;}
-.ct-stat-card:hover{border-color:var(--blue);box-shadow:0 0 0 2px rgba(0,82,204,0.10);}
-.ct-stat-card.active{border-color:var(--blue);background:var(--gold-bg);}
-.ct-stat-detail{background:var(--bg-card);border:1px solid var(--border2);border-radius:8px;padding:12px 14px;margin-top:8px;}
-.ct-stat-detail-hdr{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:var(--txt3);margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;}
-.ct-stat-detail-list{max-height:260px;overflow-y:auto;}
-.ct-stat-detail-row{display:flex;align-items:center;gap:6px;padding:4px 2px;border-bottom:1px solid var(--border2);font-size:12px;}
-.ct-stat-detail-row:last-child{border-bottom:none;}
-.ct-stat-detail-rank{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;color:var(--txt3);width:16px;flex-shrink:0;text-align:right;}
-.ct-stat-detail-val{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:900;color:var(--blue);min-width:36px;text-align:right;flex-shrink:0;}
-
 /* ═══════ SETUP SCREEN ═══════ */
 .setup-screen{
   display:flex;flex-direction:column;align-items:center;padding:40px 24px 60px;gap:24px;
@@ -375,7 +329,7 @@ body{font-family:'Barlow',sans-serif;font-size:15px;background:var(--bg);color:v
   background:#0B2545;border-radius:7px 7px 0 0;padding:9px 14px;
 }
 .data-card{background:#fff;border:1px solid var(--border2);border-radius:0 7px 7px 7px;margin-bottom:22px;overflow:hidden;box-shadow:var(--shadow2);}
-.lg-table{width:100%;border-collapse:collapse;font-size:14px;table-layout:fixed;}
+.lg-table{width:100%;border-collapse:collapse;font-size:14px;}
 .lg-table th{
   font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;
   text-transform:uppercase;letter-spacing:1.5px;color:var(--txt3);
@@ -390,10 +344,6 @@ body{font-family:'Barlow',sans-serif;font-size:15px;background:var(--bg);color:v
 .lg-p-cell{display:flex;align-items:center;gap:8px;}
 .lg-pdot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
 .roster-flags{display:flex;flex-wrap:wrap;gap:3px;align-items:center;}
-.lg-table td:nth-child(5) .roster-flags{justify-content:center;}
-.lg-table th.sort-th{cursor:pointer;user-select:none;}
-.lg-table th.sort-th:hover{color:var(--txt2);}
-.lg-table th.sort-active{color:var(--cyan)!important;}
 
 /* ═══════ COMMISSIONER ═══════ */
 .comm-wrap{padding:22px 28px;max-width:860px;}
@@ -665,8 +615,6 @@ body{font-family:'Barlow',sans-serif;font-size:15px;background:var(--bg);color:v
 .sched-team-row{display:flex;align-items:center;gap:5px;}
 .sched-tname{font-weight:700;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:120px;}
 .sched-tname.tbd{color:var(--txt3);font-style:italic;font-weight:400;}
-.sched-fifa-rk{font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;color:var(--txt3);background:var(--bg-alt);border:1px solid var(--border2);border-radius:3px;padding:1px 4px;white-space:nowrap;flex-shrink:0;}
-.mc-fifa-rk{font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;color:var(--txt3);background:var(--bg-alt);border:1px solid var(--border2);border-radius:3px;padding:1px 6px;white-space:nowrap;}
 .sched-owner{font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;padding:1px 6px;border-radius:3px;white-space:nowrap;letter-spacing:0.3px;}
 .sched-vs{font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;color:var(--txt3);letter-spacing:1px;width:22px;text-align:center;flex-shrink:0;}
 .sched-score-block{display:flex;align-items:center;gap:6px;width:72px;flex-shrink:0;justify-content:center;}
@@ -1170,47 +1118,37 @@ body{font-family:'Barlow',sans-serif;font-size:15px;background:var(--bg);color:v
 
   /* iOS safe area */
   body{padding-bottom:env(safe-area-inset-bottom,0px);}
+
+  /* Bracket — full width flush */
+  .bracket-wrap{padding:8px 0;}
+  .bk-section-hdr{border-radius:0;}
+  .bk-grid{grid-template-columns:1fr;}
+  .bk-match-card{border-radius:0;border-left:none;border-right:none;margin-bottom:1px;}
 }
 
-/* ═══════ BRACKET TAB (Article Style) ═══════ */
-#tab-bracket{background:var(--bg);overflow:auto;}
-#tab-bracket .bv{overflow-x:auto;padding-bottom:8px}
-#tab-bracket .bv::-webkit-scrollbar{height:6px}
-#tab-bracket .bv::-webkit-scrollbar-track{background:var(--bg)}
-#tab-bracket .bv::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
-#tab-bracket .bi{display:flex;align-items:stretch;flex-shrink:0}
-#tab-bracket .rc{display:flex;flex-direction:column;flex-shrink:0}
-#tab-bracket .mw{display:flex;align-items:center;justify-content:center;flex-shrink:0}
-#tab-bracket .rl-bar{display:flex;margin-bottom:6px;padding-bottom:2px;flex-shrink:0}
-#tab-bracket .rl-bar::-webkit-scrollbar{height:4px}
-#tab-bracket .rl{display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--txt3);flex-shrink:0}
-#tab-bracket .bmc{background:var(--bg-card);border:1px solid var(--border2);border-radius:6px;overflow:hidden;width:100%;box-shadow:var(--shadow2)}
-#tab-bracket .bmh{display:flex;gap:4px;align-items:center;padding:4px 7px 3px;background:var(--bg-alt);border-bottom:1px solid var(--border2)}
-#tab-bracket .bmn{font-family:monospace;font-size:11px;color:var(--txt3);flex-shrink:0}
-#tab-bracket .bml{font-size:13px;font-weight:600;color:var(--txt);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-#tab-bracket .bmd{font-size:11px;color:var(--txt3);flex-shrink:0;white-space:nowrap}
-#tab-bracket .bsl{padding:3px 0}
-#tab-bracket .bs-c{display:flex;align-items:center;gap:5px;padding:5px 7px;background:#E8F5ED;border-left:3px solid var(--green)}
-#tab-bracket .bn{flex:1;font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--txt)}
-#tab-bracket .bv-check{font-size:11px;color:var(--green);flex-shrink:0;font-weight:700}
-#tab-bracket .bc{display:flex;align-items:center;gap:4px;padding:3px 7px}
-#tab-bracket .cn{flex:1;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--txt)}
-#tab-bracket .cp{font-family:monospace;font-size:11px;color:var(--txt3);flex-shrink:0;width:28px;text-align:right}
-#tab-bracket .bdv{height:1px;background:var(--border2);margin:0 7px}
-#tab-bracket .bmc-tbd{background:var(--bg-card);border:1px solid var(--border2);border-radius:6px;display:flex;flex-direction:column;justify-content:center;width:100%;padding:8px;gap:4px;box-shadow:var(--shadow2)}
-#tab-bracket .bmc-final{background:#FFF8F8;border:2px solid var(--red);border-radius:6px;display:flex;flex-direction:column;justify-content:center;width:100%;padding:8px;gap:3px}
-#tab-bracket .bmc-3rd{background:#F2FAF6;border:2px solid var(--green);border-radius:6px;display:flex;flex-direction:column;justify-content:center;width:100%;padding:8px;gap:3px}
-#tab-bracket .tbd-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--txt3)}
-#tab-bracket .tbd-label.final{color:var(--red)}
-#tab-bracket .tbd-label.third{color:var(--green)}
-#tab-bracket .tbd-city{font-size:13px;font-weight:600;color:var(--txt)}
-#tab-bracket .tbd-date{font-size:11px;color:var(--txt3)}
-#tab-bracket .tbd-teams{font-size:11px;color:var(--txt3);margin-top:2px}
-#tab-bracket .tbd-tr{display:flex;align-items:center;gap:5px;padding:3px 0;font-size:13px;overflow:hidden}
-#tab-bracket .tbd-tr.win{font-weight:700;color:var(--txt)}
-#tab-bracket .tbd-tr.los{opacity:0.35}
-#tab-bracket .tbd-sc{font-weight:800;font-size:14px;color:var(--txt);margin-left:auto;flex-shrink:0}
-#tab-bracket .tbd-tnm{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* ── Bracket ── */
+.bracket-wrap{padding:12px 16px;}
+.bk-section-hdr{font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:700;letter-spacing:1px;color:var(--txt);text-transform:uppercase;padding:8px 0 12px;border-bottom:2px solid var(--blue);margin-bottom:16px;}
+.bk-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;}
+.bk-match-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px;cursor:pointer;transition:box-shadow 0.2s,border-color 0.2s;}
+.bk-match-card:hover{box-shadow:0 2px 12px rgba(74,144,217,0.15);border-color:var(--blue);}
+.bk-match-card.bk-expanded{border-color:var(--blue);}
+.bk-match-hdr{font-size:10px;font-weight:700;letter-spacing:1px;color:var(--txt3);text-transform:uppercase;margin-bottom:8px;}
+.bk-teams{display:flex;flex-direction:column;gap:6px;}
+.bk-team-row{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:6px;background:var(--bg-alt);border:1px solid var(--border2);transition:all 0.2s;}
+.bk-team-row.bk-winner{background:rgba(34,197,94,0.09);border-color:rgba(34,197,94,0.35);}
+.bk-team-row.bk-loser{opacity:0.45;}
+.bk-tname{flex:1;font-weight:600;font-size:13px;color:var(--txt);}
+.bk-score{font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:900;color:var(--blue);min-width:20px;text-align:center;}
+.bk-adv-badge{font-size:9px;font-weight:800;letter-spacing:0.5px;background:rgba(34,197,94,0.14);color:#22c55e;border:1px solid rgba(34,197,94,0.3);border-radius:4px;padding:2px 5px;white-space:nowrap;}
+.bk-vs-divider{text-align:center;font-size:10px;font-weight:700;color:var(--txt3);letter-spacing:1px;padding:1px 0;}
+.bk-kickoff{font-size:11px;color:var(--txt2);margin-top:8px;text-align:center;}
+.bk-bd-panel{background:var(--bg-alt);border-top:1px solid var(--border2);margin-top:10px;border-radius:6px;padding:10px;}
+.bk-bd-hdr{font-size:10px;font-weight:700;color:var(--blue);margin-bottom:8px;letter-spacing:0.5px;text-transform:uppercase;}
+.bk-bd-team{margin-bottom:8px;font-size:12px;}
+.bk-bd-total{color:var(--blue);font-weight:700;margin-left:6px;}
+.bk-bd-lines{font-size:11px;color:var(--txt2);margin-top:4px;line-height:1.6;padding-left:8px;}
+.ls-ms-adv-row td{background:rgba(255,193,7,0.05);}
 </style>
 </head>
 <body>
@@ -1247,9 +1185,9 @@ body{font-family:'Barlow',sans-serif;font-size:15px;background:var(--bg);color:v
   <button class="nav-tab active" onclick="switchTab('league',this)">
     🏆 League<span class="nav-dot" id="live-dot" style="display:none"></span>
   </button>
-  <button class="nav-tab" onclick="switchTab('bracket',this)">⚔️ Bracket</button>
   <button class="nav-tab" onclick="switchTab('myteam',this)">👤 My Team</button>
   <button class="nav-tab" onclick="switchTab('matchcenter',this)">📺 Match Center</button>
+  <button class="nav-tab" onclick="switchTab('bracket',this)">⚔️ Bracket</button>
   <button class="nav-tab" onclick="switchTab('schedule',this)">📅 Schedule &amp; Results</button>
   <button class="nav-tab" onclick="switchTab('wcstands',this)">📊 Group Tables</button>
   <button class="nav-tab" onclick="switchTab('rules',this)">📋 Rules</button>
@@ -1260,13 +1198,11 @@ body{font-family:'Barlow',sans-serif;font-size:15px;background:var(--bg);color:v
 <div id="tab-league" class="tab-panel active">
   <div class="league-subnav">
     <button class="sub-tab active" id="lnav-standings" onclick="switchLeagueSub('standings',this)">📊 Standings</button>
-    <button class="sub-tab" id="lnav-countries" onclick="switchLeagueSub('countries',this)">🌍 Stats</button>
     <button class="sub-tab" id="lnav-draft" onclick="switchLeagueSub('draft',this)">🎯 Draft</button>
     <button class="sub-tab" id="lnav-commissioner" onclick="switchLeagueSub('commissioner',this)">⚙️ Commissioner</button>
   </div>
-  <div id="lsub-standings"    class="lsub-panel"><div id="league-root" class="league-wrap"></div></div>
-  <div id="lsub-countries"    class="lsub-panel"><div id="country-root" class="ct-wrap"></div></div>
-  <div id="lsub-draft"        class="lsub-panel active"><div id="draft-root"></div></div>
+  <div id="lsub-standings" class="lsub-panel"><div id="league-root" class="league-wrap"></div></div>
+  <div id="lsub-draft"     class="lsub-panel active"><div id="draft-root"></div></div>
   <div id="lsub-commissioner" class="lsub-panel"><div id="commissioner-root" class="comm-wrap"></div></div>
 </div>
 
@@ -1275,6 +1211,8 @@ body{font-family:'Barlow',sans-serif;font-size:15px;background:var(--bg);color:v
 <div id="tab-matchcenter" class="tab-panel">
   <div id="mc-root"></div>
 </div>
+
+<div id="tab-bracket" class="tab-panel"><div id="bracket-root" class="bracket-wrap"></div></div>
 
 <div id="tab-schedule" class="tab-panel"><div id="schedule-root"></div></div>
 
@@ -1637,12 +1575,6 @@ body{font-family:'Barlow',sans-serif;font-size:15px;background:var(--bg);color:v
   </div>
 </div>
 
-
-<!-- ══ BRACKET TAB ══ -->
-<div id="tab-bracket" class="tab-panel">
-  <div id="bracket-root"></div>
-</div>
-
 <!-- ══ CREATE/JOIN OVERLAY ══ -->
 <div class="cj-overlay" id="cj-overlay" style="display:none">
   <div class="cj-box"><div id="cj-inner"></div></div>
@@ -1791,21 +1723,6 @@ const TEAMS = Object.entries(GROUPS).flatMap(([g, teams]) =>
   teams.map(t => ({...t, group: g}))
 );
 
-const CONF_MAP = {
-  'Mexico':'CONCACAF','Canada':'CONCACAF','USA':'CONCACAF','Haiti':'CONCACAF','Curaçao':'CONCACAF','Panama':'CONCACAF',
-  'Brazil':'CONMEBOL','Argentina':'CONMEBOL','Colombia':'CONMEBOL','Ecuador':'CONMEBOL','Paraguay':'CONMEBOL','Uruguay':'CONMEBOL',
-  'Czech Republic':'UEFA','Bosnia & Herz.':'UEFA','Switzerland':'UEFA','Scotland':'UEFA','Turkey':'UEFA',
-  'Germany':'UEFA','Netherlands':'UEFA','Sweden':'UEFA','Belgium':'UEFA','Spain':'UEFA','France':'UEFA',
-  'Norway':'UEFA','Austria':'UEFA','Portugal':'UEFA','England':'UEFA','Croatia':'UEFA',
-  'South Africa':'CAF','Morocco':'CAF','Ivory Coast':'CAF','Tunisia':'CAF','Egypt':'CAF',
-  'Senegal':'CAF','Algeria':'CAF','Congo DR':'CAF','Cabo Verde':'CAF','Ghana':'CAF',
-  'South Korea':'AFC','Qatar':'AFC','Australia':'AFC','Japan':'AFC','Iran':'AFC',
-  'Saudi Arabia':'AFC','Iraq':'AFC','Jordan':'AFC','Uzbekistan':'AFC',
-  'New Zealand':'OFC',
-};
-const CONF_ORDER  = ['UEFA','CAF','AFC','CONMEBOL','CONCACAF','OFC'];
-const CONF_ACCENT = {UEFA:'#003399',CAF:'#009A44',AFC:'#C8102E',CONMEBOL:'#5E2D9C',CONCACAF:'#00A0DC',OFC:'#8A9EB8'};
-
 // ═══════════════════════════════════
 // TEAM RATINGS (FIFA-based, for smart AUTO)
 // ═══════════════════════════════════
@@ -1820,36 +1737,6 @@ const TEAM_RATINGS = {
   'Czech Republic':62,'Jordan':61,'Saudi Arabia':60,'Iraq':59,
   'New Zealand':58,'Uzbekistan':57,'Cabo Verde':56,'Congo DR':55,
   'South Africa':54,'Curaçao':53,'Panama':52,'Qatar':51,'Haiti':50
-};
-
-// ═══════════════════════════════════
-// FIFA RANKINGS (2026 World Cup)
-// ═══════════════════════════════════
-const FIFA_RANKINGS = {
-  // Group A
-  'Mexico':15,'South Africa':60,'South Korea':25,'Czech Republic':41,
-  // Group B
-  'Canada':30,'Bosnia & Herz.':65,'Qatar':55,'Switzerland':19,
-  // Group C
-  'Brazil':6,'Morocco':8,'Haiti':83,'Scotland':43,
-  // Group D
-  'USA':16,'Paraguay':40,'Australia':27,'Turkey':22,
-  // Group E
-  'Germany':10,'Curaçao':82,'Ivory Coast':34,'Ecuador':23,
-  // Group F
-  'Netherlands':7,'Japan':18,'Sweden':38,'Tunisia':44,
-  // Group G
-  'Belgium':9,'Egypt':29,'Iran':21,'New Zealand':85,
-  // Group H
-  'Spain':2,'Cabo Verde':69,'Saudi Arabia':61,'Uruguay':17,
-  // Group I
-  'France':1,'Senegal':14,'Iraq':57,'Norway':31,
-  // Group J
-  'Argentina':3,'Algeria':28,'Austria':24,'Jordan':63,
-  // Group K
-  'Portugal':5,'Congo DR':46,'Uzbekistan':50,'Colombia':13,
-  // Group L
-  'England':4,'Croatia':11,'Ghana':74,'Panama':33
 };
 
 // ═══════════════════════════════════
@@ -1875,7 +1762,7 @@ const SCHEDULE = [
 {id:16,round:'Group Stage — MD 1',home:'Iran',away:'New Zealand',utc:'2026-06-16T01:00:00Z',venue:'SoFi Stadium',city:'Los Angeles',country:'USA'},
 {id:17,round:'Group Stage — MD 1',home:'France',away:'Senegal',utc:'2026-06-16T19:00:00Z',venue:'MetLife Stadium',city:'New York/New Jersey',country:'USA'},
 {id:18,round:'Group Stage — MD 1',home:'Iraq',away:'Norway',utc:'2026-06-16T22:00:00Z',venue:'Gillette Stadium',city:'Boston',country:'USA'},
-{id:19,round:'Group Stage — MD 1',home:'Austria',away:'Jordan',utc:'2026-06-17T04:00:00Z',venue:"Levi's Stadium",city:'San Francisco Bay',country:'USA'},
+{id:19,round:'Group Stage — MD 1',home:'Austria',away:'Jordan',utc:'2026-06-16T07:00:00Z',venue:"Levi's Stadium",city:'San Francisco Bay',country:'USA'},
 {id:20,round:'Group Stage — MD 1',home:'Argentina',away:'Algeria',utc:'2026-06-17T01:00:00Z',venue:'Arrowhead Stadium',city:'Kansas City',country:'USA'},
 {id:21,round:'Group Stage — MD 1',home:'England',away:'Croatia',utc:'2026-06-17T20:00:00Z',venue:'AT&T Stadium',city:'Dallas',country:'USA'},
 {id:22,round:'Group Stage — MD 1',home:'Ghana',away:'Panama',utc:'2026-06-17T23:00:00Z',venue:'BMO Field',city:'Toronto',country:'Canada'},
@@ -1892,7 +1779,7 @@ const SCHEDULE = [
 {id:32,round:'Group Stage — MD 2',home:'Turkey',away:'Paraguay',utc:'2026-06-20T03:00:00Z',venue:"Levi's Stadium",city:'San Francisco Bay',country:'USA'},
 {id:33,round:'Group Stage — MD 2',home:'Netherlands',away:'Sweden',utc:'2026-06-20T17:00:00Z',venue:'NRG Stadium',city:'Houston',country:'USA'},
 {id:34,round:'Group Stage — MD 2',home:'Germany',away:'Ivory Coast',utc:'2026-06-20T20:00:00Z',venue:'BMO Field',city:'Toronto',country:'Canada'},
-{id:35,round:'Group Stage — MD 2',home:'Tunisia',away:'Japan',utc:'2026-06-21T04:00:00Z',venue:'Estadio BBVA',city:'Monterrey',country:'Mexico'},
+{id:35,round:'Group Stage — MD 2',home:'Tunisia',away:'Japan',utc:'2026-06-20T06:00:00Z',venue:'Estadio BBVA',city:'Monterrey',country:'Mexico'},
 {id:36,round:'Group Stage — MD 2',home:'Ecuador',away:'Curaçao',utc:'2026-06-21T00:00:00Z',venue:'Arrowhead Stadium',city:'Kansas City',country:'USA'},
 {id:37,round:'Group Stage — MD 2',home:'Spain',away:'Saudi Arabia',utc:'2026-06-21T16:00:00Z',venue:'Mercedes-Benz Stadium',city:'Atlanta',country:'USA'},
 {id:38,round:'Group Stage — MD 2',home:'Belgium',away:'Iran',utc:'2026-06-21T19:00:00Z',venue:'SoFi Stadium',city:'Los Angeles',country:'USA'},
@@ -2032,7 +1919,6 @@ function loadLeagueById(id) {
     const s = localStorage.getItem(LS_LG_PFX + id);
     if (s) {
       LEAGUE = Object.assign(_blankLeague(id), JSON.parse(s));
-      if (_lastResults) LEAGUE.results = _lastResults;
       activeLeagueId = id;
       if (LEAGUE.firebaseCode) connectFirebaseLeague(LEAGUE.firebaseCode);
     }
@@ -2231,7 +2117,6 @@ function renderAll() {
   updateHeaderLeagueName();
   renderDraft();
   renderLeagueStandings();
-  renderCountryStandings();
   renderMyTeam();
   renderStandings();
 }
@@ -2371,7 +2256,7 @@ function autoPick() {
   const available = TEAMS.filter(t => D.tmap[t.name].by === null);
   if (!available.length) return;
   const best = available.reduce((a, b) =>
-    (FIFA_RANKINGS[a.name] || 999) <= (FIFA_RANKINGS[b.name] || 999) ? a : b
+    (TEAM_RATINGS[a.name] || 50) >= (TEAM_RATINGS[b.name] || 50) ? a : b
   );
   pick(best.name);
 }
@@ -2849,14 +2734,18 @@ function _teamPtsFor(teamName) {
   const results = LEAGUE.results || {};
   let total = 0;
   const bds = [];
-  for (const [matchId, res] of Object.entries(results)) {
-    if (_leagueSkipMatchIds.has(matchId)) continue;
+  for (const [key, res] of Object.entries(results)) {
+    if (key === '_ko_registry') continue;
     const tRes = (res && res.teams) ? res.teams[_fbKey(teamName)] : null;
     if (tRes && tRes.fantasyPoints != null) {
       total += tRes.fantasyPoints;
       if (tRes.breakdown && tRes.breakdown.length) bds.push(tRes.breakdown.join(' · '));
     }
   }
+  // Add advancement bonuses (computed client-side)
+  const adv = _advancementBonusesForTeam(teamName);
+  total += adv.total;
+  if (adv.bonuses.length) bds.push(adv.bonuses.join(' · '));
   return { pts: Math.round(total * 100) / 100, bds };
 }
 
@@ -2866,7 +2755,7 @@ function _teamPerMatchBdHTML(teamName, flagMap) {
   const matches = SCHEDULE.filter(m => m.home === teamName || m.away === teamName)
     .sort((a,b) => new Date(a.utc)-new Date(b.utc));
   const rows = matches.map(m => {
-    const res = _getRes(results, m.id);
+    const res = results[String(m.id)] || results[m.id];
     if (!res) return '';
     const sc = _extractScore(res);
     if (!sc) return '';
@@ -2897,30 +2786,62 @@ function _teamPerMatchBdHTML(teamName, flagMap) {
   return `<div style="background:var(--bg-alt);border-radius:6px;margin-top:6px;overflow:hidden">${rows}</div>`;
 }
 
-// Returns a Set of team names still in the tournament (have a non-TBD future or live match).
+// Returns a Set of team names still in the tournament.
 function _inTournamentTeams() {
+  const results = LEAGUE.results || {};
   const now = Date.now();
   const LIVE_WIN = 115 * 60 * 1000;
-  const s = new Set();
-  SCHEDULE.forEach(m => {
-    let mHome = m.home, mAway = m.away;
-    if ((mHome === 'TBD' || mAway === 'TBD') && m.id >= 73) {
-      const kt = _resolveKOTeams(m.id);
-      if (kt) { mHome = kt.home || mHome; mAway = kt.away || mAway; }
-    }
-    if (mHome === 'TBD' || mAway === 'TBD') return;
-    const t = new Date(m.utc).getTime();
-    if (t > now - LIVE_WIN) { s.add(mHome); s.add(mAway); }
-  });
-  if (!s.size) SCHEDULE.forEach(m => {
-    let mHome = m.home, mAway = m.away;
-    if ((mHome === 'TBD' || mAway === 'TBD') && m.id >= 73) {
-      const kt = _resolveKOTeams(m.id);
-      if (kt) { mHome = kt.home || mHome; mAway = kt.away || mAway; }
-    }
-    if (mHome !== 'TBD') { s.add(mHome); s.add(mAway); }
-  });
-  return s;
+
+  // Determine if group stage is done
+  const lastGrpTime = SCHEDULE.filter(m => m.id <= 72 && m.home !== 'TBD')
+    .reduce((max, m) => Math.max(max, new Date(m.utc).getTime()), 0);
+  const groupStageDone = lastGrpTime > 0 && lastGrpTime + LIVE_WIN < now;
+
+  if (!groupStageDone) {
+    // Group stage: teams with upcoming or live matches
+    const s = new Set();
+    SCHEDULE.forEach(m => {
+      if (m.id > 72 || m.home === 'TBD' || m.away === 'TBD') return;
+      const t = new Date(m.utc).getTime();
+      if (t > now - LIVE_WIN) { s.add(m.home); s.add(m.away); }
+    });
+    if (!s.size) SCHEDULE.forEach(m => { if (m.id <= 72 && m.home !== 'TBD') { s.add(m.home); s.add(m.away); } });
+    return s;
+  }
+
+  // KO stage: resolve all R32 participants via results + registry
+  const fbKeyRev = _buildFbKeyReverseMap();
+  const qualified = new Set();
+  for (let id = 73; id <= 88; id++) {
+    const sched = SCHEDULE.find(m => m.id === id);
+    if (!sched) continue;
+    const teams = _resolveKOMatchTeams(sched);
+    if (teams.home !== 'TBD') qualified.add(teams.home);
+    if (teams.away !== 'TBD') qualified.add(teams.away);
+  }
+  // Safety net: include any team appearing in a scored KO result
+  for (let id = 73; id <= 104; id++) {
+    const res = results[String(id)] || results[id];
+    if (!res || !res.teams) continue;
+    Object.keys(res.teams).forEach(fbk => { const tn = fbKeyRev[fbk]; if (tn) qualified.add(tn); });
+  }
+
+  const eliminated = new Set();
+  for (let id = 73; id <= 104; id++) {
+    const res = results[String(id)] || results[id];
+    if (!res || !res.teams) continue;
+    const isFinished = !res.live && (res.homeScore != null || (res.finalScore && res.finalScore.home != null));
+    if (!isFinished) continue;
+    Object.entries(res.teams).forEach(([fbk, tRes]) => {
+      const teamName = fbKeyRev[fbk];
+      if (!teamName) return;
+      const bd = (tRes && tRes.breakdown) || [];
+      if (!bd.some(s => s.startsWith('Win'))) eliminated.add(teamName);
+    });
+  }
+
+  eliminated.forEach(t => qualified.delete(t));
+  return qualified;
 }
 
 // Returns stats map: teamName -> {mp, w, d, l, gf, ga, pts} computed from LEAGUE.results.
@@ -2934,36 +2855,6 @@ function _extractScore(res) {
     if (mt) return {home: parseInt(mt[1]), away: parseInt(mt[2])};
   }
   return null;
-}
-
-// ── KO team resolution (works outside renderBracket — SCHEDULE has home:'TBD') ──
-function _resolveKOTeams(matchId) {
-  const gs = _computeGroupStats();
-  function _grk(g){return[...(GROUPS[g]||[])].sort((a,b)=>{const sa=gs[a.name]||{pts:0,gf:0,ga:0},sb=gs[b.name]||{pts:0,gf:0,ga:0};if(sb.pts!==sa.pts)return sb.pts-sa.pts;const gdA=sa.gf-sa.ga,gdB=sb.gf-sb.ga;if(gdB!==gdA)return gdB-gdA;return(sb.gf||0)-(sa.gf||0);});}
-  function _rss(s,mid){
-    if(/^[12][A-L]$/.test(s)){const r=parseInt(s[0])-1,g=s[1],rk=_grk(g);return rk[r]?rk[r].name:null;}
-    if(s==='3rd'){const k=TP_MATCH_MAP[mid];if(k){const c=_buildTPCur();if(c[k])return c[k].t;}return null;}
-    return null;
-  }
-  if(R32_SLOTS[matchId]){const sl=R32_SLOTS[matchId];return{home:_rss(sl.home,matchId),away:_rss(sl.away,matchId)};}
-  const hRef=KO_HOME[matchId],aRef=KO_AWAY[matchId];
-  if(!hRef||!aRef)return null;
-  function _rr(ref){if(!ref)return null;if(ref.startsWith('W'))return _koWinnerGlobal(parseInt(ref.slice(1)));if(ref.startsWith('L'))return _koLoserGlobal(parseInt(ref.slice(1)));return null;}
-  return{home:_rr(hRef),away:_rr(aRef)};
-}
-function _koWinnerGlobal(matchId) {
-  const res=(LEAGUE.results||{})[String(matchId)];
-  if(!res||res.live)return null;
-  const sc=_extractScore(res);if(!sc)return null;
-  const t=_resolveKOTeams(matchId);if(!t||!t.home||!t.away)return null;
-  const ph=sc.penaltyHome,pa=sc.penaltyAway;
-  if(ph!==undefined&&pa!==undefined)return ph>pa?t.home:t.away;
-  if(sc.home>sc.away)return t.home;if(sc.away>sc.home)return t.away;return null;
-}
-function _koLoserGlobal(matchId) {
-  const w=_koWinnerGlobal(matchId);if(!w)return null;
-  const t=_resolveKOTeams(matchId);if(!t||!t.home||!t.away)return null;
-  return w===t.home?t.away:t.home;
 }
 
 function _computeGroupStats() {
@@ -2994,17 +2885,6 @@ function _computeGroupStats() {
   return stats;
 }
 
-function _isGroupComplete(grpKey, results) {
-  const teams = GROUPS[grpKey] || [];
-  const grpMatches = SCHEDULE.filter(m =>
-    m.round.includes('Group Stage') && teams.some(t => t.name === m.home || t.name === m.away)
-  );
-  return grpMatches.length > 0 && grpMatches.every(m => {
-    const res = results[String(m.id)] || results[m.id];
-    return res && !res.live;
-  });
-}
-
 // ═══════════════════════════════════
 // LEAGUE STANDINGS
 // ═══════════════════════════════════
@@ -3025,18 +2905,11 @@ function showTeamDetail(dIdx, teamName) {
 }
 
 function _teamMatchStatsHTML(teamName, flagMap) {
-  const matches = SCHEDULE.filter(m => m.home === teamName || m.away === teamName)
-    .sort((a,b) => new Date(a.utc)-new Date(b.utc));
-  const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-  const fmtDT = utc => new Intl.DateTimeFormat('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit',timeZoneName:'short',timeZone:tz}).format(new Date(utc));
   const flagCode = flagMap[teamName] || '';
   const results = LEAGUE.results || {};
-  const rows = matches.map(m => {
-    const opp = m.home === teamName ? m.away : m.home;
-    const isHome = m.home === teamName;
+
+  const buildRow = (rnd, opp, isHome, res) => {
     const oppFlag = fi(flagMap[opp]||'', 18, 12);
-    const rnd = m.round.replace('Group Stage — ','').replace('Round of ','R');
-    const res = _getRes(results, m.id);
     const sc = res ? _extractScore(res) : null;
     const tRes = (res && res.teams) ? (res.teams[_fbKey(teamName)] || {}) : {};
     const bd = tRes.breakdown || [];
@@ -3063,11 +2936,9 @@ function _teamMatchStatsHTML(teamName, flagMap) {
           ? `<details class="ls-ms-bd-details"><summary>${total}</summary><div class="ls-ms-bd-lines">${bd.map(esc).join('<br>')}</div></details>`
           : `<span style="color:var(--blue);font-weight:700">${total}</span>`)
       : '—';
-    const oppRankLS = getFIFARanking(opp);
-    const oppRankLSDisp = oppRankLS !== '—' ? ` <span style="font-size:9px;font-weight:600;color:var(--txt3)">${rankOrdinal(oppRankLS)}</span>` : '';
     return `<tr>
       <td>${rnd}</td>
-      <td>${oppFlag} ${esc(opp)}${oppRankLSDisp}</td>
+      <td>${oppFlag} ${esc(opp)}</td>
       <td class="ls-ms-pts">${resultStr}</td>
       <td class="ls-ms-pts">${goalsStr}</td>
       <td class="ls-ms-pts">${csStr}</td>
@@ -3075,7 +2946,50 @@ function _teamMatchStatsHTML(teamName, flagMap) {
       <td class="ls-ms-pts">${astStr}</td>
       <td class="ls-ms-pts" style="color:var(--txt)">${totalDisp}</td>
     </tr>`;
+  };
+
+  // Group stage rows
+  const gsRows = SCHEDULE.filter(m => m.home === teamName || m.away === teamName)
+    .sort((a,b) => new Date(a.utc)-new Date(b.utc))
+    .map(m => buildRow(
+      m.round.replace('Group Stage — ','').replace('Round of ','R'),
+      m.home === teamName ? m.away : m.home,
+      m.home === teamName,
+      results[String(m.id)] || results[m.id]
+    )).join('');
+
+  // KO match rows
+  const koRows = _koMatchesForTeam(teamName).map(({id, res, oppName}) => {
+    const fbks = Object.keys(res.teams || {});
+    const isHome = fbks[0] === _fbKey(teamName);
+    return buildRow(_matchIdToRoundLabel(id), oppName, isHome, res);
   }).join('');
+
+  // Advancement bonus rows — grouped by KO round
+  const adv = _advancementBonusesForTeam(teamName);
+  const _advRoundGroups = {};
+  const _advRoundOrder = ['R32','R16','QF','SF','F'];
+  const _advRoundLabels = {R32:'Round of 32',R16:'Round of 16',QF:'Quarter-Final',SF:'Semi-Final',F:'Champion'};
+  adv.bonuses.forEach(b => {
+    let rk = 'F';
+    if (b.includes('R32') || b.includes('32')) rk = 'R32';
+    else if (b.includes('R16') || b.includes('16')) rk = 'R16';
+    else if (b.includes('QF')) rk = 'QF';
+    else if (b.includes('SF')) rk = 'SF';
+    if (!_advRoundGroups[rk]) _advRoundGroups[rk] = { pts: 0, items: [] };
+    const m = b.match(/\+(\d+)/);
+    _advRoundGroups[rk].pts += m ? parseInt(m[1]) : 0;
+    _advRoundGroups[rk].items.push(b.replace(/ \+\d+$/, '').trim());
+  });
+  const advRows = _advRoundOrder.filter(rk => _advRoundGroups[rk]).map(rk => {
+    const rg = _advRoundGroups[rk];
+    return `<tr class="ls-ms-adv-row">
+      <td style="color:var(--gold);font-weight:700;font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:0.3px">★ ${esc(_advRoundLabels[rk])}</td>
+      <td colspan="6" style="color:var(--txt2);font-size:11px;font-style:italic">${rg.items.map(esc).join(' · ')}</td>
+      <td class="ls-ms-pts" style="color:var(--gold);font-weight:700">+${rg.pts}</td>
+    </tr>`;
+  }).join('');
+
   return `<div class="ls-ms-wrap">
     <div class="ls-ms-team-hdr">${fi(flagCode, 22, 15)} ${esc(teamName)} — Match Log</div>
     <table class="ls-ms-table">
@@ -3088,7 +3002,7 @@ function _teamMatchStatsHTML(teamName, flagMap) {
         <th title="Assists">Ast</th>
         <th>Total ▾</th>
       </tr></thead>
-      <tbody>${rows}</tbody>
+      <tbody>${gsRows}${koRows}${advRows}</tbody>
     </table>
     <div style="font-size:10px;color:var(--txt3);margin-top:6px;font-style:italic">Click any Total to see point breakdown</div>
   </div>`;
@@ -3103,7 +3017,7 @@ function _lsPicksDetailHTML(p, dIdx, flagMap) {
     const ptsLabel = pts > 0 ? `<span class="ls-detail-pts" style="color:var(--blue)">${pts}</span>` : `<span class="ls-detail-pts" style="color:var(--txt3)">—</span>`;
     return `<div${isOpen ? ' style="flex-basis:100%;min-width:0;width:100%"' : ''}>
       <div class="ls-detail-pick${isOpen?' open':''}" onclick="event.stopPropagation();showTeamDetail(${dIdx},'${esc(tn).replace(/'/g,"\\'")}')">
-        ${fi(flagMap[tn]||'',22,15)}<span style="margin-left:5px;font-weight:600;font-size:12px">${esc(tn)}</span>${(() => { const r = getFIFARanking(tn); return r !== '—' ? `<span style="font-size:10px;font-weight:600;color:var(--txt2);margin-left:4px">${rankOrdinal(r)}</span>` : ''; })()}
+        ${fi(flagMap[tn]||'',22,15)}<span style="margin-left:5px;font-weight:600;font-size:12px">${esc(tn)}</span>
         ${ptsLabel}
         <span style="font-size:9px;color:var(--txt3);margin-left:2px">${isOpen?'▲':'▼'}</span>
       </div>
@@ -3160,79 +3074,13 @@ function renderLeagueStandings() {
   const poolPlayer  = D.players.find(p => p.isPool);
 
   function _calcPlayerPts(player) {
-    const results = LEAGUE.results || {};
-    let total = 0;
-    for (const [matchId, res] of Object.entries(results)) {
-      if (_leagueSkipMatchIds.has(matchId)) continue;
-      if (!res || !res.teams) continue;
-      for (const tn of (player.picks || [])) {
-        const tRes = res.teams[_fbKey(tn)];
-        if (tRes && tRes.fantasyPoints != null) total += tRes.fantasyPoints;
-      }
-    }
-    return Math.round(total * 100) / 100;
+    return Math.round(
+      (player.picks || []).reduce((sum, tn) => sum + _teamPtsFor(tn).pts, 0) * 100
+    ) / 100;
   }
 
-  function _calcPlayerGamesPlayed(player) {
-    const results = LEAGUE.results || {};
-    const playedIds = new Set(Object.keys(results).filter(k => !_leagueSkipMatchIds.has(k) && results[k]));
-    let gp = 0;
-    for (const tn of (player.picks || [])) {
-      gp += SCHEDULE.filter(m => {
-        let mHome = m.home, mAway = m.away;
-        if ((mHome === 'TBD' || mAway === 'TBD') && m.id >= 73) {
-          const kt = _resolveKOTeams(m.id);
-          if (kt) { mHome = kt.home || mHome; mAway = kt.away || mAway; }
-        }
-        return (mHome === tn || mAway === tn) && playedIds.has(String(m.id));
-      }).length;
-    }
-    return gp;
-  }
-
-  function _calcPlayerPtsAgainst(player) {
-    const results = LEAGUE.results || {};
-    let total = 0;
-    for (const [matchId, res] of Object.entries(results)) {
-      if (_leagueSkipMatchIds.has(matchId)) continue;
-      if (!res || !res.teams) continue;
-      const match = SCHEDULE.find(m => String(m.id) === matchId);
-      if (!match) continue;
-      for (const tn of (player.picks || [])) {
-        const opp = match.home === tn ? match.away : match.away === tn ? match.home : null;
-        if (!opp) continue;
-        const oppRes = res.teams[_fbKey(opp)];
-        if (oppRes && oppRes.fantasyPoints != null) total += oppRes.fantasyPoints;
-      }
-    }
-    return Math.round(total * 100) / 100;
-  }
-
-  const playerPts     = new Map(realPlayers.map(p => [p, _calcPlayerPts(p)]));
-  const playerGP      = new Map(realPlayers.map(p => [p, _calcPlayerGamesPlayed(p)]));
-  const playerPA      = new Map(realPlayers.map(p => [p, _calcPlayerPtsAgainst(p)]));
-  const playerDraft   = new Map(realPlayers.map(p => [p, D.players.indexOf(p)]));
-  const playerMeanRaw = new Map(realPlayers.map(p => {
-    const r = (p.picks||[]).map(tn => FIFA_RANKINGS[tn]).filter(v => v != null);
-    return [p, r.length ? r.reduce((a,b)=>a+b,0)/r.length : 999];
-  }));
-
-  // Standing rank is always by points, independent of display sort
-  const _ptsSorted = [...realPlayers].sort((a,b) => (playerPts.get(b)||0) - (playerPts.get(a)||0));
-  const playerStanding = new Map(_ptsSorted.map((p,i) => [p, i+1]));
-
-  realPlayers.sort((a, b) => {
-    let va, vb;
-    switch (_lsSortKey) {
-      case 'gp':    va = playerGP.get(a)||0;        vb = playerGP.get(b)||0;        break;
-      case 'draft': va = playerDraft.get(a);         vb = playerDraft.get(b);        break;
-      case 'pa':    va = playerPA.get(a)||0;         vb = playerPA.get(b)||0;        break;
-      case 'net':   va = (playerPts.get(a)||0) - (playerPA.get(a)||0); vb = (playerPts.get(b)||0) - (playerPA.get(b)||0); break;
-      case 'mean':  va = playerMeanRaw.get(a)||999;  vb = playerMeanRaw.get(b)||999; break;
-      default:      va = playerPts.get(a)||0;        vb = playerPts.get(b)||0;
-    }
-    return _lsSortAsc ? va - vb : vb - va;
-  });
+  const playerPts = new Map(realPlayers.map(p => [p, _calcPlayerPts(p)]));
+  realPlayers.sort((a, b) => (playerPts.get(b) || 0) - (playerPts.get(a) || 0));
 
   // Identify current user's player index for row highlight
   const inTour = _inTournamentTeams();
@@ -3250,26 +3098,19 @@ function renderLeagueStandings() {
   }
 
   let rows = '';
-  realPlayers.forEach((p) => {
-    const dIdx    = D.players.indexOf(p);
-    const col     = p.playerColor || p.color || P_COLORS[dIdx % P_COLORS.length];
-    const standing = playerStanding.get(p);
-    const rkCls   = standing===1?'r1':standing===2?'r2':standing===3?'r3':'';
+  realPlayers.forEach((p, rank) => {
+    const dIdx = D.players.indexOf(p);
+    const col   = p.playerColor || p.color || P_COLORS[dIdx % P_COLORS.length];
+    const rkCls = rank===0?'r1':rank===1?'r2':rank===2?'r3':'';
     const flags = p.picks.map(tn => fi(flagMap[tn]||'', 20, 14)).join('');
     const itFlags = p.picks.filter(tn => inTour.has(tn)).map(tn => fi(flagMap[tn]||'', 20, 14)).join('');
     const msg = (p.message||'').trim();
-    const pts       = playerPts.get(p);
-    const gp        = playerGP.get(p) || 0;
-    const pa        = playerPA.get(p) || 0;
-    const netPts    = Math.round((pts - pa) * 100) / 100;
-    const draftPos  = (playerDraft.get(p) || 0) + 1;
-    const meanRaw   = playerMeanRaw.get(p);
-    const meanRankDisp = meanRaw !== 999 ? meanRaw.toFixed(1) : '—';
+    const pts = playerPts.get(p);
     const ptsDisplay = pts > 0 ? pts : '—';
     const isMe = dIdx === myDIdx;
     const rowStyle = isMe ? `style="background:${hexToAlpha(col,0.13)};box-shadow:inset 4px 0 0 ${col}"` : '';
     rows += `<tr class="ls-row-clickable" onclick="showPlayerDetail(${dIdx})" ${rowStyle}>
-      <td><span class="rk ${rkCls}">${standing}</span></td>
+      <td><span class="rk ${rkCls}">${rank+1}</span></td>
       <td>
         <div class="lg-p-cell">
           <div class="lg-pdot" style="background:${col}"></div>
@@ -3281,17 +3122,12 @@ function renderLeagueStandings() {
           </div>
         </div>
       </td>
-      <td style="text-align:center"><span class="pts-big">${ptsDisplay}</span></td>
-      <td style="text-align:center;font-weight:600;font-size:14px;color:${gp>0?'var(--txt)':'var(--txt3)'}">${gp > 0 ? gp : '—'}</td>
+      <td><span class="pts-big">${ptsDisplay}</span></td>
       <td><div class="roster-flags">${flags}</div></td>
       <td><div class="roster-flags">${itFlags || '<span style="color:var(--txt3);font-size:11px">—</span>'}</div></td>
-      <td style="text-align:center;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:600;color:${pa>0?'var(--txt)':'var(--txt3)'}">${pa > 0 ? pa : '—'}</td>
-      <td style="text-align:center;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;color:${netPts>0?'#22c55e':netPts<0?'#ef4444':'var(--txt3)'}">${pts > 0 || pa > 0 ? (netPts > 0 ? '+' : '') + netPts : '—'}</td>
-      <td style="text-align:center;font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;color:var(--txt2)">${meanRankDisp}</td>
-      <td style="text-align:center;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:600;color:var(--txt2)">${draftPos}</td>
     </tr>`;
     if (_lsDetailSet.has(dIdx)) {
-      rows += `<tr class="ls-detail-row"><td colspan="10">
+      rows += `<tr class="ls-detail-row"><td colspan="5">
         <div class="ls-detail-grid">${_lsPicksDetailHTML(p, dIdx, flagMap)}</div>
       </td></tr>`;
     }
@@ -3305,9 +3141,6 @@ function renderLeagueStandings() {
     const poolName = poolPlayer.name || 'Undrafted';
     const udFlags  = poolPlayer.picks.map(tn => fi(flagMap[tn]||'',20,14)).join('');
     const udItFlags = poolPlayer.picks.filter(tn => inTour.has(tn)).map(tn => fi(flagMap[tn]||'',20,14)).join('');
-    const _udRanks = (poolPlayer.picks||[]).map(tn => FIFA_RANKINGS[tn]).filter(r => r != null);
-    const udMeanRankDisp = _udRanks.length ? (_udRanks.reduce((a,b)=>a+b,0)/_udRanks.length).toFixed(1) : '—';
-    const udPA = _calcPlayerPtsAgainst(poolPlayer);
     udHTML = `<tr class="ls-row-clickable" onclick="showPlayerDetail(${poolDIdx})">
       <td><span class="rk" style="background:#8A9EB8">—</span></td>
       <td><div class="lg-p-cell">
@@ -3315,17 +3148,12 @@ function renderLeagueStandings() {
         <div style="display:flex;align-items:center;gap:5px;flex-shrink:0">${playerAvatar(poolPlayer,24)}</div>
         <div><div><strong>${esc(poolName)}</strong></div></div>
       </div></td>
-      <td style="text-align:center;color:var(--txt3)">—</td>
-      <td style="text-align:center;color:var(--txt3)">—</td>
+      <td>—</td>
       <td><div class="roster-flags">${udFlags}</div></td>
       <td><div class="roster-flags">${udItFlags || '<span style="color:var(--txt3);font-size:11px">—</span>'}</div></td>
-      <td style="text-align:center;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:600;color:${udPA>0?'var(--txt)':'var(--txt3)'}">${udPA > 0 ? udPA : '—'}</td>
-      <td style="text-align:center;color:var(--txt3)">—</td>
-      <td style="text-align:center;font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;color:var(--txt2)">${udMeanRankDisp}</td>
-      <td style="text-align:center;color:var(--txt3)">—</td>
     </tr>`;
     if (_lsDetailSet.has(poolDIdx)) {
-      udHTML += `<tr class="ls-detail-row"><td colspan="10">
+      udHTML += `<tr class="ls-detail-row"><td colspan="5">
         <div class="ls-detail-grid">${_lsPicksDetailHTML(poolPlayer, poolDIdx, flagMap)}</div>
       </td></tr>`;
     }
@@ -3335,18 +3163,7 @@ function renderLeagueStandings() {
     <div class="sec-hdr">League Standings${LEAGUE.name ? ' — '+esc(LEAGUE.name) : ''}</div>
     <div class="data-card">
       <table class="lg-table">
-        <thead><tr>
-          <th class="sort-th${_lsSortKey==='pts'?' sort-active':''}" style="width:3%" onclick="_lsSetSort('pts')">#${_lsSortKey==='pts'?(_lsSortAsc?' ▴':' ▾'):''}</th>
-          <th style="width:22%">Player</th>
-          <th class="sort-th${_lsSortKey==='pts'?' sort-active':''}" style="width:7%;text-align:center" onclick="_lsSetSort('pts')">Pts${_lsSortKey==='pts'?(_lsSortAsc?' ▴':' ▾'):''}</th>
-          <th class="sort-th${_lsSortKey==='gp'?' sort-active':''}" style="width:5%;text-align:center" onclick="_lsSetSort('gp')">GP${_lsSortKey==='gp'?(_lsSortAsc?' ▴':' ▾'):''}</th>
-          <th style="width:10%;text-align:center">Roster</th>
-          <th style="width:16%">In-Tournament</th>
-          <th class="sort-th${_lsSortKey==='pa'?' sort-active':''}" style="width:9%;text-align:center" onclick="_lsSetSort('pa')">Points Against${_lsSortKey==='pa'?(_lsSortAsc?' ▴':' ▾'):''}</th>
-          <th class="sort-th${_lsSortKey==='net'?' sort-active':''}" style="width:7%;text-align:center" onclick="_lsSetSort('net')">Net Pts${_lsSortKey==='net'?(_lsSortAsc?' ▴':' ▾'):''}</th>
-          <th class="sort-th${_lsSortKey==='mean'?' sort-active':''}" style="width:8%;text-align:center" onclick="_lsSetSort('mean')">Avg Rank${_lsSortKey==='mean'?(_lsSortAsc?' ▴':' ▾'):''}</th>
-          <th class="sort-th${_lsSortKey==='draft'?' sort-active':''}" style="width:5%;text-align:center" onclick="_lsSetSort('draft')">Draft${_lsSortKey==='draft'?(_lsSortAsc?' ▴':' ▾'):''}</th>
-        </tr></thead>
+        <thead><tr><th>#</th><th>Player</th><th>Points</th><th>Roster</th><th>In-Tournament</th></tr></thead>
         <tbody>${rows}${udHTML}</tbody>
       </table>
       <div style="padding:10px 14px;font-size:11px;color:var(--txt3);border-top:1px solid var(--border2)">
@@ -3364,15 +3181,7 @@ let _mtTeamOpen = new Set();   // team names with Level-1 expanded
 let _mtMatchOpen = new Set();  // "${teamName}|${matchId}" with Level-2 expanded
 let _expandedGroup = new Set();
 let _lsDetailSet = new Set();
-let _lsSortKey = 'pts';
-let _lsSortAsc = false;
 let _lsTeamKeys = new Set();
-
-function _lsSetSort(key) {
-  if (_lsSortKey === key) { _lsSortAsc = !_lsSortAsc; }
-  else { _lsSortKey = key; _lsSortAsc = (key === 'draft' || key === 'mean'); }
-  renderLeagueStandings();
-}
 let _mcIntervalHandle = null;
 
 function _mtSelectablePlayers() {
@@ -3491,11 +3300,9 @@ function renderMyTeam() {
     myTotalPts += pts;
     const isOpen = _mtTeamOpen.has(tn);
     const escName = tn.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
-    const fifaRank = getFIFARanking(tn);
-    const fifaDisp = fifaRank !== '—' ? `<span style="font-size:12px;font-weight:700;color:var(--txt2);background:var(--bg-alt);padding:2px 6px;border-radius:3px">${rankOrdinal(fifaRank)}</span>` : '';
     const hdr = `<div class="mt-tile-hdr${isOpen?' active':''}${p.isPool?' mt-cell-pool':''}" onclick="toggleMtTeam('${escName}')">
         ${t ? fi(t.flag,26,18) : ''}
-        <span class="mt-tile-name" style="display:flex;align-items:center;gap:6px">${esc(tn)}${fifaDisp}</span>
+        <span class="mt-tile-name">${esc(tn)}</span>
         <span class="mt-tile-pts">${pts > 0 ? pts : '<span style="color:var(--txt3)">—</span>'}</span>
         <span class="mt-tile-arrow">${isOpen?'▲':'▼'}</span>
       </div>`;
@@ -3613,26 +3420,15 @@ function toggleMtMatch(key) {
   renderMyTeam();
 }
 
-function _mtTeamMatchRowsHTML(tn, flagMap, toggleFn = 'toggleMtMatch') {
+function _mtTeamMatchRowsHTML(tn, flagMap) {
   const results = LEAGUE.results || {};
-  const matches = SCHEDULE.filter(m => m.home === tn || m.away === tn)
-    .sort((a,b) => new Date(a.utc)-new Date(b.utc));
-  return matches.map(m => {
-    const matchKey = `${tn}|${m.id}`;
-    const isMOpen = _mtMatchOpen.has(matchKey);
-    const res = _getRes(results, m.id);
-    const sc = res ? _extractScore(res) : null;
-    const isHome = m.home === tn;
-    const opp = isHome ? m.away : m.home;
-    const tRes = ((res && res.teams) || {})[_fbKey(tn)] || {};
-    const pts = tRes.fantasyPoints;
-    const bd = tRes.breakdown || [];
-    const rnd = m.round.replace('Group Stage — ','').replace('Round of ','R');
-    const oppFlag = fi(flagMap[opp]||'', 18, 12);
+
+  const buildMatchRow = (matchKey, rnd, opp, oppFlagStr, sc, tRes, isHome) => {
+    const bd = (tRes && tRes.breakdown) || [];
+    const pts = tRes ? tRes.fantasyPoints : null;
+    const played = !!sc;
     let resultStr = '', scoreDisp = '', ptsDisp = '—';
-    let played = false;
     if (sc) {
-      played = true;
       const tG = isHome ? sc.home : sc.away;
       const oG = isHome ? sc.away : sc.home;
       scoreDisp = `${tG}–${oG}`;
@@ -3643,22 +3439,71 @@ function _mtTeamMatchRowsHTML(tn, flagMap, toggleFn = 'toggleMtMatch') {
       if (pts != null) ptsDisp = pts;
     }
     const hasBd = played && bd.length > 0;
+    const isMOpen = _mtMatchOpen.has(matchKey);
     const escKey = matchKey.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
-    const bdLines = (isMOpen && hasBd)
-      ? `<div class="mt-bd-lines">${bd.map(esc).join('<br>')}</div>` : '';
-    const oppRank = getFIFARanking(opp);
-    const oppRankDisp = oppRank !== '—' ? ` <span style="font-size:9px;font-weight:600;color:var(--txt3)">${rankOrdinal(oppRank)}</span>` : '';
+    const bdLines = (isMOpen && hasBd) ? `<div class="mt-bd-lines">${bd.map(esc).join('<br>')}</div>` : '';
     return `<div class="mt-match-wrap">
-      <div class="mt-match-row${played?' played':''}${hasBd?' clickable':''}${isMOpen?' open':''}"${hasBd?` onclick="event.stopPropagation();${toggleFn}('${escKey}')"`:''}>
+      <div class="mt-match-row${played?' played':''}${hasBd?' clickable':''}${isMOpen?' open':''}"${hasBd?` onclick="event.stopPropagation();toggleMtMatch('${escKey}')"`:''}>
         <span class="mt-mr-rnd">${rnd}</span>
-        <span class="mt-mr-opp">${oppFlag} ${esc(opp)}${oppRankDisp}</span>
+        <span class="mt-mr-opp">${oppFlagStr} ${esc(opp)}</span>
         <span class="mt-mr-result">${resultStr}${scoreDisp?` <span class="mt-mr-score">${scoreDisp}</span>`:''}</span>
         <span class="mt-mr-pts">${ptsDisp!=='—'?`<span style="color:var(--blue);font-weight:700">${ptsDisp}</span>`:`<span style="color:var(--txt3)">—</span>`}</span>
         ${hasBd?`<span class="mt-mr-arrow">${isMOpen?'▲':'▼'}</span>`:''}
       </div>
       ${bdLines}
     </div>`;
+  };
+
+  // Group stage rows
+  const gsRows = SCHEDULE.filter(m => m.home === tn || m.away === tn)
+    .sort((a,b) => new Date(a.utc)-new Date(b.utc))
+    .map(m => {
+      const res = results[String(m.id)] || results[m.id];
+      const sc = res ? _extractScore(res) : null;
+      const isHome = m.home === tn;
+      const opp = isHome ? m.away : m.home;
+      const tRes = ((res && res.teams) || {})[_fbKey(tn)] || null;
+      const rnd = m.round.replace('Group Stage — ','').replace('Round of ','R');
+      return buildMatchRow(`${tn}|${m.id}`, rnd, opp, fi(flagMap[opp]||'', 18, 12), sc, tRes, isHome);
+    }).join('');
+
+  // KO match rows
+  const koRows = _koMatchesForTeam(tn).map(({id, res, oppName, tRes}) => {
+    const sc = _extractScore(res);
+    const fbks = Object.keys(res.teams || {});
+    const isHome = fbks[0] === _fbKey(tn);
+    return buildMatchRow(`${tn}|${id}`, _matchIdToRoundLabel(id), oppName, fi(flagMap[oppName]||'', 18, 12), sc, tRes && tRes.fantasyPoints != null ? tRes : null, isHome);
   }).join('');
+
+  // Advancement bonus rows — grouped by KO round
+  const adv = _advancementBonusesForTeam(tn);
+  const _mtAdvGroups = {};
+  const _mtAdvOrder = ['R32','R16','QF','SF','F'];
+  const _mtAdvLabels = {R32:'Round of 32',R16:'Round of 16',QF:'Quarter-Final',SF:'Semi-Final',F:'Champion'};
+  adv.bonuses.forEach(b => {
+    let rk = 'F';
+    if (b.includes('R32') || b.includes('32')) rk = 'R32';
+    else if (b.includes('R16') || b.includes('16')) rk = 'R16';
+    else if (b.includes('QF')) rk = 'QF';
+    else if (b.includes('SF')) rk = 'SF';
+    if (!_mtAdvGroups[rk]) _mtAdvGroups[rk] = { pts: 0, items: [] };
+    const m = b.match(/\+(\d+)/);
+    _mtAdvGroups[rk].pts += m ? parseInt(m[1]) : 0;
+    _mtAdvGroups[rk].items.push(b.replace(/ \+\d+$/, '').trim());
+  });
+  const advRows = _mtAdvOrder.filter(rk => _mtAdvGroups[rk]).map(rk => {
+    const rg = _mtAdvGroups[rk];
+    return `<div class="mt-match-wrap">
+      <div class="mt-match-row played" style="background:rgba(255,193,7,0.06)">
+        <span class="mt-mr-rnd" style="color:var(--gold);font-weight:700">★</span>
+        <span class="mt-mr-opp" style="color:var(--gold);font-style:italic">${esc(_mtAdvLabels[rk])}<span style="display:block;font-size:10px;color:var(--txt3);font-style:normal;margin-top:1px">${rg.items.map(esc).join(' · ')}</span></span>
+        <span class="mt-mr-result"></span>
+        <span class="mt-mr-pts"><span style="color:var(--gold);font-weight:700">+${rg.pts}</span></span>
+      </div>
+    </div>`;
+  }).join('');
+
+  return gsRows + koRows + advRows;
 }
 function mtSetAvatar(av) {
   const sp = _mtSelectablePlayers(); const p = sp[myTeamSel]; if (!p) return;
@@ -3715,19 +3560,6 @@ function saveMtEdit() {
 }
 
 // ═══════════════════════════════════
-// FIFA RANKINGS HELPER
-// ═══════════════════════════════════
-function getFIFARanking(teamName) {
-  return FIFA_RANKINGS[teamName] || '—';
-}
-function rankOrdinal(n) {
-  if (n === '—') return '—';
-  const s = ['th','st','nd','rd'];
-  const v = n % 100;
-  return n + (s[(v-20)%10] || s[v] || s[0]);
-}
-
-// ═══════════════════════════════════
 // WC TABLES
 // ═══════════════════════════════════
 function toggleGroupFixtures(g) {
@@ -3761,26 +3593,15 @@ function renderStandings() {
       return sb.gf - sa.gf;
     });
 
-    const grpDone = _isGroupComplete(g, results);
     const rows = sortedTeams.map((t, rank) => {
       const s = gs[t.name] || {mp:0,w:0,d:0,l:0,gf:0,ga:0,pts:0};
       const ownerIdx = ownerMap[t.name];
       const ownerHTML = (ownerIdx !== undefined && D.phase === 'done')
         ? (() => { const p = D.players[ownerIdx]; const col = p.playerColor || P_COLORS[ownerIdx%P_COLORS.length]; const nm = dn(p,`P${ownerIdx+1}`); return `<span style="display:inline-flex;align-items:center;gap:3px;font-size:9px;font-weight:700;color:${col};background:${hexToAlpha(col,0.1)};border-radius:3px;padding:1px 5px">${playerAvatar(p,12)} ${esc(nm.primary)}</span>`; })()
         : '';
-      let statusBadge = '';
-      if (grpDone) {
-        if (rank < 2) statusBadge = `<span style="font-size:12px;margin-left:4px" title="Qualified to Round of 32">✅</span>`;
-        else if (rank === 3) statusBadge = `<span style="font-size:12px;margin-left:4px" title="Eliminated">❌</span>`;
-        else statusBadge = `<span style="font-size:10px;background:var(--bg-alt);border-radius:3px;padding:1px 6px;margin-left:4px;color:var(--txt3);font-weight:700" title="Awaiting 8 best 3rd-place ranking">3RD</span>`;
-      } else if (s.pts >= 6) {
-        statusBadge = `<span style="font-size:9px;background:#15803d;color:#d1fae5;border-radius:3px;padding:1px 6px;margin-left:4px;font-weight:800;letter-spacing:0.5px" title="Mathematically qualified to Round of 32">Q</span>`;
-      }
       const qualStyle = rank < 2 ? 'border-left:3px solid var(--green)' : '';
-      const fifaRank = getFIFARanking(t.name);
-      const fifaDisp = fifaRank !== '—' ? `<span style="font-size:11px;font-weight:700;color:var(--txt2);margin-left:5px;background:var(--bg-alt);padding:2px 6px;border-radius:3px">${rankOrdinal(fifaRank)}</span>` : '';
       return `<tr style="${qualStyle}">
-        <td><div class="g-team" style="gap:5px">${fi(t.flag,20,14)}<span class="g-name">${esc(t.name)}</span>${fifaDisp}${ownerHTML}${statusBadge}</div></td>
+        <td><div class="g-team" style="gap:5px">${fi(t.flag,20,14)}<span class="g-name">${esc(t.name)}</span>${ownerHTML}</div></td>
         <td>${s.mp}</td><td>${s.w}</td><td>${s.d}</td><td>${s.l}</td>
         <td>${s.gf}</td><td>${s.ga}</td>
         <td style="font-weight:700;color:${s.pts>0?'var(--txt)':'var(--txt3)'}">${s.pts}</td>
@@ -3802,14 +3623,11 @@ function renderStandings() {
     const scoreDisp = score
       ? `<span style="font-size:11px;font-weight:700;color:var(--txt);background:var(--bg-alt);padding:2px 7px;border-radius:4px;white-space:nowrap">${score}</span>`
       : `<span class="grp-fix-vs">${isPast ? 'FT' : 'VS'}</span>`;
-    const hrHome = getFIFARanking(m.home); const hrAway = getFIFARanking(m.away);
-    const hrHomeDisp = hrHome !== '—' ? `<span style="font-size:9px;font-weight:600;color:var(--txt3);margin-left:3px">${rankOrdinal(hrHome)}</span>` : '';
-    const hrAwayDisp = hrAway !== '—' ? `<span style="font-size:9px;font-weight:600;color:var(--txt3);margin-left:3px">${rankOrdinal(hrAway)}</span>` : '';
     return `<div class="grp-fix-match${isPast?' past':''}">
       <span class="grp-fix-md">${m.round.replace('Group Stage — ','')}</span>
-      <div class="grp-fix-home">${fi(flagMap[m.home]||'',20,14)} <span class="grp-fix-name">${esc(m.home)}</span>${hrHomeDisp}</div>
+      <div class="grp-fix-home">${fi(flagMap[m.home]||'',20,14)} <span class="grp-fix-name">${esc(m.home)}</span></div>
       ${scoreDisp}
-      <div class="grp-fix-away">${fi(flagMap[m.away]||'',20,14)} <span class="grp-fix-name">${esc(m.away)}</span>${hrAwayDisp}</div>
+      <div class="grp-fix-away">${fi(flagMap[m.away]||'',20,14)} <span class="grp-fix-name">${esc(m.away)}</span></div>
       <span class="grp-fix-time">${fmtDT(m.utc)}</span>
     </div>`;
   }).join('')}
@@ -4442,10 +4260,129 @@ function switchTab(id, btn) {
   btn.classList.add('active');
   if (id !== 'matchcenter') { clearInterval(_mcIntervalHandle); _mcIntervalHandle = null; }
   if (id === 'matchcenter') { _mcDayOffset = 0; renderMatchCenter(); }
-  if (id === 'schedule') renderSchedule();
-  if (id === 'wcstands') renderStandings();
-  if (id === 'rules') renderPrizesSection();
-  if (id === 'bracket') renderBracket();
+  if (id === 'bracket')    renderBracket();
+  if (id === 'schedule')   renderSchedule();
+  if (id === 'wcstands')   renderStandings();
+  if (id === 'rules')      renderPrizesSection();
+}
+
+// ═══════════════════════════════════
+// BRACKET
+// ═══════════════════════════════════
+function toggleBracketMatch(id) {
+  if (_bracketExpandedSet.has(id)) _bracketExpandedSet.delete(id); else _bracketExpandedSet.add(id);
+  renderBracket();
+}
+
+function renderBracket() {
+  const root = document.getElementById('bracket-root');
+  if (!root) return;
+  const results = LEAGUE.results || {};
+  const flagMap = _mcTeamFlagMap();
+  const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const fmtTime = utc => new Intl.DateTimeFormat('en-US', {
+    weekday:'short', month:'short', day:'numeric', hour:'numeric', minute:'2-digit', timeZone:tz
+  }).format(new Date(utc));
+  const fmtDate = utc => new Intl.DateTimeFormat('en-US', {
+    month:'short', day:'numeric', timeZone:tz
+  }).format(new Date(utc));
+  const now = Date.now();
+  const LIVE_WIN = 115 * 60 * 1000;
+
+  // Count how many R32 matches have been played
+  const r32Played = Array.from({length:16}, (_,i) => 73+i)
+    .filter(id => { const res = results[String(id)] || results[id]; const sc = res ? _extractScore(res) : null; return !!sc; }).length;
+
+  let html = `<div class="bk-section-hdr">⚔️ Round of 32
+    <span style="font-size:12px;font-weight:500;color:var(--txt2);margin-left:10px;letter-spacing:0">${r32Played}/16 matches played</span>
+  </div><div class="bk-grid">`;
+
+  for (let id = 73; id <= 88; id++) {
+    const sched = SCHEDULE.find(m => m.id === id);
+    if (!sched) continue;
+    const teams  = _resolveKOMatchTeams(sched);
+    const home   = teams.home;
+    const away   = teams.away;
+    const res    = results[String(id)] || results[id];
+    const sc     = res ? _extractScore(res) : null;
+    const t      = new Date(sched.utc).getTime();
+    const isLive = t <= now && now < t + LIVE_WIN;
+    const isPast = t + LIVE_WIN <= now;
+    const isExp  = _bracketExpandedSet.has(id);
+    const matchNum = id - 72;
+    const isTBD  = home === 'TBD' && away === 'TBD';
+
+    let homeWon = false, awayWon = false;
+    if (sc && isPast && res && res.teams) {
+      const hBd = ((res.teams || {})[_fbKey(home)] || {}).breakdown || [];
+      const aBd = ((res.teams || {})[_fbKey(away)] || {}).breakdown || [];
+      homeWon = hBd.some(s => s.startsWith('Win'));
+      awayWon = aBd.some(s => s.startsWith('Win'));
+    }
+
+    const homeFlag = home !== 'TBD' ? fi(flagMap[home]||'', 20, 14) : '';
+    const awayFlag = away !== 'TBD' ? fi(flagMap[away]||'', 20, 14) : '';
+
+    if (isTBD) {
+      // Match not yet assigned — show placeholder
+      html += `<div class="bk-match-card" style="opacity:0.5">
+  <div class="bk-match-hdr">M${matchNum} · ${esc(sched.city)} · ${fmtDate(sched.utc)}</div>
+  <div class="bk-teams">
+    <div class="bk-team-row"><span class="bk-tname" style="color:var(--txt3);font-style:italic">TBD</span></div>
+    <div style="border-top:1px solid var(--border2);margin:1px 0"></div>
+    <div class="bk-team-row"><span class="bk-tname" style="color:var(--txt3);font-style:italic">TBD</span></div>
+  </div>
+  <div class="bk-kickoff">${fmtTime(sched.utc)}</div>
+</div>`;
+      continue;
+    }
+
+    html += `<div class="bk-match-card${isExp?' bk-expanded':''}${isPast&&sc?' bk-played':''}" onclick="toggleBracketMatch(${id})">
+  <div class="bk-match-hdr">M${matchNum} · ${esc(sched.city)} <span style="opacity:0.55">· ${fmtDate(sched.utc)}</span>${isLive?` <span style="color:var(--red);font-weight:800;animation:blink 1s infinite">● LIVE</span>`:''}</div>
+  <div class="bk-teams">
+    <div class="bk-team-row${homeWon?' bk-winner':isPast&&sc?' bk-loser':''}">
+      ${homeFlag}
+      <span class="bk-tname">${esc(home)}</span>
+      ${sc ? `<span class="bk-score">${sc.home}</span>` : ''}
+      ${homeWon ? `<span class="bk-adv-badge">→ R16</span>` : ''}
+    </div>
+    <div style="border-top:1px solid var(--border2);margin:1px 0;"></div>
+    <div class="bk-team-row${awayWon?' bk-winner':isPast&&sc?' bk-loser':''}">
+      ${awayFlag}
+      <span class="bk-tname">${esc(away)}</span>
+      ${sc ? `<span class="bk-score">${sc.away}</span>` : ''}
+      ${awayWon ? `<span class="bk-adv-badge">→ R16</span>` : ''}
+    </div>
+  </div>
+  ${!sc ? `<div class="bk-kickoff">${fmtTime(sched.utc)}</div>` : `<div class="bk-kickoff" style="color:var(--txt3);font-size:10px">Click for fantasy points breakdown ▾</div>`}`;
+
+    if (isExp) {
+      const fbKeyRev = _buildFbKeyReverseMap();
+      html += `<div class="bk-bd-panel"><div class="bk-bd-hdr">Fantasy Points Breakdown</div>`;
+      if (res && res.teams) {
+        Object.entries(res.teams).forEach(([fbk, tRes]) => {
+          const tn  = fbKeyRev[fbk] || fbk;
+          const bd  = (tRes && tRes.breakdown) || [];
+          const pts = tRes ? tRes.fantasyPoints : null;
+          const adv = _advancementBonusesForTeam(tn);
+          const advLines = adv.bonuses.map(b => `<span style="color:var(--gold)">${esc(b)}</span>`).join('<br>');
+          html += `<div class="bk-bd-team">
+            ${fi(flagMap[tn]||'', 16, 11)} <strong>${esc(tn)}</strong>
+            <span class="bk-bd-total">${pts != null ? pts : '—'} match pts${adv.total>0?` <span style="color:var(--gold)">+${adv.total} bonus</span>`:''}</span>
+            ${bd.length ? `<div class="bk-bd-lines">${bd.map(esc).join('<br>')}${advLines?'<br>'+advLines:''}</div>` : (advLines?`<div class="bk-bd-lines">${advLines}</div>`:'')}
+          </div>`;
+        });
+      } else {
+        html += `<div style="font-size:12px;color:var(--txt3);padding:4px 0">No scoring data yet.</div>`;
+      }
+      html += `</div>`;
+    }
+
+    html += `</div>`;
+  }
+
+  html += `</div>`;
+  root.innerHTML = html;
 }
 
 function renderPrizesSection() {
@@ -4504,452 +4441,8 @@ function switchLeagueSub(id, btn) {
   document.getElementById('lsub-'+id).classList.add('active');
   if (btn) btn.classList.add('active');
   if (id === 'standings')    renderLeagueStandings();
-  if (id === 'countries')    renderCountryStandings();
   if (id === 'commissioner') renderCommissioner();
   if (id === 'draft' && D.phase === 'setup') renderDraft();
-}
-
-// ─── Country Standings ──────────────────────────────────────────────────────
-let _ctOpenSet  = new Set();
-let _ctSortMode = 'pts'; // 'pts' | 'rank' | 'group' | 'conf' | 'player'
-let _ctShowGP   = true;
-let _ctShowPA   = true;
-let _ctStatOpen = null;
-
-function setCtSort(mode)   { _ctSortMode = mode; renderCountryStandings(); }
-function toggleCtCol(col)  { if (col==='gp') _ctShowGP=!_ctShowGP; else _ctShowPA=!_ctShowPA; renderCountryStandings(); }
-function toggleCtTeam(name){ if (_ctOpenSet.has(name)) _ctOpenSet.delete(name); else _ctOpenSet.add(name); renderCountryStandings(); }
-function toggleCtMatch(key){ if (_mtMatchOpen.has(key)) _mtMatchOpen.delete(key); else _mtMatchOpen.add(key); renderCountryStandings(); }
-function toggleCtStat(key) { _ctStatOpen = (_ctStatOpen === key) ? null : key; renderCountryStandings(); }
-
-function _ctComputeStats() {
-  const results = LEAGUE.results || {};
-  const matches = [];
-  for (const [matchId, res] of Object.entries(results)) {
-    if (_leagueSkipMatchIds.has(matchId)) continue;
-    if (!res || !res.teams) continue;
-    const m = SCHEDULE.find(s => String(s.id) === String(matchId));
-    if (!m) continue;
-    const hKey = _fbKey(m.home), aKey = _fbKey(m.away);
-    const hRes = res.teams[hKey], aRes = res.teams[aKey];
-    if (!hRes || hRes.fantasyPoints == null || !aRes || aRes.fantasyPoints == null) continue;
-    const sc = _extractScore(res);
-    matches.push({ m, hPts: hRes.fantasyPoints, aPts: aRes.fantasyPoints,
-      hGoals: sc ? sc.home : null, aGoals: sc ? sc.away : null });
-  }
-  if (!matches.length) return null;
-
-  const allPts = matches.flatMap(x => [x.hPts, x.aPts]);
-  const totalPts = allPts.reduce((s,p) => s+p, 0);
-  const avgPts   = totalPts / allPts.length;
-
-  // Best single game — individual (one team) and combined (both teams in a match)
-  const allPerfs = matches.flatMap(x => [
-    { team:x.m.home, pts:x.hPts, opp:x.m.away },
-    { team:x.m.away, pts:x.aPts, opp:x.m.home },
-  ]);
-  const topGameVal = allPerfs.length ? Math.max(...allPerfs.map(p=>p.pts)) : 0;
-  const topGame    = { pts:topGameVal, perfs: allPerfs.filter(p=>p.pts===topGameVal) };
-
-  // Combined pts both teams
-  const allCombined = matches.map(x => ({ tot:x.hPts+x.aPts, home:x.m.home, hPts:x.hPts, away:x.m.away, aPts:x.aPts }));
-  const topCombinedVal = allCombined.length ? Math.max(...allCombined.map(c=>c.tot)) : 0;
-  const topCombined    = { pts:topCombinedVal, matches: allCombined.filter(c=>c.tot===topCombinedVal) };
-
-  // Per-team goals and pts
-  const teamGoals = {}, teamConceded = {}, teamCS = {};
-  matches.forEach(x => {
-    if (x.hGoals == null) return;
-    teamGoals[x.m.home]    = (teamGoals[x.m.home]||0)    + x.hGoals;
-    teamGoals[x.m.away]    = (teamGoals[x.m.away]||0)    + x.aGoals;
-    teamConceded[x.m.home] = (teamConceded[x.m.home]||0) + x.aGoals;
-    teamConceded[x.m.away] = (teamConceded[x.m.away]||0) + x.hGoals;
-    if (x.aGoals === 0) teamCS[x.m.home] = (teamCS[x.m.home]||0) + 1;
-    if (x.hGoals === 0) teamCS[x.m.away] = (teamCS[x.m.away]||0) + 1;
-  });
-  const _topVal = (map, dir=1) => {
-    const sorted = Object.entries(map).sort((a,b) => dir*(b[1]-a[1]));
-    if (!sorted.length) return { val:null, names:[] };
-    const best = sorted[0][1];
-    return { val:best, names: sorted.filter(e=>e[1]===best).map(e=>e[0]) };
-  };
-  const topScorer = _topVal(teamGoals);
-  const bestDef   = _topVal(teamConceded, -1);
-  const topCS     = _topVal(teamCS);
-
-  // Confederation totals
-  const confPts = {}, confGP = {};
-  matches.forEach(x => {
-    [[x.m.home, x.hPts],[x.m.away, x.aPts]].forEach(([t, p]) => {
-      const c = CONF_MAP[t]||'Other';
-      confPts[c] = (confPts[c]||0) + p;
-      confGP[c]  = (confGP[c]||0)  + 1;
-    });
-  });
-  const topConf = Object.entries(confPts)
-    .map(([c, p]) => [c, p, confGP[c], p/confGP[c]])
-    .sort((a,b) => b[3]-a[3])[0]; // sorted by avg pts/game
-
-  // Per-team avg pts/game
-  const teamPG = {}, teamGP2 = {};
-  matches.forEach(x => {
-    [[x.m.home, x.hPts],[x.m.away, x.aPts]].forEach(([t, p]) => {
-      teamPG[t]  = (teamPG[t]||0)  + p;
-      teamGP2[t] = (teamGP2[t]||0) + 1;
-    });
-  });
-  const avgEntries = Object.entries(teamPG).map(([t, p]) => [t, Math.round(p/teamGP2[t]*100)/100]);
-  const topAvgVal  = avgEntries.length ? Math.max(...avgEntries.map(e=>e[1])) : null;
-  const topAvg     = { val: topAvgVal, names: avgEntries.filter(e=>e[1]===topAvgVal).map(e=>e[0]) };
-
-  // Highest scoring single match (total goals) — collect ties
-  const goalMatches = matches.filter(x => x.hGoals != null)
-    .map(x => ({ tot:x.hGoals+x.aGoals, home:x.m.home, hG:x.hGoals, away:x.m.away, aG:x.aGoals }));
-  const maxGoals = goalMatches.length ? Math.max(...goalMatches.map(g=>g.tot)) : 0;
-  const highestGoalMatches = goalMatches.filter(g => g.tot === maxGoals);
-
-  // Biggest pts margin (dominance)
-  let bigMargin = null;
-  matches.forEach(x => {
-    const diff = Math.abs(x.hPts - x.aPts);
-    if (!bigMargin || diff > bigMargin.diff) {
-      const [winner, wPts, loser] = x.hPts > x.aPts
-        ? [x.m.home, x.hPts, x.m.away] : [x.m.away, x.aPts, x.m.home];
-      bigMargin = { diff, winner, wPts, loser };
-    }
-  });
-
-  // Underdog alert: team with worst FIFA rank that still earned most pts vs opponent
-  let bestUpset = null;
-  matches.forEach(x => {
-    const hRk = FIFA_RANKINGS[x.m.home]||99, aRk = FIFA_RANKINGS[x.m.away]||99;
-    const rkDiff = Math.abs(hRk - aRk);
-    if (rkDiff < 5) return;
-    const [underdog, udPts, fav, favPts] = hRk > aRk
-      ? [x.m.home, x.hPts, x.m.away, x.aPts] : [x.m.away, x.aPts, x.m.home, x.hPts];
-    if (udPts >= favPts) {
-      if (!bestUpset || rkDiff > bestUpset.rkDiff)
-        bestUpset = { underdog, udPts, fav, rkDiff };
-    }
-  });
-
-  return { totalPts, avgPts, topGame, topCombined, topScorer, bestDef, topCS, topConf, topAvg,
-           highestGoalMatches, bigMargin, bestUpset, gamesPlayed: matches.length,
-           matches, allPerfs, allCombined, teamGoals, teamConceded, teamCS, teamPG, teamGP2, confPts, confGP };
-}
-
-function _ctStatDetailHtml(key, stats) {
-  const flagFor = name => { const t = TEAMS.find(t=>t.name===name); return t ? fi(t.flag,14,10)+' ' : ''; };
-  const row = (rank, left, right) =>
-    `<div class="ct-stat-detail-row"><span class="ct-stat-detail-rank">${rank}</span><span style="flex:1;min-width:0">${left}</span><span class="ct-stat-detail-val">${right}</span></div>`;
-
-  switch(key) {
-    case 'avgGame': {
-      const sorted = Object.entries(stats.teamPG)
-        .map(([t,p]) => [t, Math.round(p/stats.teamGP2[t]*100)/100, stats.teamGP2[t]])
-        .sort((a,b) => b[1]-a[1]).slice(0,15);
-      return sorted.map(([t,avg,gp],i) => row(i+1,
-        `${flagFor(t)}${esc(t)} <span style="color:var(--txt3);font-size:11px">${gp}gp</span>`,
-        avg.toFixed(1))).join('');
-    }
-    case 'topGameIndiv': {
-      const sorted = [...stats.allPerfs].sort((a,b)=>b.pts-a.pts).slice(0,12);
-      return sorted.map((p,i) => row(i+1,
-        `${flagFor(p.team)}${esc(p.team)} <span style="color:var(--txt3);font-size:11px">vs ${esc(p.opp)}</span>`,
-        p.pts)).join('');
-    }
-    case 'topGameTotal': {
-      const sorted = [...stats.allCombined].sort((a,b)=>b.tot-a.tot).slice(0,10);
-      return sorted.map((c,i) => row(i+1,
-        `${esc(c.home)} <span style="color:var(--txt3);font-size:11px">${c.hPts}+${c.aPts}</span> ${esc(c.away)}`,
-        c.tot.toFixed(1))).join('');
-    }
-    case 'totalPts': {
-      const sorted = Object.entries(stats.confPts)
-        .map(([c,p]) => [c, p, stats.confGP[c]])
-        .sort((a,b) => b[1]-a[1]);
-      return sorted.map(([c,p,gp],i) => row(i+1,
-        `${esc(c)} <span style="color:var(--txt3);font-size:11px">${gp}gp</span>`,
-        p.toFixed(0))).join('');
-    }
-    case 'topScorer': {
-      const sorted = Object.entries(stats.teamGoals).sort((a,b)=>b[1]-a[1]).slice(0,15);
-      return sorted.map(([t,g],i) => row(i+1, `${flagFor(t)}${esc(t)}`, g)).join('');
-    }
-    case 'cleanSheets': {
-      const sorted = Object.entries(stats.teamCS).sort((a,b)=>b[1]-a[1]).slice(0,15);
-      return sorted.map(([t,cs],i) => row(i+1, `${flagFor(t)}${esc(t)}`, cs)).join('');
-    }
-    case 'bestConfed': {
-      const sorted = Object.entries(stats.confPts)
-        .map(([c,p]) => [c, p, stats.confGP[c], Math.round(p/stats.confGP[c]*100)/100])
-        .sort((a,b) => b[3]-a[3]);
-      return sorted.map(([c,p,gp,avg],i) => row(i+1,
-        `${esc(c)} <span style="color:var(--txt3);font-size:11px">${p.toFixed(0)} total · ${gp}gp</span>`,
-        avg.toFixed(1))).join('');
-    }
-    case 'bigMargin': {
-      const margins = stats.matches.map(x => {
-        const diff = Math.abs(x.hPts - x.aPts);
-        const [winner, wPts, loser] = x.hPts > x.aPts
-          ? [x.m.home, x.hPts, x.m.away] : [x.m.away, x.aPts, x.m.home];
-        return { diff, winner, wPts, loser };
-      }).sort((a,b) => b.diff-a.diff).slice(0,10);
-      return margins.map((mg,i) => row(i+1,
-        `${flagFor(mg.winner)}${esc(mg.winner)} <span style="color:var(--txt3);font-size:11px">vs ${esc(mg.loser)}</span>`,
-        `+${mg.diff.toFixed(1)}`)).join('');
-    }
-    case 'highestScoring': {
-      const sorted = stats.matches
-        .filter(x => x.hGoals != null)
-        .map(x => ({ tot:x.hGoals+x.aGoals, home:x.m.home, hG:x.hGoals, away:x.m.away, aG:x.aGoals }))
-        .sort((a,b) => b.tot-a.tot).slice(0,10);
-      return sorted.map((g,i) => row(i+1,
-        `${esc(g.home)} ${g.hG}–${g.aG} ${esc(g.away)}`,
-        g.tot + ' gls')).join('');
-    }
-    case 'fewestConceded': {
-      const sorted = Object.entries(stats.teamConceded).sort((a,b)=>a[1]-b[1]).slice(0,15);
-      return sorted.map(([t,c],i) => row(i+1, `${flagFor(t)}${esc(t)}`, c)).join('');
-    }
-    case 'bestUpset': {
-      const upsets = stats.matches.map(x => {
-        const hRk = FIFA_RANKINGS[x.m.home]||99, aRk = FIFA_RANKINGS[x.m.away]||99;
-        const rkDiff = Math.abs(hRk-aRk);
-        if (rkDiff < 5) return null;
-        const [underdog, udPts, fav] = hRk > aRk
-          ? [x.m.home, x.hPts, x.m.away] : [x.m.away, x.aPts, x.m.home];
-        const favPts = hRk > aRk ? x.aPts : x.hPts;
-        if (udPts < favPts) return null;
-        return { underdog, udPts, fav, rkDiff };
-      }).filter(Boolean).sort((a,b)=>b.rkDiff-a.rkDiff).slice(0,8);
-      if (!upsets.length) return `<div style="padding:8px;text-align:center;color:var(--txt3);font-size:11px">No upsets yet</div>`;
-      return upsets.map((u,i) => row(i+1,
-        `${flagFor(u.underdog)}${esc(u.underdog)} <span style="color:var(--txt3);font-size:11px">over ${esc(u.fav)} · Δ${u.rkDiff}rk</span>`,
-        u.udPts)).join('');
-    }
-    default: return '';
-  }
-}
-
-function _ctStatsHtml(stats) {
-  if (!stats || !stats.gamesPlayed) return '';
-
-  // Format a list of tied names: "A", "A & B", "A, B +2"
-  const tieNames = (names) => {
-    if (!names || !names.length) return '—';
-    if (names.length === 1) return esc(names[0]);
-    if (names.length === 2) return `${esc(names[0])} & ${esc(names[1])}`;
-    return `${esc(names[0])}, ${esc(names[1])} <span style="color:var(--txt3)">+${names.length-2}</span>`;
-  };
-  // For multiple tied matches, show first + count
-  const tieMatches = (arr, fmt) => {
-    if (!arr || !arr.length) return '—';
-    const first = fmt(arr[0]);
-    if (arr.length === 1) return first;
-    return `${first} <span style="color:var(--txt3)">+${arr.length-1} more</span>`;
-  };
-
-  const card = (icon, val, label, sub, key) =>
-    `<div class="ct-stat-card${key && _ctStatOpen===key?' active':''}" onclick="toggleCtStat('${key}')"><div class="ct-stat-icon">${icon}</div><div class="ct-stat-val">${val}</div><div class="ct-stat-label">${label}</div>${sub?`<div class="ct-stat-sub">${sub}</div>`:''}</div>`;
-
-  const hgm = stats.highestGoalMatches;
-  const DETAIL_TITLES = {
-    avgGame:'All Teams — Pts/Game', topGameIndiv:'Top Individual Performances',
-    topGameTotal:'Highest Combined Matches', totalPts:'Points by Confederation',
-    topScorer:'Goals Scored', cleanSheets:'Clean Sheets', bestConfed:'Confederations (Avg Pts)',
-    bestAvg:'All Teams — Pts/Game', bigMargin:'Biggest Margins', highestScoring:'Highest Scoring Matches',
-    fewestConceded:'Fewest Goals Conceded', bestUpset:'Biggest Upsets',
-  };
-  const cards = [
-    card('📊', stats.avgPts.toFixed(1), 'Avg Pts / Game',
-      `${stats.gamesPlayed} matches played`, 'avgGame'),
-    card('🔥', stats.topGame.pts || '—', 'Best Game (Indiv)',
-      tieMatches(stats.topGame.perfs, p => `${esc(p.team)} vs ${esc(p.opp)}`), 'topGameIndiv'),
-    card('💫', stats.topCombined.pts || '—', 'Best Game (Total)',
-      tieMatches(stats.topCombined.matches, c => `${esc(c.home)} ${c.hPts}+${c.aPts} ${esc(c.away)}`), 'topGameTotal'),
-    card('🏆', stats.totalPts.toFixed(0), 'Total Pts in Play',
-      `across all matches`, 'totalPts'),
-    card('⚽', stats.topScorer.val ?? '—', 'Most Goals',
-      tieNames(stats.topScorer.names), 'topScorer'),
-    card('🛡️', stats.topCS.val ?? '—', 'Clean Sheets',
-      tieNames(stats.topCS.names), 'cleanSheets'),
-    card('🌍', stats.topConf ? stats.topConf[0] : '—', 'Best Confed. Avg',
-      stats.topConf ? `${stats.topConf[3].toFixed(1)} pts/gm` : '', 'bestConfed'),
-    card('📈', stats.topAvg.val != null ? stats.topAvg.val.toFixed(1) : '—', 'Best Pts Avg',
-      tieNames(stats.topAvg.names), 'avgGame'),
-    card('💥', stats.bigMargin ? `+${stats.bigMargin.diff.toFixed(1)}` : '—', 'Biggest Margin',
-      stats.bigMargin ? `${esc(stats.bigMargin.winner)} vs ${esc(stats.bigMargin.loser)}` : '', 'bigMargin'),
-    card('🎯', hgm && hgm.length ? hgm[0].tot : '—', 'Highest Scoring',
-      tieMatches(hgm, g => `${esc(g.home)} ${g.hG}–${g.aG} ${esc(g.away)}`), 'highestScoring'),
-    card('😤', stats.bestDef.val ?? '—', 'Fewest Conceded',
-      tieNames(stats.bestDef.names), 'fewestConceded'),
-    stats.bestUpset
-      ? card('🐴', `${stats.bestUpset.rkDiff} rnks`, 'Biggest Upset',
-          `${esc(stats.bestUpset.underdog)} over ${esc(stats.bestUpset.fav)}`, 'bestUpset')
-      : card('🐴', '—', 'Biggest Upset', 'none yet', 'bestUpset'),
-  ].join('');
-
-  const detailPanel = _ctStatOpen
-    ? `<div class="ct-stat-detail">
-        <div class="ct-stat-detail-hdr">
-          <span>${DETAIL_TITLES[_ctStatOpen] || _ctStatOpen}</span>
-          <span style="cursor:pointer;color:var(--txt3);font-size:14px;font-weight:400" onclick="toggleCtStat('${_ctStatOpen}')">✕</span>
-        </div>
-        <div class="ct-stat-detail-list">${_ctStatDetailHtml(_ctStatOpen, stats)}</div>
-      </div>`
-    : '';
-
-  return `<div class="ct-stats-wrap"><div class="ct-stats-title">Tournament Stats <span style="font-size:9px;font-weight:400;color:var(--txt3);letter-spacing:0;text-transform:none">— tap a card for details</span></div><div class="ct-stats-bar">${cards}</div>${detailPanel}</div>`;
-}
-
-function _ctTeamStats(teamName) {
-  const results = LEAGUE.results || {};
-  let pf = 0, pa = 0, gp = 0;
-  for (const [matchId, res] of Object.entries(results)) {
-    if (_leagueSkipMatchIds.has(matchId)) continue;
-    if (!res || !res.teams) continue;
-    const tKey = _fbKey(teamName);
-    const tRes = res.teams[tKey];
-    if (!tRes || tRes.fantasyPoints == null) continue;
-    gp++;
-    pf += tRes.fantasyPoints;
-    for (const [k, v] of Object.entries(res.teams)) {
-      if (k !== tKey && v && v.fantasyPoints != null) pa += v.fantasyPoints;
-    }
-  }
-  return { pts: Math.round(pf*100)/100, pa: Math.round(pa*100)/100, gp };
-}
-
-function renderCountryStandings() {
-  const root = document.getElementById('country-root');
-  if (!root) return;
-
-  if (D.phase !== 'done') {
-    root.innerHTML = `<div class="ph-wrap" style="min-height:200px">
-      <div class="ph-icon" style="font-size:32px;opacity:0.3">🌍</div>
-      <div class="ph-title">Country standings available after draft</div>
-    </div>`;
-    return;
-  }
-
-  const flagMap  = _mcTeamFlagMap();
-  const ownerMap = _mcTeamOwnerMap();
-
-  const allData = TEAMS.map(t => {
-    const { pts, pa, gp } = _ctTeamStats(t.name);
-    const ownerIdx  = ownerMap[t.name];
-    const owner     = (ownerIdx != null) ? D.players[ownerIdx] : null;
-    const ownerCol  = owner ? (owner.playerColor || owner.color || P_COLORS[ownerIdx % P_COLORS.length]) : null;
-    const ownerName = owner ? (owner.name || ('Player ' + (ownerIdx + 1))) : null;
-    const conf      = CONF_MAP[t.name] || 'Other';
-    const fifaRk    = FIFA_RANKINGS[t.name] || 999;
-    return { t, pts, pa, gp, ownerIdx, ownerCol, ownerName, conf, fifaRk };
-  });
-
-  // Global pts rank (always 1–48 by fantasy pts, used in all sort modes)
-  const globalRank = {};
-  [...allData].sort((a,b) => b.pts!==a.pts ? b.pts-a.pts : a.t.name.localeCompare(b.t.name))
-    .forEach((d,i) => { globalRank[d.t.name] = i+1; });
-
-  // Build ordered items list
-  const items = [];
-  if (_ctSortMode === 'pts') {
-    [...allData].sort((a,b) => b.pts!==a.pts ? b.pts-a.pts : a.t.name.localeCompare(b.t.name))
-      .forEach(d => items.push({type:'team', data:d, rank:globalRank[d.t.name]}));
-
-  } else if (_ctSortMode === 'rank') {
-    [...allData].sort((a,b) => a.fifaRk - b.fifaRk)
-      .forEach(d => items.push({type:'team', data:d, rank:globalRank[d.t.name]}));
-
-  } else if (_ctSortMode === 'group') {
-    Object.keys(GROUPS).forEach(g => {
-      items.push({type:'hdr', label:`Group ${g}`});
-      allData.filter(d=>d.t.group===g).sort((a,b)=>b.pts-a.pts)
-        .forEach(d => items.push({type:'team', data:d, rank:globalRank[d.t.name]}));
-    });
-
-  } else if (_ctSortMode === 'conf') {
-    CONF_ORDER.forEach(conf => {
-      const members = allData.filter(d=>d.conf===conf).sort((a,b)=>b.pts-a.pts);
-      if (!members.length) return;
-      items.push({type:'hdr', label:conf, accent:CONF_ACCENT[conf]});
-      members.forEach(d => items.push({type:'team', data:d, rank:globalRank[d.t.name]}));
-    });
-
-  } else { // player
-    const byOwner = {};
-    allData.forEach(d => {
-      const key = d.ownerIdx!=null ? String(d.ownerIdx) : '__';
-      if (!byOwner[key]) byOwner[key] = {ownerIdx:d.ownerIdx, ownerName:d.ownerName, ownerCol:d.ownerCol, teams:[]};
-      byOwner[key].teams.push(d);
-    });
-    Object.values(byOwner)
-      .sort((a,b) => b.teams.reduce((s,d)=>s+d.pts,0) - a.teams.reduce((s,d)=>s+d.pts,0))
-      .forEach(pg => {
-        const dot = pg.ownerCol ? `<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${pg.ownerCol};vertical-align:middle;margin-right:3px"></span>` : '';
-        items.push({type:'hdr', label:pg.ownerName||'Unowned', dotHtml:dot, accent:pg.ownerCol||null});
-        pg.teams.sort((a,b)=>b.pts-a.pts).forEach(d => items.push({type:'team', data:d, rank:globalRank[d.t.name]}));
-      });
-  }
-
-  // Column grid template (dynamic based on visible cols)
-  const gtc = `22px 1fr 22px${_ctShowGP?' 28px':''}${_ctShowPA?' 42px':''} 42px`;
-  const cs  = `grid-template-columns:${gtc}`;
-
-  const hdrHtml = `<div>#</div><div>Country</div><div style="text-align:center">G</div>${_ctShowGP?`<div style="text-align:center;font-size:8px">GP</div>`:``}${_ctShowPA?`<div style="text-align:right;font-size:8px">PA</div>`:``}<div style="text-align:right">Pts</div>`;
-
-  function rowHtml(d, rank) {
-    const {t, pts, pa, gp, ownerCol, ownerName} = d;
-    const isOpen  = _ctOpenSet.has(t.name);
-    const rkCls   = rank===1?'r1':rank===2?'r2':rank===3?'r3':'';
-    const escName = t.name.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
-    const fifaRk  = getFIFARanking(t.name);
-    const fifaHtml  = fifaRk!=='—' ? `<span>${rankOrdinal(fifaRk)}</span>` : '';
-    const ownHtml   = ownerName ? `<span class="ct-sub-owner">${esc(ownerName)}</span>` : '';
-    const sep       = (fifaHtml&&ownHtml) ? `<span style="opacity:0.35">·</span>` : '';
-    const subLine   = (fifaHtml||ownHtml) ? `<div class="ct-sub">${fifaHtml}${sep}${ownHtml}</div>` : '';
-    const dot       = ownerCol ? `<div class="ct-dot" style="background:${ownerCol}"></div>` : '';
-    const ptsHtml   = pts>0 ? `${pts}` : `<span style="color:var(--txt3)">—</span>`;
-    const gpCell    = _ctShowGP ? `<div style="font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;color:var(--txt2);text-align:center">${gp||`<span style="color:var(--txt3)">—</span>`}</div>` : '';
-    const paCell    = _ctShowPA ? `<div style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:600;color:var(--txt3);text-align:right">${gp>0?pa:`<span style="color:var(--txt3)">—</span>`}</div>` : '';
-    let h = `<div class="ct-row${isOpen?' open':''}" style="${cs}" onclick="toggleCtTeam('${escName}')">
-      <div class="ct-rk ${rkCls}">${rank}</div>
-      <div class="ct-team">${dot}${fi(t.flag,17,12)}<div class="ct-name-grp"><span class="ct-name">${esc(t.name)}</span>${subLine}</div></div>
-      <div class="ct-grp-badge">${t.group}</div>
-      ${gpCell}${paCell}<div class="ct-pts">${ptsHtml}</div>
-    </div>`;
-    if (isOpen) h += `<div class="ct-bd"><div class="ct-bd-inner">${_mtTeamMatchRowsHTML(t.name,flagMap,'toggleCtMatch')}</div></div>`;
-    return h;
-  }
-
-  const perCol = Math.ceil(items.length / 4);
-  const cols   = [[],[],[],[]];
-  items.forEach((item,i) => cols[Math.min(3, Math.floor(i/perCol))].push(item));
-
-  const gridHtml = cols.map(col => {
-    const rows = col.map(item => {
-      if (item.type === 'hdr') {
-        const border = item.accent ? `border-left:3px solid ${item.accent};padding-left:6px` : '';
-        return `<div class="ct-sec-hdr" style="${border}">${item.dotHtml||''}${esc(item.label)}</div>`;
-      }
-      return rowHtml(item.data, item.rank);
-    }).join('');
-    return `<div class="ct-col"><div class="ct-col-hdr" style="${cs}">${hdrHtml}</div>${rows}</div>`;
-  }).join('');
-
-  const sortBtns = [['pts','By Pts'],['rank','By FIFA Rank'],['group','By Group'],['conf','By Confed.'],['player','By Player']]
-    .map(([m,l]) => `<button class="ct-sort-btn${_ctSortMode===m?' active':''}" onclick="setCtSort('${m}')">${l}</button>`)
-    .join('');
-  const colBtns = `<button class="ct-col-btn${_ctShowGP?' active':''}" onclick="toggleCtCol('gp')">GP</button><button class="ct-col-btn${_ctShowPA?' active':''}" onclick="toggleCtCol('pa')">PA</button>`;
-
-  const statsHtml = _ctStatsHtml(_ctComputeStats());
-  root.innerHTML = `<div class="ct-controls"><div class="ct-sort-grp">${sortBtns}</div><div class="ct-col-grp">${colBtns}</div></div><div class="ct-grid">${gridHtml}</div>${statsHtml}`;
-
-  if (_ctStatOpen) {
-    const det = root.querySelector('.ct-stat-detail');
-    if (det) requestAnimationFrame(() => det.scrollIntoView({ behavior: 'smooth', block: 'nearest' }));
-  }
 }
 
 // ═══════════════════════════════════
@@ -4965,6 +4458,119 @@ function _fbKey(name) {
 function hexToAlpha(hex, a) {
   const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);
   return `rgba(${r},${g},${b},${a})`;
+}
+
+// ═══════════════════════════════════
+// KO HELPERS
+// ═══════════════════════════════════
+let _bracketExpandedSet = new Set();
+
+// ID → short round label
+function _matchIdToRoundLabel(id) {
+  if (id >= 73 && id <= 88)  return 'R32';
+  if (id >= 89 && id <= 96)  return 'R16';
+  if (id >= 97 && id <= 100) return 'QF';
+  if (id >= 101 && id <= 102) return 'SF';
+  if (id === 103) return '3rd';
+  if (id === 104) return 'Final';
+  return 'KO';
+}
+
+// fbKey(name) → name for all known teams
+function _buildFbKeyReverseMap() {
+  const map = {};
+  TEAMS.forEach(t => { map[_fbKey(t.name)] = t.name; });
+  return map;
+}
+
+// Returns all KO match results that contain this team
+function _koMatchesForTeam(teamName) {
+  const results = LEAGUE.results || {};
+  const fbk = _fbKey(teamName);
+  const fbKeyRev = _buildFbKeyReverseMap();
+  const out = [];
+  for (let id = 73; id <= 104; id++) {
+    const res = results[String(id)] || results[id];
+    if (!res || !res.teams || !res.teams[fbk]) continue;
+    const fbks = Object.keys(res.teams);
+    const oppFbk = fbks.find(k => k !== fbk) || '';
+    out.push({ id, res, oppName: fbKeyRev[oppFbk] || oppFbk, tRes: res.teams[fbk] });
+  }
+  return out.sort((a,b) => a.id - b.id);
+}
+
+// Computes Qualify/Win advancement bonuses (not written by scorer.py)
+function _advancementBonusesForTeam(teamName) {
+  const results = LEAGUE.results || {};
+  const fbk = _fbKey(teamName);
+  const bonuses = [];
+  let total = 0;
+
+  // Qualify for R32 (+5): appears in any R32 match result
+  for (let id = 73; id <= 88; id++) {
+    const res = results[String(id)] || results[id];
+    if (res && res.teams && res.teams[fbk] != null) {
+      bonuses.push('Qualify for R32 +5');
+      total += 5;
+      break;
+    }
+  }
+
+  const rounds = [
+    { ids: [73,88], label: 'Win R32 +8',  pts: 8  },
+    { ids: [89,96], label: 'Win R16 +12', pts: 12 },
+    { ids: [97,100],label: 'Win QF +18',  pts: 18 },
+    { ids: [101,102],label:'Win SF +25',  pts: 25 },
+    { ids: [104,104],label:'Champion +35',pts: 35 },
+  ];
+
+  for (const rnd of rounds) {
+    for (let id = rnd.ids[0]; id <= rnd.ids[1]; id++) {
+      const res = results[String(id)] || results[id];
+      if (!res || !res.teams || !res.teams[fbk]) continue;
+      const isFinished = !res.live && (res.homeScore != null || (res.finalScore && res.finalScore.home != null));
+      if (!isFinished) continue;
+      const bd = (res.teams[fbk].breakdown) || [];
+      if (bd.some(s => s.startsWith('Win'))) {
+        bonuses.push(rnd.label);
+        total += rnd.pts;
+      }
+    }
+  }
+  return { total, bonuses };
+}
+
+// Resolve TBD home/away for a KO match from Firebase results or registry
+function _resolveKOMatchTeams(schedMatch) {
+  if (schedMatch.home !== 'TBD' && schedMatch.away !== 'TBD') {
+    return { home: schedMatch.home, away: schedMatch.away };
+  }
+  const results = LEAGUE.results || {};
+  const fbKeyRev = _buildFbKeyReverseMap();
+
+  // Try result (match already scored)
+  const res = results[String(schedMatch.id)] || results[schedMatch.id];
+  if (res && res.teams) {
+    const fbks = Object.keys(res.teams);
+    if (fbks.length >= 2) {
+      return { home: fbKeyRev[fbks[0]] || fbks[0], away: fbKeyRev[fbks[1]] || fbks[1] };
+    }
+  }
+
+  // Try registry (match assigned but not yet played)
+  const registry = results['_ko_registry'] || {};
+  for (const [key, matchId] of Object.entries(registry)) {
+    if (matchId === schedMatch.id) {
+      const mid = key.indexOf('_vs_');
+      if (mid > -1) {
+        return {
+          home: fbKeyRev[key.slice(0, mid)] || key.slice(0, mid),
+          away: fbKeyRev[key.slice(mid + 4)] || key.slice(mid + 4)
+        };
+      }
+    }
+  }
+  return { home: schedMatch.home, away: schedMatch.away };
 }
 
 // ═══════════════════════════════════
@@ -5062,10 +4668,8 @@ function renderMatchCenter() {
 
   const toLocalDateStr = utc => new Intl.DateTimeFormat('en-CA', {timeZone: tz}).format(new Date(utc));
 
-  // Build sorted list of unique match days
-  const allDays = [...new Set(
-    SCHEDULE.filter(m => m.home !== 'TBD' && m.away !== 'TBD').map(m => toLocalDateStr(m.utc))
-  )].sort();
+  // Build sorted list of unique match days (include KO matches)
+  const allDays = [...new Set(SCHEDULE.map(m => toLocalDateStr(m.utc)))].sort();
 
   if (!allDays.length) {
     root.innerHTML = `<div class="mc-main-card" style="text-align:center;padding:48px 24px">
@@ -5087,7 +4691,7 @@ function renderMatchCenter() {
   const selIdx  = Math.max(0, Math.min(allDays.length - 1, autoIdx + _mcDayOffset));
   const selDay  = allDays[selIdx];
 
-  const dayMatches = SCHEDULE.filter(m => m.home !== 'TBD' && m.away !== 'TBD' && toLocalDateStr(m.utc) === selDay)
+  const dayMatches = SCHEDULE.filter(m => toLocalDateStr(m.utc) === selDay)
     .sort((a,b) => new Date(a.utc) - new Date(b.utc));
 
   const fmtDateHdr = new Intl.DateTimeFormat('en-US', {weekday:'short', month:'short', day:'numeric', timeZone:tz})
@@ -5125,6 +4729,11 @@ function renderMatchCenter() {
     const isPast = t + LIVE_WIN <= now;
     const res = (LEAGUE.results || {})[m.id] || (LEAGUE.results || {})[String(m.id)];
 
+    // Resolve actual team names (handles KO TBD)
+    const resolved = _resolveKOMatchTeams(m);
+    const homeTeam = resolved.home;
+    const awayTeam = resolved.away;
+
     // Center block: score or kick-off time
     let scoreContent;
     if (isLive) {
@@ -5144,11 +4753,11 @@ function renderMatchCenter() {
     // Fantasy pts row
     let ptsRow = '';
     if (res && res.teams) {
-      const hPts = (res.teams[_fbKey(m.home)]||{}).fantasyPoints;
-      const aPts = (res.teams[_fbKey(m.away)]||{}).fantasyPoints;
+      const hPts = (res.teams[_fbKey(homeTeam)]||{}).fantasyPoints;
+      const aPts = (res.teams[_fbKey(awayTeam)]||{}).fantasyPoints;
       if (hPts != null || aPts != null) {
-        const hBd = ((res.teams[_fbKey(m.home)]||{}).breakdown||[]);
-        const aBd = ((res.teams[_fbKey(m.away)]||{}).breakdown||[]);
+        const hBd = ((res.teams[_fbKey(homeTeam)]||{}).breakdown||[]);
+        const aBd = ((res.teams[_fbKey(awayTeam)]||{}).breakdown||[]);
         ptsRow = `<div style="display:grid;grid-template-columns:1fr auto 1fr;align-items:start;gap:8px;padding:10px 14px;background:var(--bg-alt);border-top:1px solid var(--border2)">
           <div style="text-align:right">
             <span style="font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:900;color:var(--blue)">${hPts != null ? hPts+' pts' : '—'}</span>
@@ -5169,11 +4778,6 @@ function renderMatchCenter() {
       : '';
 
     const liveStyle = isLive ? 'border-color:rgba(220,60,60,0.35);' : '';
-    const mcHomeRk = getFIFARanking(m.home);
-    const mcAwayRk = getFIFARanking(m.away);
-    const mcHomeRkBadge = mcHomeRk !== '—' ? `<div class="mc-fifa-rk">${rankOrdinal(mcHomeRk)} FIFA</div>` : '';
-    const mcAwayRkBadge = mcAwayRk !== '—' ? `<div class="mc-fifa-rk">${rankOrdinal(mcAwayRk)} FIFA</div>` : '';
-
     html += `<div class="mc-main-card" style="${liveStyle}padding:0;overflow:hidden">
   <div class="mc-card-hdr">
     ${isLive ? `<span class="mc-live-badge">● LIVE</span>` : ''}
@@ -5182,17 +4786,15 @@ function renderMatchCenter() {
   </div>
   <div class="mc-matchup-row" style="padding:12px 10px">
     <div class="mc-team-block">
-      <div>${fi(flagMap[m.home]||'', 36, 25)}</div>
-      <div class="mc-team-name">${esc(m.home)}</div>
-      ${mcHomeRkBadge}
-      ${ownerBadge(m.home)}
+      <div>${fi(flagMap[homeTeam]||'', 36, 25)}</div>
+      <div class="mc-team-name">${esc(homeTeam)}</div>
+      ${ownerBadge(homeTeam)}
     </div>
     <div class="mc-center-block">${scoreContent}</div>
     <div class="mc-team-block">
-      <div>${fi(flagMap[m.away]||'', 36, 25)}</div>
-      <div class="mc-team-name">${esc(m.away)}</div>
-      ${mcAwayRkBadge}
-      ${ownerBadge(m.away)}
+      <div>${fi(flagMap[awayTeam]||'', 36, 25)}</div>
+      <div class="mc-team-name">${esc(awayTeam)}</div>
+      ${ownerBadge(awayTeam)}
     </div>
   </div>
   ${ptsRow}${statsRow}
@@ -5329,17 +4931,18 @@ function renderSchedule() {
         lastDate = dateStr;
       }
       const past = isPast(m.utc);
-      let mHome=m.home, mAway=m.away;
-      if((mHome==='TBD'||mAway==='TBD')&&m.id>=73){const kt=_resolveKOTeams(m.id);if(kt){mHome=kt.home||mHome;mAway=kt.away||mAway;}}
-      const homeTeam = TEAMS.find(t=>t.name===mHome);
-      const awayTeam = TEAMS.find(t=>t.name===mAway);
+      const resolved = _resolveKOMatchTeams(m);
+      const homeName = resolved.home;
+      const awayName = resolved.away;
+      const homeTeam = TEAMS.find(t=>t.name===homeName);
+      const awayTeam = TEAMS.find(t=>t.name===awayName);
       const homeFlag = homeTeam ? fi(homeTeam.flag,20,14) : '';
       const awayFlag = awayTeam ? fi(awayTeam.flag,20,14) : '';
       const cc = m.country==='Mexico'?'mexico':m.country==='USA'?'usa':'canada';
 
       // Owner badges (only when draft done)
-      const homeOwner = draftDone ? _schedOwnerBadge(mHome, ownerMap) : '';
-      const awayOwner = draftDone ? _schedOwnerBadge(mAway, ownerMap) : '';
+      const homeOwner = draftDone ? _schedOwnerBadge(homeName, ownerMap) : '';
+      const awayOwner = draftDone ? _schedOwnerBadge(awayName, ownerMap) : '';
 
       // Score or time
       const res = (LEAGUE.results || {})[m.id];
@@ -5357,20 +4960,15 @@ function renderSchedule() {
         scoreBlock = `<span class="sched-vs">VS</span><span class="sched-time">${fmtTime(m.utc)}</span>`;
       }
 
-      const homeRk = getFIFARanking(mHome);
-      const awayRk = getFIFARanking(mAway);
-      const homeRkBadge = homeRk !== '—' ? `<span class="sched-fifa-rk">${rankOrdinal(homeRk)}</span>` : '';
-      const awayRkBadge = awayRk !== '—' ? `<span class="sched-fifa-rk">${rankOrdinal(awayRk)}</span>` : '';
-
-      html += `<div class="sched-match${past?' past':''}" data-match-id="${m.id}">
+      html += `<div class="sched-match${past?' past':''}">
         <span class="sched-num">#${m.id}</span>
         <div class="sched-home">
-          <div class="sched-team-row">${homeFlag}<span class="sched-tname">${esc(mHome)}</span>${homeRkBadge}</div>
+          <div class="sched-team-row">${homeFlag}<span class="sched-tname">${esc(homeName)}</span></div>
           ${homeOwner}
         </div>
         ${scoreBlock}
         <div class="sched-away">
-          <div class="sched-team-row">${awayRkBadge}<span class="sched-tname">${esc(mAway)}</span>${awayFlag}</div>
+          <div class="sched-team-row"><span class="sched-tname">${esc(awayName)}</span>${awayFlag}</div>
           ${awayOwner}
         </div>
         ${!past ? `<span class="sched-venue">${esc(m.venue)}</span>` : ''}
@@ -5387,12 +4985,6 @@ function renderSchedule() {
 
   if (!filtered.length) html += `<div style="padding:40px;text-align:center;color:var(--txt3)">No matches found.</div>`;
   root.innerHTML = html;
-
-  // Scroll the first non-past match into view
-  const firstUpcoming = root.querySelector('.sched-match:not(.past)');
-  if (firstUpcoming) {
-    requestAnimationFrame(() => firstUpcoming.scrollIntoView({ behavior: 'smooth', block: 'start' }));
-  }
 }
 
 // ═══════════════════════════════════
@@ -5501,53 +5093,6 @@ const FB_CONFIG = {
 };
 
 let _fbDb = null, _fbLeagueRef = null, _fbResultsRef = null, _fbSyncTimer = null;
-let _lastResults = null; // cache of last /results snapshot so league loads don't wipe scores
-let _leagueSkipMatchIds = new Set(); // match IDs to skip for current league (skipFirstGame config)
-let _livePollingInterval = null;
-
-function _hasLiveMatch() {
-  const now = Date.now();
-  const LIVE_WIN = 115 * 60 * 1000;
-  return SCHEDULE.some(m => { const t = new Date(m.utc).getTime(); return t <= now && now < t + LIVE_WIN; });
-}
-
-function _startLivePolling() {
-  _stopLivePolling();
-  if (!_fbResultsRef) return;
-  _livePollingInterval = setInterval(() => {
-    if (!_hasLiveMatch()) { _stopLivePolling(); return; }
-    _fbResultsRef.once('value', snap => {
-      const raw = snap.val() || {};
-      const results = {};
-      for (const [k, v] of Object.entries(raw)) { if (k !== '_ts' && v) results[k] = v; }
-      _lastResults = results;
-      LEAGUE.results = results;
-      renderAll();
-    });
-  }, 5 * 60 * 1000); // every 5 minutes
-}
-
-function _stopLivePolling() {
-  if (_livePollingInterval) { clearInterval(_livePollingInterval); _livePollingInterval = null; }
-}
-
-// Returns result for matchId, or null if the league config says to skip it.
-function _getRes(results, matchId) {
-  if (_leagueSkipMatchIds.has(String(matchId))) return null;
-  return results[String(matchId)] || results[matchId];
-}
-
-function _loadLeagueConfig(code) {
-  _leagueSkipMatchIds = new Set();
-  if (!_fbDb || !code) return;
-  _fbDb.ref('leagues/' + code + '/skipFirstGame').once('value', snap => {
-    if (snap.val() === true) {
-      // MD1 = match IDs 1–24 (first game for every team)
-      for (let i = 1; i <= 24; i++) _leagueSkipMatchIds.add(String(i));
-    }
-    renderAll();
-  });
-}
 
 function initFirebase() {
   try {
@@ -5569,18 +5114,13 @@ function connectFirebaseResults() {
     for (const [k, v] of Object.entries(raw)) {
       if (k !== '_ts' && v) results[k] = v;
     }
-    _lastResults = results;
     LEAGUE.results = results;
     renderAll();
-    if (_hasLiveMatch()) _startLivePolling();
-  }, err => console.warn('Firebase /results read denied:', err));
-  // Kick off polling immediately if a live match is already in progress
-  if (_hasLiveMatch()) _startLivePolling();
+  });
 }
 
 function connectFirebaseLeague(code) {
   if (!_fbDb || !code) return;
-  _loadLeagueConfig(code);
   if (_fbLeagueRef) _fbLeagueRef.off();
   _fbLeagueRef = _fbDb.ref('leagues/' + code + '/data');
   let _firstRead = true;
@@ -5795,12 +5335,9 @@ async function userLogin(username, password) {
   try {
     const users = await new Promise(resolve => {
       if (!_fbDb) return resolve([]);
-      _fbDb.ref(USERS_DB).once('value',
-        snap => resolve(snap.val() ? Object.values(snap.val()) : []),
-        err  => { console.error('Users read denied:', err); resolve(null); });
+      _fbDb.ref(USERS_DB).once('value', snap => resolve(snap.val() ? Object.values(snap.val()) : []));
     });
 
-    if (users === null) return {ok: false, msg: 'Cannot reach user database — check Firebase rules'};
     const user = users.find(u => u.username === username);
     if (!user) return {ok: false, msg: 'Username not found'};
 
@@ -6332,11 +5869,11 @@ function renderUserAuth() {
       <div class="cj-title">⚽ Login</div>
       <div class="cj-field">
         <div class="cj-lbl">Username</div>
-        <input class="cj-inp" id="ua-login-username" type="text" placeholder="Enter username" onkeydown="if(event.key==='Enter')document.getElementById('ua-login-password').focus()">
+        <input class="cj-inp" id="ua-login-username" type="text" placeholder="Enter username">
       </div>
       <div class="cj-field">
         <div class="cj-lbl">Password</div>
-        <input class="cj-inp" id="ua-login-password" type="password" placeholder="Enter password" onkeydown="if(event.key==='Enter')uaHandleLogin()">
+        <input class="cj-inp" id="ua-login-password" type="password" placeholder="Enter password">
       </div>
       <div class="cj-err" id="ua-err" style="font-size:12px;color:var(--red);margin:8px 0;min-height:18px"></div>
       <button class="cj-submit-btn" id="ua-login-btn" onclick="uaHandleLogin()">Login</button>
@@ -6660,380 +6197,6 @@ renderStandings();
 startCountdown();
 startDraftCountdown();
 setTimeout(showOnboarding, 1500);
-
-// ── 3rd Place tab — Annex C lookup + Monte Carlo ────────────────────────────
-// Compact lookup: 8-char sorted combo → 8-char assignment (slots A,B,D,E,G,I,K,L)
-const R32_LOOKUP={ABCDEFGH:"HGBCAFDE",ABCDEFGI:"CGBDAFEI",ABCDEFGJ:"CGBDAFEJ",ABCDEFGK:"CGBDAFEK",ABCDEFGL:"CGBDAFLE",ABCDEFHI:"HEBCAFDI",ABCDEFHJ:"HJBCAFDE",ABCDEFHK:"HEBCAFDK",ABCDEFHL:"HFBCADLE",ABCDEFIJ:"CJBDAFEI",ABCDEFIK:"CEBDAFIK",ABCDEFIL:"CEBDAFLI",ABCDEFJK:"CJBDAFEK",ABCDEFJL:"CJBDAFLE",ABCDEFKL:"CEBDAFLK",ABCDEGHI:"HGBCADEI",ABCDEGHJ:"HGBCADEJ",ABCDEGHK:"HGBCADEK",ABCDEGHL:"HGBCADLE",ABCDEGIJ:"EGBCADIJ",ABCDEGIK:"EGBCADIK",ABCDEGIL:"EGBCADLI",ABCDEGJK:"EGBCADJK",ABCDEGJL:"EGBCADLJ",ABCDEGKL:"EGBCADLK",ABCDEHIJ:"HJBCADEI",ABCDEHIK:"HEBCADIK",ABCDEHIL:"HEBCADLI",ABCDEHJK:"HJBCADEK",ABCDEHJL:"HJBCADLE",ABCDEHKL:"HEBCADLK",ABCDEIJK:"EJBCADIK",ABCDEIJL:"EJBCADLI",ABCDEIKL:"EIBCADLK",ABCDEJKL:"EJBCADLK",ABCDFGHI:"HGBCAFDI",ABCDFGHJ:"HGBCAFDJ",ABCDFGHK:"HGBCAFDK",ABCDFGHL:"CGBDAFLH",ABCDFGIJ:"CGBDAFIJ",ABCDFGIK:"CGBDAFIK",ABCDFGIL:"CGBDAFLI",ABCDFGJK:"CGBDAFJK",ABCDFGJL:"CGBDAFLJ",ABCDFGKL:"CGBDAFLK",ABCDFHIJ:"HJBCAFDI",ABCDFHIK:"HFBCADIK",ABCDFHIL:"HFBCADLI",ABCDFHJK:"HJBCAFDK",ABCDFHJL:"CJBDAFLH",ABCDFHKL:"HFBCADLK",ABCDFIJK:"CJBDAFIK",ABCDFIJL:"CJBDAFLI",ABCDFIKL:"CIBDAFLK",ABCDFJKL:"CJBDAFLK",ABCDGHIJ:"HGBCADIJ",ABCDGHIK:"HGBCADIK",ABCDGHIL:"HGBCADLI",ABCDGHJK:"HGBCADJK",ABCDGHJL:"HGBCADLJ",ABCDGHKL:"HGBCADLK",ABCDGIJK:"CJBDAGIK",ABCDGIJL:"CJBDAGLI",ABCDGIKL:"IGBCADLK",ABCDGJKL:"CJBDAGLK",ABCDHIJK:"HJBCADIK",ABCDHIJL:"HJBCADLI",ABCDHIKL:"HIBCADLK",ABCDHJKL:"HJBCADLK",ABCDIJKL:"IJBCADLK",ABCEFGHI:"HGBCAFEI",ABCEFGHJ:"HGBCAFEJ",ABCEFGHK:"HGBCAFEK",ABCEFGHL:"HGBCAFLE",ABCEFGIJ:"EGBCAFIJ",ABCEFGIK:"EGBCAFIK",ABCEFGIL:"EGBCAFLI",ABCEFGJK:"EGBCAFJK",ABCEFGJL:"EGBCAFLJ",ABCEFGKL:"EGBCAFLK",ABCEFHIJ:"HJBCAFEI",ABCEFHIK:"HEBCAFIK",ABCEFHIL:"HEBCAFLI",ABCEFHJK:"HJBCAFEK",ABCEFHJL:"HJBCAFLE",ABCEFHKL:"HEBCAFLK",ABCEFIJK:"EJBCAFIK",ABCEFIJL:"EJBCAFLI",ABCEFIKL:"EIBCAFLK",ABCEFJKL:"EJBCAFLK",ABCEGHIJ:"HJBCAGEI",ABCEGHIK:"EGBCAHIK",ABCEGHIL:"EGBCAHLI",ABCEGHJK:"HJBCAGEK",ABCEGHJL:"HJBCAGLE",ABCEGHKL:"EGBCAHLK",ABCEGIJK:"EJBCAGIK",ABCEGIJL:"EJBCAGLI",ABCEGIKL:"EGBAICLK",ABCEGJKL:"EJBCAGLK",ABCEHIJK:"EJBCAHIK",ABCEHIJL:"EJBCAHLI",ABCEHIKL:"EIBCAHLK",ABCEHJKL:"EJBCAHLK",ABCEIJKL:"EJBAICLK",ABCFGHIJ:"HGBCAFIJ",ABCFGHIK:"HGBCAFIK",ABCFGHIL:"HGBCAFLI",ABCFGHJK:"HGBCAFJK",ABCFGHJL:"HGBCAFLJ",ABCFGHKL:"HGBCAFLK",ABCFGIJK:"CJBFAGIK",ABCFGIJL:"CJBFAGLI",ABCFGIKL:"IGBCAFLK",ABCFGJKL:"CJBFAGLK",ABCFHIJK:"HJBCAFIK",ABCFHIJL:"HJBCAFLI",ABCFHIKL:"HIBCAFLK",ABCFHJKL:"HJBCAFLK",ABCFIJKL:"IJBCAFLK",ABCGHIJK:"HJBCAGIK",ABCGHIJL:"HJBCAGLI",ABCGHIKL:"IGBCAHLK",ABCGHJKL:"HJBCAGLK",ABCGIJKL:"IJBCAGLK",ABCHIJKL:"IJBCAHLK",ABDEFGHI:"HGBDAFEI",ABDEFGHJ:"HGBDAFEJ",ABDEFGHK:"HGBDAFEK",ABDEFGHL:"HGBDAFLE",ABDEFGIJ:"EGBDAFIJ",ABDEFGIK:"EGBDAFIK",ABDEFGIL:"EGBDAFLI",ABDEFGJK:"EGBDAFJK",ABDEFGJL:"EGBDAFLJ",ABDEFGKL:"EGBDAFLK",ABDEFHIJ:"HJBDAFEI",ABDEFHIK:"HEBDAFIK",ABDEFHIL:"HEBDAFLI",ABDEFHJK:"HJBDAFEK",ABDEFHJL:"HJBDAFLE",ABDEFHKL:"HEBDAFLK",ABDEFIJK:"EJBDAFIK",ABDEFIJL:"EJBDAFLI",ABDEFIKL:"EIBDAFLK",ABDEFJKL:"EJBDAFLK",ABDEGHIJ:"HJBDAGEI",ABDEGHIK:"EGBDAHIK",ABDEGHIL:"EGBDAHLI",ABDEGHJK:"HJBDAGEK",ABDEGHJL:"HJBDAGLE",ABDEGHKL:"EGBDAHLK",ABDEGIJK:"EJBDAGIK",ABDEGIJL:"EJBDAGLI",ABDEGIKL:"EGBAIDLK",ABDEGJKL:"EJBDAGLK",ABDEHIJK:"EJBDAHIK",ABDEHIJL:"EJBDAHLI",ABDEHIKL:"EIBDAHLK",ABDEHJKL:"EJBDAHLK",ABDEIJKL:"EJBAIDLK",ABDFGHIJ:"HGBDAFIJ",ABDFGHIK:"HGBDAFIK",ABDFGHIL:"HGBDAFLI",ABDFGHJK:"HGBDAFJK",ABDFGHJL:"HGBDAFLJ",ABDFGHKL:"HGBDAFLK",ABDFGIJK:"FJBDAGIK",ABDFGIJL:"FJBDAGLI",ABDFGIKL:"IGBDAFLK",ABDFGJKL:"FJBDAGLK",ABDFHIJK:"HJBDAFIK",ABDFHIJL:"HJBDAFLI",ABDFHIKL:"HIBDAFLK",ABDFHJKL:"HJBDAFLK",ABDFIJKL:"IJBDAFLK",ABDGHIJK:"HJBDAGIK",ABDGHIJL:"HJBDAGLI",ABDGHIKL:"IGBDAHLK",ABDGHJKL:"HJBDAGLK",ABDGIJKL:"IJBDAGLK",ABDHIJKL:"IJBDAHLK",ABEFGHIJ:"HJBFAGEI",ABEFGHIK:"EGBFAHIK",ABEFGHIL:"EGBFAHLI",ABEFGHJK:"HJBFAGEK",ABEFGHJL:"HJBFAGLE",ABEFGHKL:"EGBFAHLK",ABEFGIJK:"EJBFAGIK",ABEFGIJL:"EJBFAGLI",ABEFGIKL:"EGBAIFLK",ABEFGJKL:"EJBFAGLK",ABEFHIJK:"EJBFAHIK",ABEFHIJL:"EJBFAHLI",ABEFHIKL:"EIBFAHLK",ABEFHJKL:"EJBFAHLK",ABEFIJKL:"EJBAIFLK",ABEGHIJK:"EJBAHGIK",ABEGHIJL:"EJBAHGLI",ABEGHIKL:"EGBAIHLK",ABEGHJKL:"EJBAHGLK",ABEGIJKL:"EJBAIGLK",ABEHIJKL:"EJBAIHLK",ABFGHIJK:"HJBFAGIK",ABFGHIJL:"HJBFAGLI",ABFGHIKL:"HGBAIFLK",ABFGHJKL:"HJBFAGLK",ABFGIJKL:"IJBFAGLK",ABFHIJKL:"HJBAIFLK",ABGHIJKL:"HJBAIGLK",ACDEFGHI:"HGECAFDI",ACDEFGHJ:"HGJCAFDE",ACDEFGHK:"HGECAFDK",ACDEFGHL:"HGFCADLE",ACDEFGIJ:"CGJDAFEI",ACDEFGIK:"CGEDAFIK",ACDEFGIL:"CGEDAFLI",ACDEFGJK:"CGJDAFEK",ACDEFGJL:"CGJDAFLE",ACDEFGKL:"CGEDAFLK",ACDEFHIJ:"HJECAFDI",ACDEFHIK:"HEFCADIK",ACDEFHIL:"HEFCADLI",ACDEFHJK:"HJECAFDK",ACDEFHJL:"HJFCADLE",ACDEFHKL:"HEFCADLK",ACDEFIJK:"CJEDAFIK",ACDEFIJL:"CJEDAFLI",ACDEFIKL:"CEIDAFLK",ACDEFJKL:"CJEDAFLK",ACDEGHIJ:"HGJCADEI",ACDEGHIK:"HGECADIK",ACDEGHIL:"HGECADLI",ACDEGHJK:"HGJCADEK",ACDEGHJL:"HGJCADLE",ACDEGHKL:"HGECADLK",ACDEGIJK:"EGJCADIK",ACDEGIJL:"EGJCADLI",ACDEGIKL:"EGICADLK",ACDEGJKL:"EGJCADLK",ACDEHIJK:"HJECADIK",ACDEHIJL:"HJECADLI",ACDEHIKL:"HEICADLK",ACDEHJKL:"HJECADLK",ACDEIJKL:"EJICADLK",ACDFGHIJ:"HGJCAFDI",ACDFGHIK:"HGFCADIK",ACDFGHIL:"HGFCADLI",ACDFGHJK:"HGJCAFDK",ACDFGHJL:"CGJDAFLH",ACDFGHKL:"HGFCADLK",ACDFGIJK:"CGJDAFIK",ACDFGIJL:"CGJDAFLI",ACDFGIKL:"CGIDAFLK",ACDFGJKL:"CGJDAFLK",ACDFHIJK:"HJFCADIK",ACDFHIJL:"HJFCADLI",ACDFHIKL:"HFICADLK",ACDFHJKL:"HJFCADLK",ACDFIJKL:"CJIDAFLK",ACDGHIJK:"HGJCADIK",ACDGHIJL:"HGJCADLI",ACDGHIKL:"HGICADLK",ACDGHJKL:"HGJCADLK",ACDGIJKL:"IGJCADLK",ACDHIJKL:"HJICADLK",ACEFGHIJ:"HGJCAFEI",ACEFGHIK:"HGECAFIK",ACEFGHIL:"HGECAFLI",ACEFGHJK:"HGJCAFEK",ACEFGHJL:"HGJCAFLE",ACEFGHKL:"HGECAFLK",ACEFGIJK:"EGJCAFIK",ACEFGIJL:"EGJCAFLI",ACEFGIKL:"EGICAFLK",ACEFGJKL:"EGJCAFLK",ACEFHIJK:"HJECAFIK",ACEFHIJL:"HJECAFLI",ACEFHIKL:"HEICAFLK",ACEFHJKL:"HJECAFLK",ACEFIJKL:"EJICAFLK",ACEGHIJK:"EGJCAHIK",ACEGHIJL:"EGJCAHLI",ACEGHIKL:"EGICAHLK",ACEGHJKL:"EGJCAHLK",ACEGIJKL:"EJICAGLK",ACEHIJKL:"EJICAHLK",ACFGHIJK:"HGJCAFIK",ACFGHIJL:"HGJCAFLI",ACFGHIKL:"HGICAFLK",ACFGHJKL:"HGJCAFLK",ACFGIJKL:"IGJCAFLK",ACFHIJKL:"HJICAFLK",ACGHIJKL:"HJICAGLK",ADEFGHIJ:"HGJDAFEI",ADEFGHIK:"HGEDAFIK",ADEFGHIL:"HGEDAFLI",ADEFGHJK:"HGJDAFEK",ADEFGHJL:"HGJDAFLE",ADEFGHKL:"HGEDAFLK",ADEFGIJK:"EGJDAFIK",ADEFGIJL:"EGJDAFLI",ADEFGIKL:"EGIDAFLK",ADEFGJKL:"EGJDAFLK",ADEFHIJK:"HJEDAFIK",ADEFHIJL:"HJEDAFLI",ADEFHIKL:"HEIDAFLK",ADEFHJKL:"HJEDAFLK",ADEFIJKL:"EJIDAFLK",ADEGHIJK:"EGJDAHIK",ADEGHIJL:"EGJDAHLI",ADEGHIKL:"EGIDAHLK",ADEGHJKL:"EGJDAHLK",ADEGIJKL:"EJIDAGLK",ADEHIJKL:"EJIDAHLK",ADFGHIJK:"HGJDAFIK",ADFGHIJL:"HGJDAFLI",ADFGHIKL:"HGIDAFLK",ADFGHJKL:"HGJDAFLK",ADFGIJKL:"IGJDAFLK",ADFHIJKL:"HJIDAFLK",ADGHIJKL:"HJIDAGLK",AEFGHIJK:"EGJFAHIK",AEFGHIJL:"EGJFAHLI",AEFGHIKL:"EGIFAHLK",AEFGHJKL:"EGJFAHLK",AEFGIJKL:"EJIFAGLK",AEFHIJKL:"EJIFAHLK",AEGHIJKL:"EJIAHGLK",AFGHIJKL:"HJIFAGLK",BCDEFGHI:"CGBDHFEI",BCDEFGHJ:"HGBCJFDE",BCDEFGHK:"CGBDHFEK",BCDEFGHL:"CGBDHFLE",BCDEFGIJ:"CGBDJFEI",BCDEFGIK:"CGBDEFIK",BCDEFGIL:"CGBDEFLI",BCDEFGJK:"CGBDJFEK",BCDEFGJL:"CGBDJFLE",BCDEFGKL:"CGBDEFLK",BCDEFHIJ:"CJBDHFEI",BCDEFHIK:"CEBDHFIK",BCDEFHIL:"CEBDHFLI",BCDEFHJK:"CJBDHFEK",BCDEFHJL:"CJBDHFLE",BCDEFHKL:"CEBDHFLK",BCDEFIJK:"CJBDEFIK",BCDEFIJL:"CJBDEFLI",BCDEFIKL:"CEBDIFLK",BCDEFJKL:"CJBDEFLK",BCDEGHIJ:"HGBCJDEI",BCDEGHIK:"EGBCHDIK",BCDEGHIL:"EGBCHDLI",BCDEGHJK:"HGBCJDEK",BCDEGHJL:"HGBCJDLE",BCDEGHKL:"EGBCHDLK",BCDEGIJK:"EGBCJDIK",BCDEGIJL:"EGBCJDLI",BCDEGIKL:"EGBCIDLK",BCDEGJKL:"EGBCJDLK",BCDEHIJK:"EJBCHDIK",BCDEHIJL:"EJBCHDLI",BCDEHIKL:"EIBCHDLK",BCDEHJKL:"EJBCHDLK",BCDEIJKL:"EJBCIDLK",BCDFGHIJ:"HGBCJFDI",BCDFGHIK:"CGBDHFIK",BCDFGHIL:"CGBDHFLI",BCDFGHJK:"HGBCJFDK",BCDFGHJL:"CGBDHFLJ",BCDFGHKL:"CGBDHFLK",BCDFGIJK:"CGBDJFIK",BCDFGIJL:"CGBDJFLI",BCDFGIKL:"CGBDIFLK",BCDFGJKL:"CGBDJFLK",BCDFHIJK:"CJBDHFIK",BCDFHIJL:"CJBDHFLI",BCDFHIKL:"CIBDHFLK",BCDFHJKL:"CJBDHFLK",BCDFIJKL:"CJBDIFLK",BCDGHIJK:"HGBCJDIK",BCDGHIJL:"HGBCJDLI",BCDGHIKL:"HGBCIDLK",BCDGHJKL:"HGBCJDLK",BCDGIJKL:"IGBCJDLK",BCDHIJKL:"HJBCIDLK",BCEFGHIJ:"HGBCJFEI",BCEFGHIK:"EGBCHFIK",BCEFGHIL:"EGBCHFLI",BCEFGHJK:"HGBCJFEK",BCEFGHJL:"HGBCJFLE",BCEFGHKL:"EGBCHFLK",BCEFGIJK:"EGBCJFIK",BCEFGIJL:"EGBCJFLI",BCEFGIKL:"EGBCIFLK",BCEFGJKL:"EGBCJFLK",BCEFHIJK:"EJBCHFIK",BCEFHIJL:"EJBCHFLI",BCEFHIKL:"EIBCHFLK",BCEFHJKL:"EJBCHFLK",BCEFIJKL:"EJBCIFLK",BCEGHIJK:"EJBCHGIK",BCEGHIJL:"EJBCHGLI",BCEGHIKL:"EGBCIHLK",BCEGHJKL:"EJBCHGLK",BCEGIJKL:"EJBCIGLK",BCEHIJKL:"EJBCIHLK",BCFGHIJK:"HGBCJFIK",BCFGHIJL:"HGBCJFLI",BCFGHIKL:"HGBCIFLK",BCFGHJKL:"HGBCJFLK",BCFGIJKL:"IGBCJFLK",BCFHIJKL:"HJBCIFLK",BCGHIJKL:"HJBCIGLK",BDEFGHIJ:"HGBDJFEI",BDEFGHIK:"EGBDHFIK",BDEFGHIL:"EGBDHFLI",BDEFGHJK:"HGBDJFEK",BDEFGHJL:"HGBDJFLE",BDEFGHKL:"EGBDHFLK",BDEFGIJK:"EGBDJFIK",BDEFGIJL:"EGBDJFLI",BDEFGIKL:"EGBDIFLK",BDEFGJKL:"EGBDJFLK",BDEFHIJK:"EJBDHFIK",BDEFHIJL:"EJBDHFLI",BDEFHIKL:"EIBDHFLK",BDEFHJKL:"EJBDHFLK",BDEFIJKL:"EJBDIFLK",BDEGHIJK:"EJBDHGIK",BDEGHIJL:"EJBDHGLI",BDEGHIKL:"EGBDIHLK",BDEGHJKL:"EJBDHGLK",BDEGIJKL:"EJBDIGLK",BDEHIJKL:"EJBDIHLK",BDFGHIJK:"HGBDJFIK",BDFGHIJL:"HGBDJFLI",BDFGHIKL:"HGBDIFLK",BDFGHJKL:"HGBDJFLK",BDFGIJKL:"IGBDJFLK",BDFHIJKL:"HJBDIFLK",BDGHIJKL:"HJBDIGLK",BEFGHIJK:"EJBFHGIK",BEFGHIJL:"EJBFHGLI",BEFGHIKL:"EGBFIHLK",BEFGHJKL:"EJBFHGLK",BEFGIJKL:"EJBFIGLK",BEFHIJKL:"EJBFIHLK",BEGHIJKL:"EJIBHGLK",BFGHIJKL:"HJBFIGLK",CDEFGHIJ:"CGJDHFEI",CDEFGHIK:"CGEDHFIK",CDEFGHIL:"CGEDHFLI",CDEFGHJK:"CGJDHFEK",CDEFGHJL:"CGJDHFLE",CDEFGHKL:"CGEDHFLK",CDEFGIJK:"CGEDJFIK",CDEFGIJL:"CGEDJFLI",CDEFGIKL:"CGEDIFLK",CDEFGJKL:"CGEDJFLK",CDEFHIJK:"CJEDHFIK",CDEFHIJL:"CJEDHFLI",CDEFHIKL:"CEIDHFLK",CDEFHJKL:"CJEDHFLK",CDEFIJKL:"CJEDIFLK",CDEGHIJK:"EGJCHDIK",CDEGHIJL:"EGJCHDLI",CDEGHIKL:"EGICHDLK",CDEGHJKL:"EGJCHDLK",CDEGIJKL:"EGICJDLK",CDEHIJKL:"EJICHDLK",CDFGHIJK:"CGJDHFIK",CDFGHIJL:"CGJDHFLI",CDFGHIKL:"CGIDHFLK",CDFGHJKL:"CGJDHFLK",CDFGIJKL:"CGIDJFLK",CDFHIJKL:"CJIDHFLK",CDGHIJKL:"HGICJDLK",CEFGHIJK:"EGJCHFIK",CEFGHIJL:"EGJCHFLI",CEFGHIKL:"EGICHFLK",CEFGHJKL:"EGJCHFLK",CEFGIJKL:"EGICJFLK",CEFHIJKL:"EJICHFLK",CEGHIJKL:"EJICHGLK",CFGHIJKL:"HGICJFLK",DEFGHIJK:"EGJDHFIK",DEFGHIJL:"EGJDHFLI",DEFGHIKL:"EGIDHFLK",DEFGHJKL:"EGJDHFLK",DEFGIJKL:"EGIDJFLK",DEFHIJKL:"EJIDHFLK",DEGHIJKL:"EJIDHGLK",DFGHIJKL:"HGIDJFLK",EFGHIJKL:"EJIFHGLK"};
-
-const TP_SLOT_KEYS = ['A','B','D','E','G','I','K','L'];
-const TP_COLORS = {
-  A:'#0284C7',B:'#7C3AED',C:'#059669',D:'#B45309',E:'#65A30D',F:'#0891B2',
-  G:'#16A34A',H:'#DC2626',I:'#EA580C',J:'#0F766E',K:'#9333EA',L:'#92400E'
-};
-
-function _tp3rdLeader(grpKey) {
-  const gs = _computeGroupStats();
-  const sorted = [...(GROUPS[grpKey]||[])].sort((a,b) => {
-    const sa=gs[a.name]||{pts:0,gf:0,ga:0}, sb=gs[b.name]||{pts:0,gf:0,ga:0};
-    if (sb.pts!==sa.pts) return sb.pts-sa.pts;
-    const gdA=sa.gf-sa.ga, gdB=sb.gf-sb.ga;
-    if (gdB!==gdA) return gdB-gdA;
-    return (sb.gf||0)-(sa.gf||0);
-  });
-  return sorted[2] || null;
-}
-
-function _getTop8Combo() {
-  const gs = _computeGroupStats();
-  const thirds = Object.keys(GROUPS).map(g => {
-    const sorted = [...GROUPS[g]].sort((a,b) => {
-      const sa=gs[a.name]||{pts:0,gf:0,ga:0}, sb=gs[b.name]||{pts:0,gf:0,ga:0};
-      if (sb.pts!==sa.pts) return sb.pts-sa.pts;
-      const gdA=sa.gf-sa.ga, gdB=sb.gf-sb.ga;
-      if (gdB!==gdA) return gdB-gdA;
-      return (sb.gf||0)-(sa.gf||0);
-    });
-    const t=sorted[2]; const s=t?(gs[t.name]||{pts:0,gf:0,ga:0}):{pts:0,gf:0,ga:0};
-    return {g, pts:s.pts, gd:(s.gf||0)-(s.ga||0), gf:s.gf||0};
-  });
-  return thirds.sort((a,b)=>b.pts!==a.pts?b.pts-a.pts:b.gd!==a.gd?b.gd-a.gd:b.gf-a.gf)
-    .slice(0,8).map(x=>x.g).sort().join('');
-}
-
-function _buildTPCur() {
-  const combo = _getTop8Combo();
-  const row = R32_LOOKUP[combo];
-  if (!row) return {};
-  const result = {};
-  TP_SLOT_KEYS.forEach((k,i) => {
-    const grp = row[i];
-    const leader = _tp3rdLeader(grp);
-    result[k] = {g: grp, t: leader ? leader.name : ('3rd '+grp), combo};
-  });
-  return result;
-}
-
-// Maps R32 match IDs containing 3rd-place slots to TP slot keys
-const TP_MATCH_MAP = {74:'E', 77:'I', 79:'A', 80:'L', 81:'D', 82:'G', 85:'B', 87:'K'};
-
-// R32 slot definitions
-const R32_SLOTS = {
-  73:{home:'2A',away:'2B'}, 74:{home:'1E',away:'3rd'},
-  75:{home:'1C',away:'2F'}, 76:{home:'1F',away:'2C'},
-  77:{home:'1I',away:'3rd'}, 78:{home:'2E',away:'2I'},
-  79:{home:'1A',away:'3rd'}, 80:{home:'1L',away:'3rd'},
-  81:{home:'1D',away:'3rd'}, 82:{home:'1G',away:'3rd'},
-  83:{home:'1H',away:'2J'}, 84:{home:'2K',away:'2L'},
-  85:{home:'1B',away:'3rd'}, 86:{home:'2D',away:'2G'},
-  87:{home:'1K',away:'3rd'}, 88:{home:'1J',away:'2H'},
-};
-// KO bracket slot assignments (home/away for each match by ID)
-const KO_HOME = {89:'W73',90:'W74',91:'W76',92:'W79',93:'W83',94:'W81',95:'W86',96:'W85',97:'W89',98:'W93',99:'W91',100:'W95',101:'W97',102:'W99',103:'L101',104:'W101'};
-const KO_AWAY = {89:'W75',90:'W77',91:'W78',92:'W80',93:'W84',94:'W82',95:'W88',96:'W87',97:'W90',98:'W94',99:'W92',100:'W96',101:'W98',102:'W100',103:'L102',104:'W102'};
-// Visual bracket order — mirrors article-style symmetric layout
-const LEFT_R32  = [74,77,73,75,83,84,81,82];
-const RIGHT_R32 = [76,78,79,80,86,88,85,87];
-const LEFT_R16  = [90,89,93,94];
-const RIGHT_R16 = [91,92,95,96];
-const LEFT_QF   = [97,98];
-const RIGHT_QF  = [99,100];
-const FINAL_ID  = 104;
-const THIRD_ID  = 103;
-
-function renderBracket() {
-  const root = document.getElementById('bracket-root');
-  if (!root) return;
-  const gs = _computeGroupStats();
-  const results = LEAGUE.results || {};
-  const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-  // Layout constants
-  const SH=185, BH=8*SH, CH=160, CW_R32=200, CW_R16=132, CW_QF=120, CW_SF=116, CW_FIN=150, CONN=26;
-  const yR32 = Array.from({length:8},(_,n)=>n*SH+SH/2);
-  function midOf(a,b){return(a+b)/2;}
-  const yR16 = [midOf(yR32[0],yR32[1]),midOf(yR32[2],yR32[3]),midOf(yR32[4],yR32[5]),midOf(yR32[6],yR32[7])];
-  const yQF  = [midOf(yR16[0],yR16[1]),midOf(yR16[2],yR16[3])];
-  const ySF  = midOf(yQF[0],yQF[1]);
-
-  function _grpRanked(grpKey) {
-    const teams = GROUPS[grpKey] ? [...GROUPS[grpKey]] : [];
-    return teams.sort((a,b) => {
-      const sa=gs[a.name]||{pts:0,gf:0,ga:0}, sb=gs[b.name]||{pts:0,gf:0,ga:0};
-      if (sb.pts!==sa.pts) return sb.pts-sa.pts;
-      const gdA=sa.gf-sa.ga, gdB=sb.gf-sb.ga;
-      if (gdB!==gdA) return gdB-gdA;
-      return (sb.gf||0)-(sa.gf||0);
-    });
-  }
-  function _koResult(matchId) {
-    const res=results[String(matchId)]||results[matchId];
-    if (!res||res.live) return null;
-    return _extractScore(res);
-  }
-  function _koWinner(matchId) { return _koWinnerGlobal(matchId); }
-  function _koLoser(matchId)  { return _koLoserGlobal(matchId); }
-  function _resolve(slot, matchId) {
-    if (!slot) return {name:'TBD',flag:'',resolved:false};
-    if (slot.startsWith('W')) {
-      const mid=parseInt(slot.slice(1));
-      const w=_koWinner(mid);
-      if (w) {const t=TEAMS.find(x=>x.name===w);return{name:w,flag:t?t.flag:'',resolved:true};}
-      return {name:slot,flag:'',resolved:false};
-    }
-    if (slot.startsWith('L')) {
-      const mid=parseInt(slot.slice(1));
-      const l=_koLoser(mid);
-      if (l) {const t=TEAMS.find(x=>x.name===l);return{name:l,flag:t?t.flag:'',resolved:true};}
-      return {name:slot,flag:'',resolved:false};
-    }
-    if (slot==='3rd'||slot.startsWith('3rd(')) {
-      const tpKey=matchId&&TP_MATCH_MAP[matchId];
-      if (tpKey) {
-        const cur=_buildTPCur();
-        const c=cur[tpKey];
-        if (c&&c.t) {const t=TEAMS.find(x=>x.name===c.t);return{name:c.t,flag:t?t.flag:'',resolved:false,tpGroup:c.g};}
-      }
-      return {name:'3rd',flag:'',resolved:false};
-    }
-    const rank=parseInt(slot[0])-1, grpKey=slot[1];
-    if (_isGroupComplete(grpKey,results)) {
-      const ranked=_grpRanked(grpKey);
-      if (ranked[rank]) {const t=ranked[rank];return{name:t.name,flag:t.flag||'',resolved:true};}
-    }
-    return {name:slot,flag:'',resolved:false};
-  }
-  function _dateStr(matchId) {
-    const m=SCHEDULE.find(s=>s.id===matchId);
-    if (!m) return '';
-    return new Intl.DateTimeFormat('en-US',{month:'short',day:'numeric',timeZone:tz}).format(new Date(m.utc));
-  }
-
-  // Probability that 'teamName' finishes at 'rank' (0-indexed) in 'grpKey' — enumerates all remaining game outcomes
-  function _groupSlotProb(grpKey, teamName, rank) {
-    const teams = GROUPS[grpKey] || [];
-    const groupGames = SCHEDULE.filter(m =>
-      m.round.includes('Group Stage') && teams.some(t => t.name === m.home || t.name === m.away)
-    );
-    const remaining = groupGames.filter(m => { const res=results[String(m.id)]||results[m.id]; return !res||res.live; });
-    if (remaining.length === 0) {
-      const rk = _grpRanked(grpKey);
-      return rk[rank] && rk[rank].name === teamName ? 1.0 : 0.0;
-    }
-    const base = {};
-    teams.forEach(t => { const s=gs[t.name]||{pts:0,gf:0,ga:0}; base[t.name]={pts:s.pts,gf:s.gf||0,ga:s.ga||0}; });
-    const n = remaining.length, total = Math.pow(3, n);
-    let favorable = 0;
-    for (let combo = 0; combo < total; combo++) {
-      const sim = {}; teams.forEach(t => sim[t.name] = {...base[t.name]});
-      let c = combo;
-      for (let i = 0; i < n; i++) {
-        const oc = c % 3; c = Math.floor(c / 3); const g = remaining[i];
-        if (oc === 0) { sim[g.home].pts += 3; sim[g.home].gf += 1; sim[g.away].ga += 1; }
-        else if (oc === 1) { sim[g.home].pts += 1; sim[g.away].pts += 1; sim[g.home].gf += 1; sim[g.away].gf += 1; }
-        else { sim[g.away].pts += 3; sim[g.away].gf += 1; sim[g.home].ga += 1; }
-      }
-      const rk = [...teams].sort((a,b) => {
-        const sa=sim[a.name], sb=sim[b.name];
-        if (sb.pts!==sa.pts) return sb.pts-sa.pts;
-        const gdA=sa.gf-sa.ga, gdB=sb.gf-sb.ga;
-        return gdB!==gdA?gdB-gdA:sb.gf-sa.gf;
-      });
-      if (rk[rank] && rk[rank].name === teamName) favorable++;
-    }
-    return favorable / total;
-  }
-
-  // Slot HTML: confirmed (full color ✓) | projected (dimmed + probability %) | 3rd (dimmed + group badge)
-  function _slotHTML(slotLabel, matchId) {
-    const info = _resolve(slotLabel, matchId);
-    if (info.resolved) {
-      const slotBadge = /^[12][A-L]$/.test(slotLabel) ? `<span style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;background:var(--blue);color:#fff;border-radius:3px;padding:1px 5px;flex-shrink:0">${esc(slotLabel)}</span>` : '';
-      return `<div class="bsl"><div class="bs-c">${fi(info.flag||'',16,11)}<span class="bn">${esc(info.name)}</span>${slotBadge}<span class="bv-check">✓</span></div></div>`;
-    }
-
-    // All unconfirmed rows are dimmed — primary (78%) or challenger (42%)
-    function _cRow(team, isPrimary, badge, prob, slotLbl) {
-      const nm = isPrimary
-        ? `<span class="cn" style="font-style:italic">${esc(team.name)}</span>`
-        : `<span style="flex:1;font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--txt2);font-style:italic">${esc(team.name)}</span>`;
-      let statEl;
-      if (badge) {
-        statEl = badge;
-      } else {
-        const lblSpan = slotLbl ? `<span style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;background:var(--bg-alt);color:var(--txt3);border:1px solid var(--border);border-radius:3px;padding:1px 4px;flex-shrink:0">${esc(slotLbl)}</span>` : '';
-        const probSpan = prob !== undefined ? `<span style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;color:var(--blue);flex-shrink:0">${Math.round(prob*100)}%</span>` : '';
-        statEl = lblSpan + probSpan;
-      }
-      const pad = isPrimary ? '3px 7px' : '1px 7px 2px';
-      const op  = isPrimary ? 'opacity:0.55;' : 'opacity:0.35;';
-      return `<div class="bc" style="padding:${pad};${op}">${fi(team.flag||'',isPrimary?16:14,isPrimary?11:10)}${nm}${statEl}</div>`;
-    }
-    function _grpBadge(grp) {
-      return `<span style="font-size:10px;background:${TP_COLORS[grp]||'#999'};color:#fff;border-radius:3px;padding:1px 4px;margin-left:3px;font-weight:900;flex-shrink:0;font-family:'Barlow Condensed',sans-serif">3${grp}</span>`;
-    }
-
-    // Group position slot (1E, 2A…) — current rank + challenger, both dimmed, probability shown
-    if (/^[12][A-L]$/.test(slotLabel)) {
-      const r = parseInt(slotLabel[0]) - 1, gk = slotLabel[1], rk = _grpRanked(gk);
-      const primary = rk[r];
-      if (!primary) return `<div class="bsl"><div class="bc"><span class="cn" style="color:var(--txt3);font-style:italic">${esc(slotLabel)}</span></div></div>`;
-      const pProb = _groupSlotProb(gk, primary.name, r);
-      if (pProb === 1.0) {
-        const slotBadge = `<span style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;background:var(--blue);color:#fff;border-radius:3px;padding:1px 5px;flex-shrink:0">${esc(slotLabel)}</span>`;
-        return `<div class="bsl"><div class="bs-c">${fi(primary.flag||'',16,11)}<span class="bn">${esc(primary.name)}</span>${slotBadge}<span class="bv-check">✓</span></div></div>`;
-      }
-      const challenger = rk[r + 1];
-      const cProb = challenger ? _groupSlotProb(gk, challenger.name, r+1) : undefined;
-      const cSlot = String(r+2)+gk;
-      return `<div class="bsl">${_cRow(primary,true,null,pProb,slotLabel)}${challenger?_cRow(challenger,false,null,cProb,cSlot):''}</div>`;
-    }
-
-    // 3rd place slot — top 3 global contenders, all dimmed, group badges
-    if (slotLabel === '3rd') {
-      const tpKey = matchId && TP_MATCH_MAP[matchId];
-      const cur = _buildTPCur();
-      const allThirds = Object.keys(GROUPS).map(g => {
-        const t = _grpRanked(g)[2]; return t ? {team:t,g} : null;
-      }).filter(Boolean).sort((a,b) => {
-        const sa=gs[a.team.name]||{pts:0,gf:0,ga:0}, sb=gs[b.team.name]||{pts:0,gf:0,ga:0};
-        if (sb.pts!==sa.pts) return sb.pts-sa.pts;
-        const gdA=sa.gf-sa.ga, gdB=sb.gf-sb.ga;
-        return gdB!==gdA?gdB-gdA:(sb.gf||0)-(sa.gf||0);
-      });
-      const projName = tpKey && cur[tpKey] && cur[tpKey].t;
-      const ordered = projName
-        ? [allThirds.find(x=>x.team.name===projName), ...allThirds.filter(x=>x.team.name!==projName)].filter(Boolean).slice(0,3)
-        : allThirds.slice(0,3);
-      const rows = ordered.map((x,i) => {
-        const prob3 = _groupSlotProb(x.g, x.team.name, 2);
-        const probEl = `<span style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;color:var(--blue);flex-shrink:0">${Math.round(prob3*100)}%</span>`;
-        return _cRow(x.team, i===0, _grpBadge(x.g)+probEl, undefined);
-      }).join('');
-      return rows
-        ? `<div class="bsl">${rows}</div>`
-        : `<div class="bsl"><div class="bc"><span class="cn" style="color:var(--txt3);font-style:italic">3rd TBD</span></div></div>`;
-    }
-
-    return `<div class="bsl"><div class="bc"><span class="cn" style="color:var(--txt3);font-style:italic">${esc(slotLabel)}</span></div></div>`;
-  }
-
-  // R32 card (dynamic — group projection or live result)
-  function r32Card(matchId) {
-    const schedM=SCHEDULE.find(s=>s.id===matchId);
-    const slot=R32_SLOTS[matchId]||{home:'?',away:'?'};
-    const city=schedM?schedM.city:'', dateStr=_dateStr(matchId);
-    const sc=_koResult(matchId), winner=sc?_koWinner(matchId):null;
-    if (sc) {
-      const hN=schedM?schedM.home:'?', aN=schedM?schedM.away:'?';
-      const hT=TEAMS.find(x=>x.name===hN), aT=TEAMS.find(x=>x.name===aN);
-      const hW=winner===hN, aW=winner===aN;
-      const slotLine=`<div style="padding:1px 7px 4px;font-size:10px;color:var(--txt3);font-family:'Barlow Condensed',sans-serif;font-weight:600;letter-spacing:.04em">${slot.home} vs ${slot.away}</div>`;
-      return `<div class="bmc" style="width:${CW_R32-4}px">
-        <div class="bmh"><span class="bmn">M${matchId}</span><span class="bml">${esc(city)}</span><span class="bmd">${dateStr}</span></div>
-        ${slotLine}
-        <div style="padding:3px 0"><div class="tbd-tr ${hW?'win':winner?'los':''}" style="padding:4px 7px">${fi(hT?hT.flag:'',16,11)}<span class="tbd-tnm">${esc(hN)}</span><span class="tbd-sc">${sc.home}</span></div></div>
-        <div class="bdv"></div>
-        <div style="padding:3px 0"><div class="tbd-tr ${aW?'win':winner?'los':''}" style="padding:4px 7px">${fi(aT?aT.flag:'',16,11)}<span class="tbd-tnm">${esc(aN)}</span><span class="tbd-sc">${sc.away}</span></div></div>
-      </div>`;
-    }
-    const slotLine=`<div style="padding:1px 7px 4px;font-size:10px;color:var(--txt3);font-family:'Barlow Condensed',sans-serif;font-weight:600;letter-spacing:.04em">${slot.home} vs ${slot.away}</div>`;
-    return `<div class="bmc" style="width:${CW_R32-4}px">
-      <div class="bmh"><span class="bmn">M${matchId}</span><span class="bml">${esc(city)}</span><span class="bmd">${dateStr}</span></div>
-      ${slotLine}
-      ${_slotHTML(slot.home,matchId)}<div class="bdv"></div>${_slotHTML(slot.away,matchId)}
-    </div>`;
-  }
-
-  // KO card (R16, QF, SF, Final, 3rd Place)
-  function koCard(matchId, colW, isFinal, is3rd) {
-    const schedM=SCHEDULE.find(s=>s.id===matchId);
-    const city=schedM?schedM.city:'', dateStr=_dateStr(matchId);
-    const sc=_koResult(matchId), winner=sc?_koWinner(matchId):null;
-    const homeRef=KO_HOME[matchId]||'', awayRef=KO_AWAY[matchId]||'';
-    const homeInfo=_resolve(homeRef,null);
-    const awayInfo=_resolve(awayRef,null);
-    const cls=isFinal?'bmc-final':is3rd?'bmc-3rd':'bmc-tbd';
-    const lbl=isFinal?'FINAL':is3rd?'3rd Place':`M${matchId}`;
-    const lblCls=isFinal?'tbd-label final':is3rd?'tbd-label third':'tbd-label';
-    if (!sc&&!homeInfo.resolved&&!awayInfo.resolved) {
-      const matchup=(homeRef&&awayRef)?`${homeRef} vs ${awayRef}`:'Teams TBD';
-      return `<div class="${cls}" style="width:${colW-4}px">
-        <div class="${lblCls}">${lbl}</div>
-        <div class="tbd-city">${esc(city)}</div>
-        <div class="tbd-date">${dateStr}</div>
-        <div class="tbd-teams">${esc(matchup)}</div>
-      </div>`;
-    }
-    function tRow(info, ref, score) {
-      const isWin=winner&&info.resolved&&info.name===winner;
-      const isLos=winner&&info.resolved&&info.name!==winner;
-      const rc=isWin?'tbd-tr win':isLos?'tbd-tr los':'tbd-tr';
-      const fH=info.resolved?fi(info.flag||'',16,11):'';
-      const nH=info.resolved?`<span class="tbd-tnm">${esc(info.name)}</span>`:`<span class="tbd-tnm" style="color:var(--txt3);font-style:italic">${esc(ref||info.name)}</span>`;
-      const sH=score!==null&&score!==undefined?`<span class="tbd-sc">${score}</span>`:'';
-      return `<div class="${rc}">${fH}${nH}${sH}</div>`;
-    }
-    return `<div class="${cls}" style="width:${colW-4}px">
-      <div class="${lblCls}">${lbl}</div>
-      <div class="tbd-city">${esc(city)}</div>
-      <div class="tbd-date">${dateStr}</div>
-      ${tRow(homeInfo,homeRef,sc?sc.home:null)}
-      <div style="height:1px;background:var(--border2);margin:2px 0"></div>
-      ${tRow(awayInfo,awayRef,sc?sc.away:null)}
-    </div>`;
-  }
-
-  // SVG connectors
-  function svgConnL(pairs) {
-    const lines=pairs.map(([y1,y2])=>{const mid=midOf(y1,y2);return`<line x1="0" y1="${y1}" x2="14" y2="${y1}" stroke="#C4D0E2" stroke-width="1.5"/><line x1="0" y1="${y2}" x2="14" y2="${y2}" stroke="#C4D0E2" stroke-width="1.5"/><line x1="14" y1="${y1}" x2="14" y2="${y2}" stroke="#C4D0E2" stroke-width="1.5"/><line x1="14" y1="${mid}" x2="${CONN}" y2="${mid}" stroke="#C4D0E2" stroke-width="1.5"/>`;}).join('');
-    return `<svg width="${CONN}" height="${BH}" style="flex-shrink:0">${lines}</svg>`;
-  }
-  function svgConnR(pairs) {
-    const lines=pairs.map(([y1,y2])=>{const mid=midOf(y1,y2);return`<line x1="${CONN}" y1="${y1}" x2="14" y2="${y1}" stroke="#C4D0E2" stroke-width="1.5"/><line x1="${CONN}" y1="${y2}" x2="14" y2="${y2}" stroke="#C4D0E2" stroke-width="1.5"/><line x1="14" y1="${y1}" x2="14" y2="${y2}" stroke="#C4D0E2" stroke-width="1.5"/><line x1="14" y1="${mid}" x2="0" y2="${mid}" stroke="#C4D0E2" stroke-width="1.5"/>`;}).join('');
-    return `<svg width="${CONN}" height="${BH}" style="flex-shrink:0">${lines}</svg>`;
-  }
-  function svgConnH() {
-    return `<svg width="${CONN}" height="${BH}" style="flex-shrink:0"><line x1="0" y1="${ySF}" x2="${CONN}" y2="${ySF}" stroke="#C4D0E2" stroke-width="1.5"/></svg>`;
-  }
-
-  // Build columns
-  const colR32L = `<div class="rc" style="height:${BH}px">${LEFT_R32.map(id=>`<div class="mw" style="height:${SH}px;width:${CW_R32}px">${r32Card(id)}</div>`).join('')}</div>`;
-  const connL1  = svgConnL([[yR32[0],yR32[1]],[yR32[2],yR32[3]],[yR32[4],yR32[5]],[yR32[6],yR32[7]]]);
-  const colR16L = `<div class="rc" style="height:${BH}px">${LEFT_R16.map(id=>`<div class="mw" style="height:${2*SH}px;width:${CW_R16}px">${koCard(id,CW_R16,false,false)}</div>`).join('')}</div>`;
-  const connL2  = svgConnL([[yR16[0],yR16[1]],[yR16[2],yR16[3]]]);
-  const colQFL  = `<div class="rc" style="height:${BH}px">${LEFT_QF.map(id=>`<div class="mw" style="height:${4*SH}px;width:${CW_QF}px">${koCard(id,CW_QF,false,false)}</div>`).join('')}</div>`;
-  const connL3  = svgConnL([[yQF[0],yQF[1]]]);
-  const colSFL  = `<div class="rc" style="height:${BH}px;width:${CW_SF}px;position:relative"><div style="position:absolute;top:${ySF-CH/2}px;left:0;width:${CW_SF}px;display:flex;align-items:center;justify-content:center">${koCard(101,CW_SF,false,false)}</div></div>`;
-  const connLF  = svgConnH();
-  const finalCardTop = ySF - CH/2;
-  const thirdCardTop = ySF + CH/2 + 14;
-  const colCenter = `<div class="rc" style="height:${BH}px;width:${CW_FIN}px;position:relative">
-    <div style="position:absolute;top:${finalCardTop}px;left:0;width:${CW_FIN}px;display:flex;justify-content:center">${koCard(FINAL_ID,CW_FIN,true,false)}</div>
-    <div style="position:absolute;top:${thirdCardTop}px;left:0;width:${CW_FIN}px;display:flex;justify-content:center">${koCard(THIRD_ID,CW_FIN,false,true)}</div>
-  </div>`;
-  const connRF  = svgConnH();
-  const colSFR  = `<div class="rc" style="height:${BH}px;width:${CW_SF}px;position:relative"><div style="position:absolute;top:${ySF-CH/2}px;left:0;width:${CW_SF}px;display:flex;align-items:center;justify-content:center">${koCard(102,CW_SF,false,false)}</div></div>`;
-  const connR3  = svgConnR([[yQF[0],yQF[1]]]);
-  const colQFR  = `<div class="rc" style="height:${BH}px">${RIGHT_QF.map(id=>`<div class="mw" style="height:${4*SH}px;width:${CW_QF}px">${koCard(id,CW_QF,false,false)}</div>`).join('')}</div>`;
-  const connR2  = svgConnR([[yR16[0],yR16[1]],[yR16[2],yR16[3]]]);
-  const colR16R = `<div class="rc" style="height:${BH}px">${RIGHT_R16.map(id=>`<div class="mw" style="height:${2*SH}px;width:${CW_R16}px">${koCard(id,CW_R16,false,false)}</div>`).join('')}</div>`;
-  const connR1  = svgConnR([[yR32[0],yR32[1]],[yR32[2],yR32[3]],[yR32[4],yR32[5]],[yR32[6],yR32[7]]]);
-  const colR32R = `<div class="rc" style="height:${BH}px">${RIGHT_R32.map(id=>`<div class="mw" style="height:${SH}px;width:${CW_R32}px">${r32Card(id)}</div>`).join('')}</div>`;
-
-  function rl(text,w,color){return `<div class="rl" style="width:${w}px${color?';color:'+color:''}">${text}</div>`;}
-  const labelsBar = `<div class="rl-bar">
-    ${rl('Round of 32',CW_R32,'#8A9EB8')}${rl('',CONN)}
-    ${rl('R16',CW_R16,'#1155AA')}${rl('',CONN)}
-    ${rl('QF',CW_QF,'#6B3FA0')}${rl('',CONN)}
-    ${rl('SF',CW_SF,'#B07800')}${rl('',CONN)}
-    ${rl('Final',CW_FIN,'#C01020')}${rl('',CONN)}
-    ${rl('SF',CW_SF,'#B07800')}${rl('',CONN)}
-    ${rl('QF',CW_QF,'#6B3FA0')}${rl('',CONN)}
-    ${rl('R16',CW_R16,'#1155AA')}${rl('',CONN)}
-    ${rl('Round of 32',CW_R32,'#8A9EB8')}
-  </div>`;
-
-  root.innerHTML = `<div style="padding:20px 16px 48px"><div class="bv"><div style="display:inline-flex;flex-direction:column">${labelsBar}<div class="bi">${colR32L}${connL1}${colR16L}${connL2}${colQFL}${connL3}${colSFL}${connLF}${colCenter}${connRF}${colSFR}${connR3}${colQFR}${connR2}${colR16R}${connR1}${colR32R}</div></div></div></div>`;
-}
 </script>
 </body>
 </html>
