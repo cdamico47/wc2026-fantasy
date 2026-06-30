@@ -861,9 +861,23 @@ def get_finalized_match_ids():
 
 def _winner_from_result(result):
     """Return match winner name from a result dict (new or old format)."""
+    # 1. Direct field (new scorer format)
     if result.get("matchWinner"):
         return result["matchWinner"]
-    # Fallback: parse from stats string "FT: TeamA 2-1 TeamB | HT: ..."
+
+    # 2. Advancement bonus in breakdown — team with "Win R32/R16/QF/SF" is the winner
+    home_name = result.get("home")
+    away_name = result.get("away")
+    for team_key, td in result.get("teams", {}).items():
+        for s in td.get("breakdown", []):
+            if any(s.startswith(f"Win {rnd}") for rnd in ("R32", "R16", "QF", "SF")):
+                if home_name and _fb_key(home_name) == team_key:
+                    return home_name
+                if away_name and _fb_key(away_name) == team_key:
+                    return away_name
+                return team_key  # fallback — fb_key if home/away not stored
+
+    # 3. Parse winner from stats string (FT/AET only; PSO can't be resolved by score)
     stats = result.get("stats", "")
     m = re.match(r'^(?:FT|AET|LIVE): (.+?) (\d+)-(\d+) (.+?) \| HT:', stats)
     if m:
@@ -872,7 +886,7 @@ def _winner_from_result(result):
             return m.group(1)
         elif a_score > h_score:
             return m.group(4)
-    return None  # draw or PSO without matchWinner field
+    return None
 
 
 def _teams_from_result(result):
