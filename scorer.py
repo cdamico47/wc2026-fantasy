@@ -925,6 +925,11 @@ def get_finalized_match_ids():
         if v.get("stats", "").startswith("PSO:") and "penaltyHome" not in v:
             continue
 
+        # KO matches (73+) that ended in a PSO but still have no matchWinner stored
+        # need to be re-scored regardless of bonus state — winner detection failed before.
+        if mid >= 73 and not v.get("matchWinner") and v.get("finalScore", {}).get("home") == v.get("finalScore", {}).get("away"):
+            continue
+
         # For KO matches, verify advancement bonus is already in the winner's breakdown
         if mid >= 73:
             bonus_label = None
@@ -1210,6 +1215,17 @@ def main():
         logging.info(f"  [FT]   Match {sid} ({home} vs {away}, event {event_id})…")
         summary      = fetch_game_summary(event_id)
         comp_full    = (summary.get("header", {}).get("competitions") or [comp])[0]
+
+        # ESPN's summary header often omits winner=True on PSO matches.
+        # Inject winner flags from the scoreboard comp (which is more reliable
+        # for finalized matches) so score_match()'s home_won/away_won fallback works.
+        sb_winner_by_side = {c.get("homeAway"): c.get("winner", False)
+                             for c in comp.get("competitors", [])}
+        for c in comp_full.get("competitors", []):
+            ha = c.get("homeAway")
+            if ha in sb_winner_by_side and sb_winner_by_side[ha] and not c.get("winner"):
+                c["winner"] = True
+
         result       = score_match(comp_full, summary, is_live=False)
 
         # Apply KO advancement bonus to the winner's fantasy points
