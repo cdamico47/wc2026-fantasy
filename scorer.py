@@ -465,20 +465,68 @@ def score_match(competition, summary, is_live=False):
     in_et  = (status_name == "STATUS_FINAL_AET")
     in_pso = (status_name == "STATUS_FINAL_PENALTIES")
 
-    # Penalty shootout score — ESPN stores it as the last linescore entry.
-    # 90-min PSO:  [1st half, 2nd half, PSO]
-    # ET PSO:      [1st half, 2nd half, ET1, ET2, PSO]
+    # Penalty shootout winner detection — multi-tier fallback.
+    # ESPN is inconsistent: winner flag unreliable, linescores sometimes 0-0.
     pen_home = pen_away = None
-    if in_pso and home_ls and away_ls:
-        try:
-            pen_home = int(home_ls[-1].get("displayValue", "") or 0)
-            pen_away = int(away_ls[-1].get("displayValue", "") or 0)
-        except (ValueError, TypeError):
-            pen_home = pen_away = None
+    if in_pso:
+        # Tier 1: last linescore entry (ESPN's native PSO period)
+        # Structure: [1H, 2H, PSO] or [1H, 2H, ET1, ET2, PSO]
+        # Guard: if ESPN returns 0-0 it means the field wasn't filled in — skip.
+        if home_ls and away_ls:
+            try:
+                raw_h = int(home_ls[-1].get("displayValue", "") or 0)
+                raw_a = int(away_ls[-1].get("displayValue", "") or 0)
+                if raw_h != raw_a:  # PSO always has a winner; equal → ESPN didn't populate this
+                    pen_home, pen_away = raw_h, raw_a
+            except (ValueError, TypeError):
+                pass
+
+        # Tier 2: parse penalty score from status.type detail/shortDetail strings
+        if pen_home is None:
+            status_type = (competition.get("status") or {}).get("type") or {}
+            for key in ("detail", "shortDetail", "description"):
+                s = status_type.get(key) or ""
+                m_pso = re.search(r'(\d+)\s*[-–]\s*(\d+)\s+on\s+pen', s, re.I)
+                if m_pso:
+                    s1, s2 = int(m_pso.group(1)), int(m_pso.group(2))
+                    if s1 != s2:
+                        win_m = re.search(
+                            r'([A-Za-z][A-Za-z \'\-]+?)\s+wins?\s+(\d+)\s*[-–]\s*(\d+)\s+on\s+pen',
+                            s, re.I
+                        )
+                        if win_m:
+                            wfrag = _norm(win_m.group(1).strip())
+                            w, l = int(win_m.group(2)), int(win_m.group(3))
+                            if wfrag == home or home.startswith(wfrag) or wfrag.startswith(home):
+                                pen_home, pen_away = w, l
+                            else:
+                                pen_home, pen_away = l, w
+                    break
 
     # Parse events
     details   = competition.get("details", [])
     goals, pk_misses = parse_details(details, home, away)
+
+    if in_pso:
+        # Tier 3: count penalty scoring plays at/after 120 min (clock_secs >= 7200)
+        if pen_home is None:
+            pso_h = sum(1 for g in goals if g["team"] == home and g["is_penalty"] and g["clock_secs"] >= 7200)
+            pso_a = sum(1 for g in goals if g["team"] == away and g["is_penalty"] and g["clock_secs"] >= 7200)
+            if pso_h + pso_a > 0 and pso_h != pso_a:
+                pen_home, pen_away = pso_h, pso_a
+
+        # Diagnostic logging — essential for debugging when ESPN data is missing
+        if pen_home is None:
+            logging.warning(f"  [PSO] {home} vs {away}: could not determine penalty winner.")
+            logging.warning(f"    home_ls={[ls.get('displayValue') for ls in home_ls]}")
+            logging.warning(f"    away_ls={[ls.get('displayValue') for ls in away_ls]}")
+            status_type = (competition.get("status") or {}).get("type") or {}
+            logging.warning(f"    status detail='{status_type.get('detail','')}' "
+                            f"short='{status_type.get('shortDetail','')}' "
+                            f"desc='{status_type.get('description','')}'")
+            logging.warning(f"    winner flags: home_won={home_won} away_won={away_won}")
+        else:
+            logging.info(f"  [PSO] {home} vs {away}: pen {pen_home}-{pen_away}")
 
     # Team stats from boxscore (empty for live matches — stats finalize at FT)
     team_stats = _parse_boxscore(summary, home, away)
@@ -719,7 +767,12 @@ def score_match(competition, summary, is_live=False):
 
     # Determine match winner — PSO takes precedence over the winner flag
     if pen_home is not None and pen_away is not None:
-        match_winner = home if pen_home > pen_away else away
+        if pen_home > pen_away:
+            match_winner = home
+        elif pen_away > pen_home:
+            match_winner = away
+        else:
+            match_winner = None  # tied PSO scores — shouldn't occur in football
     elif home_won:
         match_winner = home
     elif away_won:
@@ -867,6 +920,11 @@ def get_finalized_match_ids():
             mid = int(k)
         except ValueError:
             continue
+        # PSO matches without penalty scores stored are not fully finalized — force re-score
+        # so the scorer can retry winner detection and write penaltyHome/penaltyAway.
+        if v.get("stats", "").startswith("PSO:") and "penaltyHome" not in v:
+            continue
+
         # For KO matches, verify advancement bonus is already in the winner's breakdown
         if mid >= 73:
             bonus_label = None
