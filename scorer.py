@@ -53,6 +53,10 @@ FT_STATUSES = {
     "STATUS_ABANDONED",
     "STATUS_FORFEIT",
 }
+UPCOMING_STATUSES = {
+    "STATUS_SCHEDULED",
+    "STATUS_PREGAME",
+}
 
 # ─────────────────────────────────────────────
 # TEAM NAME NORMALIZATION  (ESPN → app)
@@ -877,13 +881,13 @@ def _teams_from_result(result):
     return None, None
 
 
-def update_ko_rounds():
+def update_ko_rounds(ko_registry=None):
     """
     Read /results for all KO matches, compute round advancement lists,
     and write to /koRounds.
 
     Firebase /koRounds structure:
-      r32         — 32 teams that played in Round of 32
+      r32         — 32 teams that qualify for Round of 32
       r16         — 16 winners advancing to Round of 16
       qf          — 8 winners advancing to Quarterfinals
       sf          — 4 winners advancing to Semifinals
@@ -934,6 +938,22 @@ def update_ko_rounds():
             _add("thirdPlaceWinner", match_winner)
         elif mid == 104:      # Final — champion
             _add("winner", match_winner)
+
+    # Supplement r32 from the KO registry — covers scheduled R32 matches
+    # that haven't been played yet (teams are known but no result exists).
+    if ko_registry:
+        _kr_reverse = {_fb_key(n): n for n in set(TEAM_MAP.values())}
+        for key, match_id in ko_registry.items():
+            if not isinstance(match_id, int) or not (73 <= match_id <= 88):
+                continue
+            parts = key.split("_vs_", 1)
+            if len(parts) != 2:
+                continue
+            h = _kr_reverse.get(parts[0], parts[0])
+            a = _kr_reverse.get(parts[1], parts[1])
+            if h not in ("?", "TBD") and a not in ("?", "TBD"):
+                _add("r32", h)
+                _add("r32", a)
 
     ko_ref = db.reference("koRounds")
     existing = ko_ref.get() or {}
@@ -998,12 +1018,15 @@ def main():
     for ev in events:
         comp        = ev.get("competitions", [{}])[0]
         status_name = comp.get("status", {}).get("type", {}).get("name", "")
-        if status_name not in LIVE_STATUSES and status_name not in FT_STATUSES:
+        if (status_name not in LIVE_STATUSES and status_name not in FT_STATUSES
+                and status_name not in UPCOMING_STATUSES):
             continue
         home_c = next((c for c in comp.get("competitors", []) if c.get("homeAway") == "home"), {})
         away_c = next((c for c in comp.get("competitors", []) if c.get("homeAway") == "away"), {})
         home = _norm(home_c.get("team", {}).get("displayName", "?"))
         away = _norm(away_c.get("team", {}).get("displayName", "?"))
+        if home in ("?", "TBD") or away in ("?", "TBD"):
+            continue  # skip matches where teams aren't determined yet
         if resolve_schedule_id(home, away) is None:
             ev_date = ev.get("date", "9999")  # ISO string — sorts lexicographically
             all_ko_candidates.append((ev_date, int(ev["id"]), home, away))
@@ -1122,7 +1145,7 @@ def main():
         logging.info("No new results to write.")
 
     logging.info("Updating KO round advancement lists…")
-    update_ko_rounds()
+    update_ko_rounds(ko_registry)
     logging.info("Done.")
 
 
