@@ -46,6 +46,7 @@ LIVE_STATUSES = {
 }
 FT_STATUSES = {
     "STATUS_FULL_TIME",
+    "STATUS_FINAL",              # standard ESPN status for completed KO matches
     "STATUS_FINAL_AET",
     "STATUS_FINAL_PENALTIES",
     "STATUS_ABANDONED",
