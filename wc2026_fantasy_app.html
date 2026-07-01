@@ -5723,9 +5723,19 @@ function updateCountdown() {
   const container = document.getElementById('wc-countdown-container');
   if (!container) return;
 
-  // Find upcoming matches (not yet started)
+  const fbResults = LEAGUE.results || {};
+
+  // Resolve actual team names from Firebase, falling back to SCHEDULE
+  function teamNames(m) {
+    const res = fbResults[String(m.id)];
+    const h = (res && res.home && res.home !== 'TBD') ? res.home : m.home;
+    const a = (res && res.away && res.away !== 'TBD') ? res.away : m.away;
+    return { home: h, away: a };
+  }
+
+  // Find upcoming matches — include KO matches whose teams are TBD in SCHEDULE
   const upcoming = SCHEDULE
-    .filter(m => m.home !== 'TBD' && new Date(m.utc).getTime() > now)
+    .filter(m => new Date(m.utc).getTime() > now)
     .sort((a, b) => new Date(a.utc) - new Date(b.utc));
 
   // Find live matches (started but within 115-min window)
@@ -5755,11 +5765,12 @@ function updateCountdown() {
 
   // Show live matches first
   live.forEach(m => {
-    const res = (LEAGUE.results || {})[m.id];
+    const {home, away} = teamNames(m);
+    const res = fbResults[String(m.id)];
     const scoreStr = (res && res.homeScore != null) ? `${res.homeScore} – ${res.awayScore}` : '● LIVE';
     html += `<div class="wc-countdown-block" style="border-color:rgba(255,80,80,0.4)">
       <div class="wc-countdown-label" style="color:rgba(255,100,100,0.9)">● LIVE</div>
-      <div class="wc-countdown-matchup">${esc(m.home)} vs ${esc(m.away)}</div>
+      <div class="wc-countdown-matchup">${esc(home)} vs ${esc(away)}</div>
       <div class="wc-countdown-time" style="color:#FF8080">${scoreStr}</div>
     </div>`;
   });
@@ -5769,9 +5780,11 @@ function updateCountdown() {
     const nextT = new Date(upcoming[0].utc).getTime();
     const concurrent = upcoming.filter(m => Math.abs(new Date(m.utc).getTime() - nextT) <= 2 * 60 * 1000);
     concurrent.forEach(m => {
+      const {home, away} = teamNames(m);
+      const matchup = (home === 'TBD' || away === 'TBD') ? esc(m.round) : `${esc(home)} vs ${esc(away)}`;
       html += `<div class="wc-countdown-block">
         <div class="wc-countdown-label">Next Match</div>
-        <div class="wc-countdown-matchup">${esc(m.home)} vs ${esc(m.away)}</div>
+        <div class="wc-countdown-matchup">${matchup}</div>
         <div class="wc-countdown-time" id="wc-cd-${m.id}">${diffStr(m.utc)}</div>
       </div>`;
     });
