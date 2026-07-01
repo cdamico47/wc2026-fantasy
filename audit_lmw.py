@@ -26,8 +26,25 @@ TEAM_MAP = {
     "United States": "USA", "United States of America": "USA",
 }
 
+# Reverse map: Firebase key -> proper display name (for fields missing top-level home/away)
+FB_KEY_TO_NAME = {
+    "usa": "USA", "dr_congo": "DR Congo", "ivory_coast": "Ivory Coast",
+    "n_macedonia": "N. Macedonia", "bosnia_herz": "Bosnia & Herz.",
+    "trinidad_tobago": "Trinidad & Tobago", "south_korea": "South Korea",
+    "czech_republic": "Czech Republic", "new_zealand": "New Zealand",
+    "saudi_arabia": "Saudi Arabia", "south_africa": "South Africa",
+    "costa_rica": "Costa Rica", "burkina_faso": "Burkina Faso",
+    "el_salvador": "El Salvador", "north_africa": "North Africa",
+}
+
 def _norm(name):
     return TEAM_MAP.get(name, name)
+
+def _fb_key_to_name(key):
+    """Best-effort reverse of fb_key: title-case words, apply known overrides."""
+    if key in FB_KEY_TO_NAME:
+        return FB_KEY_TO_NAME[key]
+    return " ".join(w.capitalize() for w in key.split("_"))
 
 
 def init_firebase():
@@ -160,25 +177,43 @@ def main():
     corrections = []
 
     for mid, result in lmw_matches:
-        home    = result.get("home", "?")
-        away    = result.get("away", "?")
+        teams   = result.get("teams") or {}
+        if not isinstance(teams, dict):
+            teams = {}
+
+        # Extract team names — prefer top-level home/away, fall back to teams dict keys
+        home = result.get("home") or None
+        away = result.get("away") or None
+        if not home or not away:
+            team_keys = list(teams.keys())
+            if len(team_keys) >= 2:
+                home = _fb_key_to_name(team_keys[0])
+                away = _fb_key_to_name(team_keys[1])
+            else:
+                home = home or "?"
+                away = away or "?"
+
         hs      = result.get("homeScore", "?")
         as_     = result.get("awayScore", "?")
         score   = f"{hs}-{as_}"
         ft_win  = result.get("matchWinner")
-        teams   = result.get("teams", {})
 
-        # Find which team(s) got the bonus
-        lmw_teams = [
-            next((home if home.lower().replace(" ","_") == tk or tk == home else away
-                  for _ in [1]), tk)
-            for tk, td in teams.items()
-            if LMW_LABEL in (td.get("breakdown") or [])
-        ]
-        lmw_display = lmw_teams[0] if lmw_teams else "?"
+        # If matchWinner not stored, infer from scores (regulation only — simplification)
+        if not ft_win and isinstance(hs, int) and isinstance(as_, int) and hs != as_:
+            ft_win = home if hs > as_ else away
 
-        # ESPN lookup
-        event_id = event_map.get((home, away)) or event_map.get((away, home))
+        # Find which team got the bonus
+        lmw_display = "?"
+        for tk, td in teams.items():
+            if LMW_LABEL in (td.get("breakdown") or []):
+                lmw_display = _fb_key_to_name(tk)
+                break
+
+        # ESPN lookup — try direct and swapped, also try _norm variants
+        event_id = (event_map.get((home, away)) or
+                    event_map.get((away, home)) or
+                    event_map.get((_norm(home), _norm(away))) or
+                    event_map.get((_norm(away), _norm(home))))
         if not event_id:
             print(col.format(f"M{mid}", home, away, score, lmw_display, "+4", "???", "no ESPN event found"))
             continue
