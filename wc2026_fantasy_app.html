@@ -139,7 +139,11 @@ body{font-family:'Barlow',sans-serif;font-size:15px;background:var(--bg);color:v
 .ct-pts{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;color:var(--blue);text-align:right;padding-top:1px;}
 .ct-bd{border-bottom:1px solid var(--border);background:rgba(0,80,200,0.02);}
 .ct-bd-inner{padding:2px 8px 8px 8px;font-size:12px;}
-.ct-controls{display:flex;align-items:center;justify-content:space-between;padding:0 0 10px 0;}
+.ct-controls{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:0 0 10px 0;}
+.ct-scope-grp{display:flex;gap:0;border-radius:6px;overflow:hidden;border:1px solid var(--blue);flex-shrink:0;}
+.ct-scope-btn{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800;letter-spacing:0.5px;padding:4px 14px;border:none;background:transparent;color:var(--blue);cursor:pointer;transition:all 0.12s;}
+.ct-scope-btn.active{background:var(--blue);color:#fff;}
+.ct-scope-btn:hover:not(.active){background:rgba(0,80,200,0.07);}
 .ct-sort-grp,.ct-col-grp{display:flex;gap:4px;}
 .ct-sort-btn,.ct-col-btn{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.5px;padding:3px 9px;border-radius:4px;border:1px solid var(--border);background:var(--bg-card);color:var(--txt2);cursor:pointer;transition:all 0.12s;}
 .ct-sort-btn.active,.ct-col-btn.active{background:var(--blue);color:#fff;border-color:var(--blue);}
@@ -4764,13 +4768,15 @@ function switchLeagueSub(id, btn) {
 }
 
 // ─── Country Standings ──────────────────────────────────────────────────────
-let _ctOpenSet  = new Set();
-let _ctSortMode = 'pts'; // 'pts' | 'rank' | 'group' | 'conf' | 'player'
-let _ctShowGP   = true;
-let _ctShowPA   = true;
-let _ctStatOpen = null;
+let _ctOpenSet   = new Set();
+let _ctSortMode  = 'pts'; // 'pts' | 'rank' | 'group' | 'conf' | 'player'
+let _ctShowGP    = true;
+let _ctShowPA    = true;
+let _ctStatOpen  = null;
+let _ctScope     = 'group'; // 'group' | 'overall'
 
 function setCtSort(mode)   { _ctSortMode = mode; renderCountryStandings(); }
+function setCtScope(s)     { _ctScope = s; renderCountryStandings(); }
 function toggleCtCol(col)  { if (col==='gp') _ctShowGP=!_ctShowGP; else _ctShowPA=!_ctShowPA; renderCountryStandings(); }
 function toggleCtTeam(name){ if (_ctOpenSet.has(name)) _ctOpenSet.delete(name); else _ctOpenSet.add(name); renderCountryStandings(); }
 function toggleCtMatch(key){ if (_mtMatchOpen.has(key)) _mtMatchOpen.delete(key); else _mtMatchOpen.add(key); renderCountryStandings(); }
@@ -4782,6 +4788,7 @@ function _ctComputeStats() {
   for (const [matchId, res] of Object.entries(results)) {
     if (_leagueSkipMatchIds.has(matchId)) continue;
     if (!res || !res.teams) continue;
+    if (_ctScope === 'group' && parseInt(matchId) > 72) continue;
     const m = SCHEDULE.find(s => String(s.id) === String(matchId));
     if (!m) continue;
     const hKey = _fbKey(m.home), aKey = _fbKey(m.away);
@@ -5063,6 +5070,7 @@ function _ctTeamStats(teamName) {
   for (const [matchId, res] of Object.entries(results)) {
     if (_leagueSkipMatchIds.has(matchId)) continue;
     if (!res || !res.teams) continue;
+    if (_ctScope === 'group' && parseInt(matchId) > 72) continue;
     const tKey = _fbKey(teamName);
     const tRes = res.teams[tKey];
     if (!tRes || tRes.fantasyPoints == null) continue;
@@ -5192,13 +5200,14 @@ function renderCountryStandings() {
     return `<div class="ct-col"><div class="ct-col-hdr" style="${cs}">${hdrHtml}</div>${rows}</div>`;
   }).join('');
 
+  const scopeBtns = `<button class="ct-scope-btn${_ctScope==='group'?' active':''}" onclick="setCtScope('group')">Group Stage</button><button class="ct-scope-btn${_ctScope==='overall'?' active':''}" onclick="setCtScope('overall')">Overall</button>`;
   const sortBtns = [['pts','By Pts'],['rank','By FIFA Rank'],['group','By Group'],['conf','By Confed.'],['player','By Player']]
     .map(([m,l]) => `<button class="ct-sort-btn${_ctSortMode===m?' active':''}" onclick="setCtSort('${m}')">${l}</button>`)
     .join('');
   const colBtns = `<button class="ct-col-btn${_ctShowGP?' active':''}" onclick="toggleCtCol('gp')">GP</button><button class="ct-col-btn${_ctShowPA?' active':''}" onclick="toggleCtCol('pa')">PA</button>`;
 
   const statsHtml = _ctStatsHtml(_ctComputeStats());
-  root.innerHTML = `<div class="ct-controls"><div class="ct-sort-grp">${sortBtns}</div><div class="ct-col-grp">${colBtns}</div></div><div class="ct-grid">${gridHtml}</div>${statsHtml}`;
+  root.innerHTML = `<div class="ct-controls"><div class="ct-scope-grp">${scopeBtns}</div><div class="ct-sort-grp">${sortBtns}</div><div class="ct-col-grp">${colBtns}</div></div><div class="ct-grid">${gridHtml}</div>${statsHtml}`;
 
   if (_ctStatOpen) {
     const det = root.querySelector('.ct-stat-detail');
