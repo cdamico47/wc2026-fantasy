@@ -1,0 +1,17 @@
+name: Fix R16 Registry
+on:
+  workflow_dispatch:
+jobs:
+  r16-registry:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -r requirements.txt
+      - name: Pre-populate R16 bracket in _ko_registry
+        env:
+          FIREBASE_ADMIN_SDK_JSON: ${{ secrets.FIREBASE_ADMIN_SDK_JSON }}
+          FIREBASE_DB_URL: https://wc2026-fantasy-m47-default-rtdb.firebaseio.com
+        run: python patch_r16_registry.py
