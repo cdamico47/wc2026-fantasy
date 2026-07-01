@@ -12,8 +12,8 @@ import firebase_admin
 from firebase_admin import credentials, db
 
 ESPN_BASE       = "https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world"
-FIREBASE_DB_URL = os.environ.get("FIREBASE_DB_URL",
-                  "https://wc2026-fantasy-m47-default-rtdb.firebaseio.com")
+FIREBASE_DB_URL = (os.environ.get("FIREBASE_DB_URL") or
+                   "https://wc2026-fantasy-m47-default-rtdb.firebaseio.com")
 LMW_LABEL       = "Last-Min Winner +4"
 
 TEAM_MAP = {
