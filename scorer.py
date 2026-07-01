@@ -733,13 +733,36 @@ def score_match(competition, summary, is_live=False):
         add(team, 4, "ET Goal +4")
 
     # ── 17. Last-minute winner (88'+) ────────────────────────
+    # Only award if the late goal changed the lead or equalized (not a garbage-time goal)
     if ft_winner:
-        win_goal_secs = [
-            g["clock_secs"]
-            for g in goals
-            if g["team"] == ft_winner and not g["is_own_goal"]
-        ]
-        if win_goal_secs and max(win_goal_secs) >= 88 * 60:
+        sorted_goals = sorted(goals, key=lambda x: x["clock_secs"])
+        late_decisive = False
+        for idx, g in enumerate(sorted_goals):
+            if g["is_own_goal"] or g["team"] != ft_winner:
+                continue
+            if g["clock_secs"] < 88 * 60:
+                continue
+            # Build score just before this goal
+            h_score = 0
+            a_score = 0
+            for prev in sorted_goals[:idx]:
+                if prev["team"] == home:
+                    if prev["is_own_goal"]:
+                        a_score += 1
+                    else:
+                        h_score += 1
+                else:
+                    if prev["is_own_goal"]:
+                        h_score += 1
+                    else:
+                        a_score += 1
+            # Winner was NOT leading before this goal (tied or trailing)
+            winner_score_before = h_score if ft_winner == home else a_score
+            other_score_before  = a_score if ft_winner == home else h_score
+            if winner_score_before <= other_score_before:
+                late_decisive = True
+                break
+        if late_decisive:
             add(ft_winner, 4, "Last-Min Winner +4")
 
     # ── 18. Underdog bonus (win or draw as underdog) ─────────
