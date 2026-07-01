@@ -1,0 +1,17 @@
+name: Apply Qualify +5 Bonus to R32
+on:
+  workflow_dispatch:
+jobs:
+  qualify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -r requirements.txt
+      - name: Run Qualify bonus patch
+        env:
+          FIREBASE_ADMIN_SDK_JSON: ${{ secrets.FIREBASE_ADMIN_SDK_JSON }}
+          FIREBASE_DB_URL: https://wc2026-fantasy-m47-default-rtdb.firebaseio.com
+        run: python patch_qualify_bonus.py
