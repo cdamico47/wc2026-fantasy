@@ -945,6 +945,14 @@ def get_finalized_match_ids():
                 )
                 if not bonus_applied:
                     continue  # re-score to apply advancement bonus
+        # For R32 matches, also verify the Qualify bonus is applied to both teams
+        if 73 <= mid <= 88:
+            qualify_applied = all(
+                any("Qualify" in s for s in td.get("breakdown", []))
+                for td in v.get("teams", {}).values()
+            )
+            if not qualify_applied:
+                continue  # re-score to apply Qualify bonus
         finalized.add(k)
     return finalized
 
@@ -1251,6 +1259,14 @@ def main():
                             result["teams"][wk]["breakdown"].append(f"{label} +{bonus_pts}")
                             logging.info(f"    Advancement bonus: {wname} {label} +{bonus_pts}")
                     break
+        # Apply Qualify bonus (+5) to both teams in R32 matches
+        if 73 <= sid <= 88:
+            for team_key in result["teams"]:
+                result["teams"][team_key]["fantasyPoints"] = round(
+                    result["teams"][team_key]["fantasyPoints"] + 5, 2
+                )
+                result["teams"][team_key]["breakdown"].append("Qualify +5")
+            logging.info("    Qualify bonus: both teams +5")
 
         results[sid] = result
         teams_list   = list(result["teams"].items())
