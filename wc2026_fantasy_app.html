@@ -2849,6 +2849,24 @@ function doneHTML() {
 // ═══════════════════════════════════
 
 // Returns total fantasy pts + breakdown strings for a team across all finalized results.
+// Group bonus labels written to every group match — deduplicate when summing totals
+const GROUP_BONUS_RE = /^(Undefeated Group|Score Every Match|Best Offense|Best Defense|Group Finish)/;
+function _deductGroupBonusDups(teamName, results) {
+  const seen = new Set();
+  let excess = 0;
+  for (const [, res] of Object.entries(results)) {
+    const tRes = (res && res.teams) ? res.teams[_fbKey(teamName)] : null;
+    if (!tRes) continue;
+    (tRes.breakdown || []).filter(s => GROUP_BONUS_RE.test(s)).forEach(label => {
+      const m = label.match(/\+(\d+)$/);
+      const pts = m ? parseInt(m[1]) : 0;
+      if (seen.has(label)) excess += pts;
+      else seen.add(label);
+    });
+  }
+  return excess;
+}
+
 function _teamPtsFor(teamName) {
   const results = LEAGUE.results || {};
   let total = 0;
@@ -2860,6 +2878,12 @@ function _teamPtsFor(teamName) {
       total += tRes.fantasyPoints;
       if (tRes.breakdown && tRes.breakdown.length) bds.push(tRes.breakdown.join(' · '));
     }
+  }
+  total -= _deductGroupBonusDups(teamName, results);
+  const eotData = (_eotBonuses || {})[_fbKey(teamName)];
+  if (eotData) {
+    const awards = Array.isArray(eotData) ? eotData : Object.values(eotData);
+    for (const award of awards) { if (award && award.pts != null) total += award.pts; }
   }
   return { pts: Math.round(total * 100) / 100, bds };
 }
@@ -2875,12 +2899,27 @@ function _teamPerMatchBdHTML(teamName, flagMap) {
     }
     return false;
   }).sort((a,b) => new Date(a.utc)-new Date(b.utc));
-  const rows = matches.map(m => {
+
+  // Collect unique group bonuses across all group matches
+  const groupBonusSeen = new Set();
+  matches.forEach(m => {
+    if (m.id >= 73) return;
     const res = _getRes(results, m.id);
-    if (!res) return '';
+    if (!res) return;
+    const tRes = (res.teams || {})[_fbKey(teamName)] || {};
+    (tRes.breakdown || []).filter(s => GROUP_BONUS_RE.test(s)).forEach(s => groupBonusSeen.add(s));
+  });
+  const groupBonusPts = [...groupBonusSeen].reduce((sum, label) => {
+    const m = label.match(/\+(\d+)$/); return sum + (m ? parseInt(m[1]) : 0);
+  }, 0);
+
+  const rowParts = [];
+  let lastGroupIdx = -1;
+  matches.forEach((m, i) => {
+    const res = _getRes(results, m.id);
+    if (!res) return;
     const sc = _extractScore(res);
-    if (!sc) return '';
-    // Resolve actual team name for KO matches
+    if (!sc) return;
     const kt = (m.id >= 73 && (m.home === 'TBD' || m.away === 'TBD')) ? _resolveKOTeams(m.id) : null;
     const mHome = (kt && kt.home) || m.home;
     const mAway = (kt && kt.away) || m.away;
@@ -2888,8 +2927,8 @@ function _teamPerMatchBdHTML(teamName, flagMap) {
     const opp   = isHome ? mAway : mHome;
     const tRes  = (res.teams || {})[_fbKey(teamName)] || {};
     const pts   = tRes.fantasyPoints;
-    if (pts == null) return '';
-    const bd    = tRes.breakdown || [];
+    if (pts == null) return;
+    const bd    = (tRes.breakdown || []).filter(s => !GROUP_BONUS_RE.test(s));
     const rnd   = m.round.replace('Group Stage — ','').replace('Round of ','R');
     const tGoals = isHome ? sc.home : sc.away;
     const oGoals = isHome ? sc.away : sc.home;
@@ -2898,94 +2937,107 @@ function _teamPerMatchBdHTML(teamName, flagMap) {
               : bd.find(s=>s.startsWith('Draw'))? `<span style="color:var(--gold);font-weight:700;margin-left:4px">D</span>`
               : `<span style="color:var(--red);font-weight:700;margin-left:4px">L</span>`;
     const oppFlag = fi(flagMap[opp]||'', 16, 11);
-    return `<div style="display:grid;grid-template-columns:36px 1fr auto;align-items:start;gap:6px;padding:6px 10px;border-top:1px solid var(--border2)">
+    rowParts.push(`<div style="display:grid;grid-template-columns:36px 1fr auto;align-items:start;gap:6px;padding:6px 10px;border-top:1px solid var(--border2)">
       <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;color:var(--txt3);padding-top:2px">${rnd}</div>
       <div>
         <div style="font-size:12px;font-weight:600;display:flex;align-items:center;gap:3px">${oppFlag} ${esc(opp)}${wdl} <span style="font-size:11px;color:var(--txt3);margin-left:2px">${scoreStr}</span></div>
         ${bd.length ? `<div style="font-size:11px;color:var(--txt2);font-weight:500;margin-top:2px;line-height:1.5">${bd.map(esc).join('<br>')}</div>` : ''}
       </div>
       <div style="font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:900;color:var(--blue);white-space:nowrap">${pts}</div>
-    </div>`;
-  }).filter(Boolean).join('');
-  if (!rows) return '';
-  return `<div style="background:var(--bg-alt);border-radius:6px;margin-top:6px;overflow:hidden">${rows}</div>`;
+    </div>`);
+    if (m.id < 73) lastGroupIdx = rowParts.length - 1;
+  });
+
+  // Insert Group Stage Bonus row right after last group match
+  if (groupBonusSeen.size > 0 && lastGroupIdx >= 0) {
+    rowParts.splice(lastGroupIdx + 1, 0,
+      `<div style="display:grid;grid-template-columns:36px 1fr auto;align-items:start;gap:6px;padding:6px 10px;border-top:1px solid var(--border2);background:rgba(251,191,36,0.07)">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;color:var(--gold);padding-top:2px;line-height:1.2">GRP<br>BONUS</div>
+        <div>
+          <div style="font-size:12px;font-weight:700;color:var(--gold)">Group Stage Bonus</div>
+          <div style="font-size:11px;color:var(--txt2);font-weight:500;margin-top:2px;line-height:1.5">${[...groupBonusSeen].map(esc).join('<br>')}</div>
+        </div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:900;color:var(--gold);white-space:nowrap">+${groupBonusPts}</div>
+      </div>`
+    );
+  }
+
+  if (!rowParts.length) return '';
+  return `<div style="background:var(--bg-alt);border-radius:6px;margin-top:6px;overflow:hidden">${rowParts.join('')}</div>`;
 }
 
 // Returns a Set of team names still in the tournament.
-// Uses Firebase /koRounds lists when available; falls back to schedule-time logic.
+// Uses round-by-round approach: find deepest completed stage, return its survivors.
 function _inTournamentTeams() {
-  const rounds = _koRounds || {};
-  const hasAnyRound = ['r32','r16','qf','sf','final','thirdPlace','thirdPlaceWinner','winner'].some(k => {
-    const v = rounds[k]; return v && Object.values(v).some(Boolean);
-  });
-
-  if (!hasAnyRound) {
-    // Fallback: time-based schedule logic (pre-KO or no Firebase data)
-    const now = Date.now();
-    const LIVE_WIN = 115 * 60 * 1000;
-    const s = new Set();
-    SCHEDULE.forEach(m => {
-      let mHome = m.home, mAway = m.away;
-      if ((mHome === 'TBD' || mAway === 'TBD') && m.id >= 73) {
-        const kt = _resolveKOTeams(m.id);
-        if (kt) { mHome = kt.home || mHome; mAway = kt.away || mAway; }
+  const finalDone = !!_koWinnerGlobal(104);
+  if (finalDone) {
+    const w = _koWinnerGlobal(104);
+    return w ? new Set([w]) : new Set();
+  }
+  const thirdDone = !!_koWinnerGlobal(103);
+  const sf1W = _koWinnerGlobal(101), sf2W = _koWinnerGlobal(102);
+  if (sf1W && sf2W) {
+    const sf1L = _koLoserGlobal(101), sf2L = _koLoserGlobal(102);
+    if (thirdDone) {
+      const t3W = _koWinnerGlobal(103);
+      return new Set([sf1W, sf2W, t3W].filter(Boolean));
+    }
+    return new Set([sf1W, sf2W, sf1L, sf2L].filter(Boolean));
+  }
+  if (sf1W || sf2W) {
+    const active = new Set();
+    [101, 102].forEach(mid => {
+      const w = _koWinnerGlobal(mid);
+      if (w) {
+        active.add(w);
+        if (!thirdDone) { const l = _koLoserGlobal(mid); if (l) active.add(l); }
+      } else {
+        const t = _resolveKOTeams(mid);
+        if (t) { if (t.home) active.add(t.home); if (t.away) active.add(t.away); }
       }
-      if (mHome === 'TBD' || mAway === 'TBD') return;
-      const t = new Date(m.utc).getTime();
-      if (t > now - LIVE_WIN) { s.add(mHome); s.add(mAway); }
     });
-    if (!s.size) SCHEDULE.forEach(m => {
-      let mHome = m.home, mAway = m.away;
-      if ((mHome === 'TBD' || mAway === 'TBD') && m.id >= 73) {
-        const kt = _resolveKOTeams(m.id);
-        if (kt) { mHome = kt.home || mHome; mAway = kt.away || mAway; }
+    return active;
+  }
+  // QF done → 4 SF teams
+  const qfWinners = [97,98,99,100].map(mid => _koWinnerGlobal(mid)).filter(Boolean);
+  if (qfWinners.length === 4) return new Set(qfWinners);
+  if (qfWinners.length > 0) {
+    const active = new Set(qfWinners);
+    [97,98,99,100].forEach(mid => {
+      if (!_koWinnerGlobal(mid)) {
+        const t = _resolveKOTeams(mid);
+        if (t) { if (t.home) active.add(t.home); if (t.away) active.add(t.away); }
       }
-      if (mHome !== 'TBD') { s.add(mHome); s.add(mAway); }
     });
-    return s;
+    return active;
   }
-
-  // Build union of all teams appearing in any koRound list
-  const allRoundTeams = new Set();
-  ['r32','r16','qf','sf','final','thirdPlace','thirdPlaceWinner','winner'].forEach(rnd => {
-    const v = rounds[rnd];
-    if (v) Object.values(v).forEach(t => t && allRoundTeams.add(t));
-  });
-
-  // Also add ALL teams from R32 matches (finished or not)
-  const _itResults = LEAGUE.results || {};
-  for (let mid = 73; mid <= 88; mid++) {
-    const kt = _resolveKOTeams(mid);
-    if (kt) {
-      if (kt.home && kt.home !== 'TBD') allRoundTeams.add(kt.home);
-      if (kt.away && kt.away !== 'TBD') allRoundTeams.add(kt.away);
-    }
-    // Always also check Firebase result — _resolveKOTeams returns non-null even when slots are unresolvable
-    const _r = _getRes(_itResults, mid);
-    if (_r) {
-      if (_r.home && _r.home !== 'TBD') allRoundTeams.add(_r.home);
-      if (_r.away && _r.away !== 'TBD') allRoundTeams.add(_r.away);
-    }
+  // R16 done → 8 QF teams
+  const r16Winners = [89,90,91,92,93,94,95,96].map(mid => _koWinnerGlobal(mid)).filter(Boolean);
+  if (r16Winners.length === 8) return new Set(r16Winners);
+  if (r16Winners.length > 0) {
+    const active = new Set(r16Winners);
+    [89,90,91,92,93,94,95,96].forEach(mid => {
+      if (!_koWinnerGlobal(mid)) {
+        const t = _resolveKOTeams(mid);
+        if (t) { if (t.home) active.add(t.home); if (t.away) active.add(t.away); }
+      }
+    });
+    return active;
   }
-
-  // Find all losers of finished KO matches — they are eliminated
-  const losers = new Set();
-  for (let mid = 73; mid <= 104; mid++) {
-    const winner = _koWinnerGlobal(mid);
-    if (winner) {
-      const t = _resolveKOTeams(mid);
-      const _lr = _getRes(_itResults, mid);
-      const homeN = (t && t.home) || (_lr && _lr.home);
-      const awayN = (t && t.away) || (_lr && _lr.away);
-      if (homeN && homeN !== winner) losers.add(homeN);
-      if (awayN && awayN !== winner) losers.add(awayN);
-    }
+  // R32 done → 16 R16 teams
+  const r32Winners = [73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88].map(mid => _koWinnerGlobal(mid)).filter(Boolean);
+  if (r32Winners.length === 16) return new Set(r32Winners);
+  if (r32Winners.length > 0) {
+    const active = new Set(r32Winners);
+    [73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88].forEach(mid => {
+      if (!_koWinnerGlobal(mid)) {
+        const t = _resolveKOTeams(mid);
+        if (t) { if (t.home) active.add(t.home); if (t.away) active.add(t.away); }
+      }
+    });
+    return active;
   }
-
-  // In-tournament = all round teams minus eliminated
-  const s = new Set();
-  allRoundTeams.forEach(t => { if (!losers.has(t)) s.add(t); });
-  return s;
+  return new Set();
 }
 
 // Returns the highest confirmed KO round label for a team, or null if only in R32.
@@ -3038,23 +3090,36 @@ function _koWinnerGlobal(matchId) {
   const res=(LEAGUE.results||{})[String(matchId)];
   if(!res||res.live)return null;
   const sc=_extractScore(res);if(!sc)return null;
-  // Fast path: matchWinner stored directly in Firebase — no group-stats dependency
   if(res.matchWinner)return res.matchWinner;
-  // Resolve team names; fall back to Firebase-stored home/away when group stats are incomplete
-  const t=_resolveKOTeams(matchId);
-  const homeN=(t&&t.home)||res.home;
-  const awayN=(t&&t.away)||res.away;
+  let homeN,awayN;
+  // Stats string is ground truth for completed matches — ESPN home/away may differ from bracket slots
+  if(typeof res.stats==='string'){
+    const sm=res.stats.match(/^(?:FT|PSO|AET|LIVE): (.+?) \d+-\d+ (.+?) \|/);
+    if(sm){homeN=sm[1].trim();awayN=sm[2].trim();}
+  }
+  if(!homeN||!awayN){
+    const t=_resolveKOTeams(matchId);
+    if(t){if(!homeN)homeN=t.home;if(!awayN)awayN=t.away;}
+    if(!homeN)homeN=res.home;if(!awayN)awayN=res.away;
+  }
   if(!homeN||!awayN)return null;
   const ph=res.penaltyHome,pa=res.penaltyAway;
-  if(ph!==undefined&&pa!==undefined)return ph>pa?homeN:awayN;
+  if(ph!=null&&pa!=null)return ph>pa?homeN:awayN;
   if(sc.home>sc.away)return homeN;if(sc.away>sc.home)return awayN;return null;
 }
 function _koLoserGlobal(matchId) {
   const w=_koWinnerGlobal(matchId);if(!w)return null;
-  const t=_resolveKOTeams(matchId);
   const res=(LEAGUE.results||{})[String(matchId)];
-  const homeN=(t&&t.home)||(res&&res.home);
-  const awayN=(t&&t.away)||(res&&res.away);
+  let homeN,awayN;
+  if(res&&typeof res.stats==='string'){
+    const sm=res.stats.match(/^(?:FT|PSO|AET|LIVE): (.+?) \d+-\d+ (.+?) \|/);
+    if(sm){homeN=sm[1].trim();awayN=sm[2].trim();}
+  }
+  if(!homeN||!awayN){
+    const t=_resolveKOTeams(matchId);
+    if(t){if(!homeN)homeN=t.home;if(!awayN)awayN=t.away;}
+    if(res){if(!homeN)homeN=res.home;if(!awayN)awayN=res.away;}
+  }
   if(!homeN||!awayN)return null;
   return w===homeN?awayN:homeN;
 }
@@ -3124,7 +3189,20 @@ function _teamMatchStatsHTML(teamName, flagMap) {
   const fmtDT = utc => new Intl.DateTimeFormat('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit',timeZoneName:'short',timeZone:tz}).format(new Date(utc));
   const flagCode = flagMap[teamName] || '';
   const results = LEAGUE.results || {};
-  const rows = matches.map(m => {
+
+  // Collect unique group bonuses across all group matches
+  const _grpBonusSeen = new Set();
+  matches.forEach(m => {
+    const res = _getRes(results, m.id);
+    if (!res) return;
+    const tRes = (res.teams || {})[_fbKey(teamName)] || {};
+    (tRes.breakdown || []).filter(s => GROUP_BONUS_RE.test(s)).forEach(s => _grpBonusSeen.add(s));
+  });
+  const _grpBonusPts = [..._grpBonusSeen].reduce((sum, lbl) => {
+    const m = lbl.match(/\+(\d+)$/); return sum + (m ? parseInt(m[1]) : 0);
+  }, 0);
+
+  const rowParts = matches.map(m => {
     const opp = m.home === teamName ? m.away : m.home;
     const isHome = m.home === teamName;
     const oppFlag = fi(flagMap[opp]||'', 18, 12);
@@ -3132,7 +3210,7 @@ function _teamMatchStatsHTML(teamName, flagMap) {
     const res = _getRes(results, m.id);
     const sc = res ? _extractScore(res) : null;
     const tRes = (res && res.teams) ? (res.teams[_fbKey(teamName)] || {}) : {};
-    const bd = tRes.breakdown || [];
+    const bd = (tRes.breakdown || []).filter(s => !GROUP_BONUS_RE.test(s));
     const total = tRes.fantasyPoints != null ? tRes.fantasyPoints : null;
     let resultStr = '—', goalsStr = '—', csStr = '—', savesStr = '—', astStr = '—';
     if (sc) {
@@ -3168,7 +3246,18 @@ function _teamMatchStatsHTML(teamName, flagMap) {
       <td class="ls-ms-pts">${astStr}</td>
       <td class="ls-ms-pts" style="color:var(--txt)">${totalDisp}</td>
     </tr>`;
-  }).join('');
+  });
+
+  // Group Stage Bonus row after MD3
+  const grpBonusRow = _grpBonusSeen.size > 0
+    ? `<tr style="background:rgba(251,191,36,0.07)">
+        <td style="font-weight:700;color:var(--gold);font-size:11px">GRP</td>
+        <td colspan="6" style="color:var(--gold);font-weight:600;font-size:12px">Group Stage Bonus<br><span style="font-size:10px;font-weight:400;color:var(--txt2)">${[..._grpBonusSeen].map(esc).join(' · ')}</span></td>
+        <td class="ls-ms-pts" style="color:var(--gold);font-weight:700">+${_grpBonusPts}</td>
+      </tr>`
+    : '';
+
+  const rows = rowParts.join('') + grpBonusRow;
 
   // Pending KO match rows — upcoming matches not yet in Firebase results
   const playedKOIds = new Set(Object.keys(results).map(Number).filter(n => n >= 73));
@@ -3336,6 +3425,18 @@ function renderLeagueStandings() {
       for (const tn of (player.picks || [])) {
         const tRes = res.teams[_fbKey(tn)];
         if (tRes && tRes.fantasyPoints != null) total += tRes.fantasyPoints;
+      }
+    }
+    // Group bonuses were applied to all 3 group matches — subtract duplicates
+    for (const tn of (player.picks || [])) {
+      total -= _deductGroupBonusDups(tn, results);
+    }
+    // EOT bonuses (Golden Boot, Best GK, etc.)
+    for (const tn of (player.picks || [])) {
+      const eotData = (_eotBonuses || {})[_fbKey(tn)];
+      if (eotData) {
+        const awards = Array.isArray(eotData) ? eotData : Object.values(eotData);
+        for (const award of awards) { if (award && award.pts != null) total += award.pts; }
       }
     }
     return Math.round(total * 100) / 100;
@@ -5811,6 +5912,7 @@ let _lastResults = null; // cache of last /results snapshot so league loads don'
 let _leagueSkipMatchIds = new Set(); // match IDs to skip for current league (skipFirstGame config)
 let _livePollingInterval = null;
 let _koRounds = {}; // Firebase /koRounds — r32/r16/qf/sf/final/winner team lists
+let _eotBonuses = {}; // Firebase /eotBonuses — end-of-tournament award bonuses per team
 
 function _hasLiveMatch() {
   const now = Date.now();
@@ -5893,6 +5995,14 @@ function connectFirebaseKoRounds() {
     _koRounds = snap.val() || {};
     renderAll();
   }, err => console.warn('Firebase /koRounds read denied:', err));
+}
+
+function connectFirebaseEotBonuses() {
+  if (!_fbDb) return;
+  _fbDb.ref('eotBonuses').on('value', snap => {
+    _eotBonuses = snap.val() || {};
+    renderAll();
+  }, err => console.warn('Firebase /eotBonuses read denied:', err));
 }
 
 function connectFirebaseLeague(code) {
@@ -6960,6 +7070,7 @@ function submitProfileEdit() {
 initFirebase();
 connectFirebaseResults();
 connectFirebaseKoRounds();
+connectFirebaseEotBonuses();
 _migrateLegacy();
 
 // Check if user is logged in
