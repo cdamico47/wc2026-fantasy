@@ -2765,6 +2765,12 @@ function _teamPtsFor(teamName) {
   const adv = _advancementBonusesForTeam(teamName);
   total += adv.total;
   if (adv.bonuses.length) bds.push(adv.bonuses.join(' · '));
+  // EOT end-of-tournament awards
+  const eotData = (_eotBonuses || {})[_fbKey(teamName)];
+  if (eotData) {
+    const awards = Array.isArray(eotData) ? eotData : Object.values(eotData);
+    for (const award of awards) { if (award && award.pts != null) total += award.pts; }
+  }
   return { pts: Math.round(total * 100) / 100, bds };
 }
 
@@ -3102,7 +3108,35 @@ function renderLeagueStandings() {
   realPlayers.sort((a, b) => (playerPts.get(b) || 0) - (playerPts.get(a) || 0));
 
   // Identify current user's player index for row highlight
-  const inTour = _inTournamentTeams();
+  // "Still Active" = teams with pending R32 games + teams that have won R32+ games
+  const inTour = new Set();
+  const results = LEAGUE.results || {};
+  const fbKeyRev = _buildFbKeyReverseMap();
+
+  // Add all R32 teams (scheduled but not yet played)
+  for (let id = 73; id <= 88; id++) {
+    const sched = SCHEDULE.find(m => m.id === id);
+    if (!sched) continue;
+    const res = results[String(id)] || results[id];
+    // Only add if R32 match not yet played
+    if (!res || res.live || (res.homeScore == null && (!res.finalScore || res.finalScore.home == null))) {
+      const teams = _resolveKOMatchTeams(sched);
+      if (teams.home !== 'TBD') inTour.add(teams.home);
+      if (teams.away !== 'TBD') inTour.add(teams.away);
+    }
+  }
+
+  // Add teams that won R32 or advanced to R16+
+  for (let id = 73; id <= 104; id++) {
+    const res = results[String(id)] || results[id];
+    if (!res || !res.teams) continue;
+    Object.entries(res.teams).forEach(([fbk, tRes]) => {
+      const teamName = fbKeyRev[fbk];
+      if (!teamName) return;
+      const bd = (tRes && tRes.breakdown) || [];
+      if (bd.some(s => s.startsWith('Win'))) inTour.add(teamName);
+    });
+  }
   let myDIdx = -1;
   if (CURRENT_USER) {
     myDIdx = D.players.findIndex(p => p.userId === CURRENT_USER.userId);
@@ -3182,13 +3216,76 @@ function renderLeagueStandings() {
     <div class="sec-hdr">League Standings${LEAGUE.name ? ' — '+esc(LEAGUE.name) : ''}</div>
     <div class="data-card">
       <table class="lg-table">
-        <thead><tr><th>#</th><th>Player</th><th>Points</th><th>Roster</th><th>In-Tournament</th></tr></thead>
+        <thead><tr><th>#</th><th>Player</th><th>Points</th><th>Roster</th><th>Still Active</th></tr></thead>
         <tbody>${rows}${udHTML}</tbody>
       </table>
       <div style="padding:10px 14px;font-size:11px;color:var(--txt3);border-top:1px solid var(--border2)">
         📡 Live scoring active — updates every 15 min during matches
       </div>
     </div>`;
+
+  // Add Match Logs + Pending games for all teams with results or scheduled KO matches
+  const koTeams = new Set();
+  for (let id = 73; id <= 104; id++) {
+    const sched = SCHEDULE.find(m => m.id === id);
+    if (sched) {
+      const teams = _resolveKOMatchTeams(sched);
+      if (teams.home !== 'TBD') koTeams.add(teams.home);
+      if (teams.away !== 'TBD') koTeams.add(teams.away);
+    }
+    const res = LEAGUE.results[String(id)] || LEAGUE.results[id];
+    if (res && res.teams) {
+      Object.keys(res.teams).forEach(fbk => {
+        const tn = fbKeyRev[fbk];
+        if (tn) koTeams.add(tn);
+      });
+    }
+  }
+
+  if (koTeams.size) {
+    let matchLogsHTML = `<div style="margin-top:20px;padding:0 16px">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;letter-spacing:1px;color:var(--txt);text-transform:uppercase;padding:12px 0 10px;border-bottom:2px solid var(--blue)">KO Match History & Upcoming</div>`;
+    Array.from(koTeams).sort().forEach(tn => {
+      const koLog = _koMatchLogHTML(tn, flagMap);
+
+      // Find next pending game for this team
+      let nextGameHTML = '';
+      for (let id = 73; id <= 104; id++) {
+        const sched = SCHEDULE.find(m => m.id === id);
+        if (!sched) continue;
+        const res = results[String(id)] || results[id];
+        if (res && res.homeScore != null) continue; // Already played
+
+        const teams = _resolveKOMatchTeams(sched);
+        if (teams.home === tn || teams.away === tn) {
+          const opp = teams.home === tn ? teams.away : teams.home;
+          const rndLabel = _matchIdToRoundLabel(id);
+          const oppFlag = fi(flagMap[opp] || '', 16, 11);
+          const fmtTime = new Intl.DateTimeFormat('en-US', {
+            month:'short', day:'numeric', hour:'numeric', minute:'2-digit', timeZone: tz
+          }).format(new Date(sched.utc));
+          nextGameHTML = `<div style="margin-top:8px;padding:8px 12px;background:rgba(17,85,170,0.08);border:1px solid rgba(17,85,170,0.2);border-radius:6px;font-size:11px">
+            <div style="font-weight:700;color:var(--blue);margin-bottom:4px">📅 Next: ${rndLabel}</div>
+            <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px">${oppFlag} <span>${esc(opp === 'TBD' ? 'TBD' : opp)}</span></div>
+            <div style="color:var(--txt3);font-size:10px">${fmtTime}</div>
+          </div>`;
+          break;
+        }
+      }
+
+      if (koLog || nextGameHTML) {
+        matchLogsHTML += `<div style="margin-top:16px">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+            ${fi(flagMap[tn]||'',24,17)}
+            <span style="font-weight:700;font-size:13px">${esc(tn)}</span>
+          </div>
+          ${koLog}${nextGameHTML}
+        </div>`;
+      }
+    });
+    matchLogsHTML += `</div>`;
+    root.innerHTML += matchLogsHTML;
+  }
 }
 
 // ═══════════════════════════════════
@@ -3522,7 +3619,40 @@ function _mtTeamMatchRowsHTML(tn, flagMap) {
     </div>`;
   }).join('');
 
-  return gsRows + koRows + advRows;
+  // Add pending/next match info
+  let nextMatchHTML = '';
+  for (let id = 73; id <= 104; id++) {
+    const sched = SCHEDULE.find(m => m.id === id);
+    if (!sched) continue;
+    const res = results[String(id)] || results[id];
+    if (res) continue; // Already played
+
+    const teams = _resolveKOMatchTeams(sched);
+    if (teams.home === tn || teams.away === tn) {
+      const opp = teams.home === tn ? teams.away : teams.home;
+      const rndLabel = _matchIdToRoundLabel(id);
+      const oppFlag = fi(flagMap[opp] || '', 18, 12);
+      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      const fmtTime = new Intl.DateTimeFormat('en-US', {
+        month:'short', day:'numeric', hour:'numeric', minute:'2-digit', timeZone: tz
+      }).format(new Date(sched.utc));
+
+      nextMatchHTML = `<div class="mt-match-wrap">
+        <div class="mt-match-row" style="background:rgba(17,85,170,0.06);border:1px solid rgba(17,85,170,0.15)">
+          <span class="mt-mr-rnd" style="color:var(--blue);font-weight:700">→</span>
+          <span class="mt-mr-opp">${oppFlag} ${esc(opp === 'TBD' ? 'TBD' : opp)}<span style="display:block;font-size:10px;color:var(--txt3);margin-top:1px;font-weight:400">${rndLabel} • ${fmtTime}</span></span>
+          <span class="mt-mr-result"></span>
+          <span class="mt-mr-pts" style="color:var(--txt3);font-style:italic">Upcoming</span>
+        </div>
+      </div>`;
+      break;
+    }
+  }
+
+  // Add a dedicated match log if team has KO matches
+  const koLog = _koMatchLogHTML(tn, flagMap);
+
+  return gsRows + nextMatchHTML + koRows + advRows + (koLog ? `<div style="margin-top:8px">${koLog}</div>` : '');
 }
 function mtSetAvatar(av) {
   const sp = _mtSelectablePlayers(); const p = sp[myTeamSel]; if (!p) return;
@@ -4364,54 +4494,59 @@ function renderBracket() {
   if (!root) return;
   const results = LEAGUE.results || {};
   const flagMap = _mcTeamFlagMap();
+  const fbKeyRev = _buildFbKeyReverseMap();
   const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
   const fmtTime = utc => new Intl.DateTimeFormat('en-US', {
     weekday:'short', month:'short', day:'numeric', hour:'numeric', minute:'2-digit', timeZone:tz
   }).format(new Date(utc));
-  const fmtDate = utc => new Intl.DateTimeFormat('en-US', {
-    month:'short', day:'numeric', timeZone:tz
-  }).format(new Date(utc));
   const now = Date.now();
   const LIVE_WIN = 115 * 60 * 1000;
 
-  // Count how many R32 matches have been played
-  const r32Played = Array.from({length:16}, (_,i) => 73+i)
-    .filter(id => { const res = results[String(id)] || results[id]; const sc = res ? _extractScore(res) : null; return !!sc; }).length;
+  const renderRound = (label, idRange, matchsPerRow = 8) => {
+    const [startId, endId] = idRange;
+    const matchIds = Array.from({length: endId - startId + 1}, (_,i) => startId + i);
+    const matchCount = matchIds.filter(id => {
+      const sched = SCHEDULE.find(m => m.id === id);
+      return !!sched;
+    }).length;
+    const playedCount = matchIds.filter(id => {
+      const res = results[String(id)] || results[id];
+      const sc = res ? _extractScore(res) : null;
+      return !!sc;
+    }).length;
 
-  let html = `<div class="bk-section-hdr">⚔️ Round of 32
-    <span style="font-size:12px;font-weight:500;color:var(--txt2);margin-left:10px;letter-spacing:0">${r32Played}/16 matches played</span>
-  </div><div class="bk-grid">`;
+    let html = `<div class="bk-section-hdr">${label}
+      <span style="font-size:12px;font-weight:500;color:var(--txt2);margin-left:10px;letter-spacing:0">${playedCount}/${matchCount} matches</span>
+    </div><div class="bk-grid">`;
 
-  for (let id = 73; id <= 88; id++) {
-    const sched = SCHEDULE.find(m => m.id === id);
-    if (!sched) continue;
-    const teams  = _resolveKOMatchTeams(sched);
-    const home   = teams.home;
-    const away   = teams.away;
-    const res    = results[String(id)] || results[id];
-    const sc     = res ? _extractScore(res) : null;
-    const t      = new Date(sched.utc).getTime();
-    const isLive = t <= now && now < t + LIVE_WIN;
-    const isPast = t + LIVE_WIN <= now;
-    const isExp  = _bracketExpandedSet.has(id);
-    const matchNum = id - 72;
-    const isTBD  = home === 'TBD' && away === 'TBD';
+    for (let id of matchIds) {
+      const sched = SCHEDULE.find(m => m.id === id);
+      if (!sched) continue;
+      const teams  = _resolveKOMatchTeams(sched);
+      const home   = teams.home;
+      const away   = teams.away;
+      const res    = results[String(id)] || results[id];
+      const sc     = res ? _extractScore(res) : null;
+      const t      = new Date(sched.utc).getTime();
+      const isLive = t <= now && now < t + LIVE_WIN;
+      const isPast = t + LIVE_WIN <= now;
+      const isExp  = _bracketExpandedSet.has(id);
+      const isTBD  = home === 'TBD' && away === 'TBD';
 
-    let homeWon = false, awayWon = false;
-    if (sc && isPast && res && res.teams) {
-      const hBd = ((res.teams || {})[_fbKey(home)] || {}).breakdown || [];
-      const aBd = ((res.teams || {})[_fbKey(away)] || {}).breakdown || [];
-      homeWon = hBd.some(s => s.startsWith('Win'));
-      awayWon = aBd.some(s => s.startsWith('Win'));
-    }
+      let homeWon = false, awayWon = false;
+      if (sc && isPast && res && res.teams) {
+        const hBd = ((res.teams || {})[_fbKey(home)] || {}).breakdown || [];
+        const aBd = ((res.teams || {})[_fbKey(away)] || {}).breakdown || [];
+        homeWon = hBd.some(s => s.startsWith('Win'));
+        awayWon = aBd.some(s => s.startsWith('Win'));
+      }
 
-    const homeFlag = home !== 'TBD' ? fi(flagMap[home]||'', 20, 14) : '';
-    const awayFlag = away !== 'TBD' ? fi(flagMap[away]||'', 20, 14) : '';
+      const homeFlag = home !== 'TBD' ? fi(flagMap[home]||'', 20, 14) : '';
+      const awayFlag = away !== 'TBD' ? fi(flagMap[away]||'', 20, 14) : '';
 
-    if (isTBD) {
-      // Match not yet assigned — show placeholder
-      html += `<div class="bk-match-card" style="opacity:0.5">
-  <div class="bk-match-hdr">M${matchNum} · ${esc(sched.city)} · ${fmtDate(sched.utc)}</div>
+      if (isTBD) {
+        html += `<div class="bk-match-card" style="opacity:0.5">
+  <div class="bk-match-hdr">TBD · ${esc(sched.city)}</div>
   <div class="bk-teams">
     <div class="bk-team-row"><span class="bk-tname" style="color:var(--txt3);font-style:italic">TBD</span></div>
     <div style="border-top:1px solid var(--border2);margin:1px 0"></div>
@@ -4419,55 +4554,130 @@ function renderBracket() {
   </div>
   <div class="bk-kickoff">${fmtTime(sched.utc)}</div>
 </div>`;
-      continue;
-    }
+        continue;
+      }
 
-    html += `<div class="bk-match-card${isExp?' bk-expanded':''}${isPast&&sc?' bk-played':''}" onclick="toggleBracketMatch(${id})">
-  <div class="bk-match-hdr">M${matchNum} · ${esc(sched.city)} <span style="opacity:0.55">· ${fmtDate(sched.utc)}</span>${isLive?` <span style="color:var(--red);font-weight:800;animation:blink 1s infinite">● LIVE</span>`:''}</div>
+      html += `<div class="bk-match-card${isExp?' bk-expanded':''}${isPast&&sc?' bk-played':''}" onclick="toggleBracketMatch(${id})">
+  <div class="bk-match-hdr">${esc(sched.city)}${isLive?` <span style="color:var(--red);font-weight:800;animation:blink 1s infinite">● LIVE</span>`:''}</div>
   <div class="bk-teams">
     <div class="bk-team-row${homeWon?' bk-winner':isPast&&sc?' bk-loser':''}">
       ${homeFlag}
       <span class="bk-tname">${esc(home)}</span>
       ${sc ? `<span class="bk-score">${sc.home}</span>` : ''}
-      ${homeWon ? `<span class="bk-adv-badge">→ R16</span>` : ''}
     </div>
     <div style="border-top:1px solid var(--border2);margin:1px 0;"></div>
     <div class="bk-team-row${awayWon?' bk-winner':isPast&&sc?' bk-loser':''}">
       ${awayFlag}
       <span class="bk-tname">${esc(away)}</span>
       ${sc ? `<span class="bk-score">${sc.away}</span>` : ''}
-      ${awayWon ? `<span class="bk-adv-badge">→ R16</span>` : ''}
     </div>
   </div>
-  ${!sc ? `<div class="bk-kickoff">${fmtTime(sched.utc)}</div>` : `<div class="bk-kickoff" style="color:var(--txt3);font-size:10px">Click for fantasy points breakdown ▾</div>`}`;
+  ${!sc ? `<div class="bk-kickoff" style="font-size:10px">${fmtTime(sched.utc)}</div>` : `<div class="bk-kickoff" style="color:var(--txt3);font-size:10px">Click for breakdown ▾</div>`}`;
 
-    if (isExp) {
-      const fbKeyRev = _buildFbKeyReverseMap();
-      html += `<div class="bk-bd-panel"><div class="bk-bd-hdr">Fantasy Points Breakdown</div>`;
-      if (res && res.teams) {
+      if (isExp) {
+        html += `<div class="bk-bd-panel"><div class="bk-bd-hdr">Fantasy Points Breakdown</div>`;
+        if (res && res.teams) {
+          Object.entries(res.teams).forEach(([fbk, tRes]) => {
+            const tn  = fbKeyRev[fbk] || fbk;
+            const bd  = (tRes && tRes.breakdown) || [];
+            const pts = tRes ? tRes.fantasyPoints : null;
+            const adv = _advancementBonusesForTeam(tn);
+            const advLines = adv.bonuses.map(b => `<span style="color:var(--gold)">${esc(b)}</span>`).join('<br>');
+            html += `<div class="bk-bd-team">
+              ${fi(flagMap[tn]||'', 16, 11)} <strong>${esc(tn)}</strong>
+              <span class="bk-bd-total">${pts != null ? pts : '—'} match pts${adv.total>0?` <span style="color:var(--gold)">+${adv.total} bonus</span>`:''}</span>
+              ${bd.length ? `<div class="bk-bd-lines">${bd.map(esc).join('<br>')}${advLines?'<br>'+advLines:''}</div>` : (advLines?`<div class="bk-bd-lines">${advLines}</div>`:'')}
+            </div>`;
+          });
+        } else {
+          html += `<div style="font-size:12px;color:var(--txt3);padding:4px 0">No scoring data yet.</div>`;
+        }
+        html += `</div>`;
+      }
+
+      html += `</div>`;
+    }
+    html += `</div>`;
+    return html;
+  };
+
+  let bracketHTML = `<div class="bracket-wrap">`;
+  bracketHTML += renderRound('⚔️ Round of 32', [73, 88]);
+  bracketHTML += renderRound('🏆 Round of 16', [89, 96]);
+  bracketHTML += renderRound('🎯 Quarter-Finals', [97, 100]);
+  bracketHTML += renderRound('⭐ Semi-Finals', [101, 102]);
+
+  const finalSched = SCHEDULE.find(m => m.id === 104);
+  if (finalSched) {
+    const teams  = _resolveKOMatchTeams(finalSched);
+    const home   = teams.home;
+    const away   = teams.away;
+    const res    = results[String(104)] || results[104];
+    const sc     = res ? _extractScore(res) : null;
+    const isTBD  = home === 'TBD' && away === 'TBD';
+    let finalHTML = `<div class="bk-section-hdr">🏅 Final</div><div class="bk-grid" style="justify-content:center">`;
+
+    if (!isTBD) {
+      let homeWon = false, awayWon = false;
+      if (sc && res && res.teams) {
+        const hBd = ((res.teams || {})[_fbKey(home)] || {}).breakdown || [];
+        const aBd = ((res.teams || {})[_fbKey(away)] || {}).breakdown || [];
+        homeWon = hBd.some(s => s.startsWith('Win'));
+        awayWon = aBd.some(s => s.startsWith('Win'));
+      }
+      const isExp = _bracketExpandedSet.has(104);
+      const homeFlag = fi(flagMap[home]||'', 24, 17);
+      const awayFlag = fi(flagMap[away]||'', 24, 17);
+
+      finalHTML += `<div class="bk-match-card" style="min-width:320px;border:2px solid var(--gold)" onclick="toggleBracketMatch(104)">
+        <div class="bk-match-hdr" style="color:var(--gold);text-align:center">🏆 FINAL 🏆</div>
+        <div class="bk-teams">
+          <div class="bk-team-row${homeWon?' bk-winner':sc?' bk-loser':''}">
+            ${homeFlag}
+            <span class="bk-tname" style="font-weight:700">${esc(home)}</span>
+            ${sc ? `<span class="bk-score" style="font-size:32px">${sc.home}</span>` : ''}
+          </div>
+          <div style="border-top:2px solid var(--border2);margin:4px 0;text-align:center;font-size:12px;color:var(--txt3)">vs</div>
+          <div class="bk-team-row${awayWon?' bk-winner':sc?' bk-loser':''}">
+            ${awayFlag}
+            <span class="bk-tname" style="font-weight:700">${esc(away)}</span>
+            ${sc ? `<span class="bk-score" style="font-size:32px">${sc.away}</span>` : ''}
+          </div>
+        </div>`;
+
+      if (isExp && res && res.teams) {
+        finalHTML += `<div class="bk-bd-panel"><div class="bk-bd-hdr">Fantasy Points Breakdown</div>`;
         Object.entries(res.teams).forEach(([fbk, tRes]) => {
           const tn  = fbKeyRev[fbk] || fbk;
           const bd  = (tRes && tRes.breakdown) || [];
           const pts = tRes ? tRes.fantasyPoints : null;
           const adv = _advancementBonusesForTeam(tn);
           const advLines = adv.bonuses.map(b => `<span style="color:var(--gold)">${esc(b)}</span>`).join('<br>');
-          html += `<div class="bk-bd-team">
+          finalHTML += `<div class="bk-bd-team">
             ${fi(flagMap[tn]||'', 16, 11)} <strong>${esc(tn)}</strong>
             <span class="bk-bd-total">${pts != null ? pts : '—'} match pts${adv.total>0?` <span style="color:var(--gold)">+${adv.total} bonus</span>`:''}</span>
             ${bd.length ? `<div class="bk-bd-lines">${bd.map(esc).join('<br>')}${advLines?'<br>'+advLines:''}</div>` : (advLines?`<div class="bk-bd-lines">${advLines}</div>`:'')}
           </div>`;
         });
-      } else {
-        html += `<div style="font-size:12px;color:var(--txt3);padding:4px 0">No scoring data yet.</div>`;
+        finalHTML += `</div>`;
       }
-      html += `</div>`;
+      finalHTML += `</div>`;
+    } else {
+      finalHTML += `<div class="bk-match-card" style="opacity:0.5;min-width:320px;border:2px solid var(--border)">
+        <div class="bk-match-hdr" style="text-align:center">🏆 FINAL 🏆</div>
+        <div class="bk-teams">
+          <div class="bk-team-row"><span class="bk-tname" style="color:var(--txt3);font-style:italic">TBD</span></div>
+          <div style="border-top:1px solid var(--border2);margin:1px 0"></div>
+          <div class="bk-team-row"><span class="bk-tname" style="color:var(--txt3);font-style:italic">TBD</span></div>
+        </div>
+      </div>`;
     }
-
-    html += `</div>`;
+    finalHTML += `</div>`;
+    bracketHTML += finalHTML;
   }
 
-  html += `</div>`;
-  root.innerHTML = html;
+  bracketHTML += `</div>`;
+  root.innerHTML = bracketHTML;
 }
 
 function renderPrizesSection() {
@@ -4583,6 +4793,88 @@ function _koMatchesForTeam(teamName) {
     out.push({ id, res, oppName: fbKeyRev[oppFbk] || oppFbk, tRes: res.teams[fbk] });
   }
   return out.sort((a,b) => a.id - b.id);
+}
+
+// Match Log for KO stages: generates table rows showing each team's knockout matches
+function _koMatchLogHTML(teamName, flagMap) {
+  const results = LEAGUE.results || {};
+  const fbk = _fbKey(teamName);
+  const fbKeyRev = _buildFbKeyReverseMap();
+  const koMatches = [];
+
+  for (let id = 73; id <= 104; id++) {
+    const res = results[String(id)] || results[id];
+    if (!res || !res.teams || !res.teams[fbk]) continue;
+    const isFinished = !res.live && (res.homeScore != null || (res.finalScore && res.finalScore.home != null));
+    if (!isFinished) continue;
+
+    const tRes = res.teams[fbk];
+    const fbks = Object.keys(res.teams);
+    const oppFbk = fbks.find(k => k !== fbk);
+    const oppName = fbKeyRev[oppFbk] || oppFbk;
+    const bd = tRes.breakdown || [];
+    const pts = tRes.fantasyPoints || 0;
+    const sc = _extractScore(res);
+
+    const rndLabel = _matchIdToRoundLabel(id);
+    const result = sc ? `${sc.home}–${sc.away}` : '—';
+    const isHome = fbks[0] === fbk;
+    const teamScore = isHome ? sc?.home : sc?.away;
+    const oppScore = isHome ? sc?.away : sc?.home;
+
+    let result_str = '';
+    if (bd.some(s => s.startsWith('Win'))) result_str = `W ${result}`;
+    else if (bd.some(s => s.startsWith('Draw'))) result_str = `D ${result}`;
+    else result_str = `L ${result}`;
+
+    const goals = bd.find(s => s.includes('Goal'))
+      ? parseInt(bd.find(s => s.includes('Goal')).match(/\d+/)?.[0] || '0')
+      : 0;
+    const cs = bd.some(s => s.includes('Clean Sheet')) ? '✓' : 'X';
+    const saves = bd.find(s => s.includes('Save'))
+      ? parseInt(bd.find(s => s.includes('Save')).match(/\d+/)?.[0] || '0')
+      : 0;
+    const ast = bd.find(s => s.includes('Assist'))
+      ? parseInt(bd.find(s => s.includes('Assist')).match(/\d+/)?.[0] || '0')
+      : 0;
+
+    koMatches.push({ id, rndLabel, oppName, result: result_str, goals, cs, saves, ast, pts });
+  }
+
+  if (!koMatches.length) return '';
+
+  const rows = koMatches.map(m => {
+    const oppFlag = fi(flagMap[m.oppName] || '', 16, 11);
+    return `<tr style="border-bottom:1px solid var(--border2)">
+      <td style="padding:8px 10px;font-size:11px;font-weight:700;color:var(--txt3)">${m.rndLabel}</td>
+      <td style="padding:8px 10px;font-size:12px">${oppFlag} <span style="font-weight:600">${esc(m.oppName)}</span></td>
+      <td style="padding:8px 10px;font-size:12px;font-weight:600;color:var(--green)">${m.result}</td>
+      <td style="padding:8px 10px;text-align:center;font-size:12px">${m.goals}</td>
+      <td style="padding:8px 10px;text-align:center;font-size:12px">${m.cs}</td>
+      <td style="padding:8px 10px;text-align:center;font-size:12px">${m.saves}</td>
+      <td style="padding:8px 10px;text-align:center;font-size:12px">${m.ast}</td>
+      <td style="padding:8px 10px;text-align:right;font-weight:700;color:var(--blue);font-size:13px">${m.pts}</td>
+    </tr>`;
+  }).join('');
+
+  return `<div style="margin-top:12px;border:1px solid var(--border);border-radius:6px;overflow:hidden;background:var(--bg-alt)">
+    <div style="padding:8px 12px;background:var(--blue);color:white;font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:1px">Match Log</div>
+    <table style="width:100%;border-collapse:collapse;font-size:11px">
+      <thead>
+        <tr style="background:var(--bg);border-bottom:2px solid var(--border)">
+          <th style="padding:8px 10px;text-align:left;font-weight:700;color:var(--txt3)">Round</th>
+          <th style="padding:8px 10px;text-align:left;font-weight:700;color:var(--txt3)">Opponent</th>
+          <th style="padding:8px 10px;text-align:left;font-weight:700;color:var(--txt3)">Result</th>
+          <th style="padding:8px 10px;text-align:center;font-weight:700;color:var(--txt3)">Goals</th>
+          <th style="padding:8px 10px;text-align:center;font-weight:700;color:var(--txt3)">CS</th>
+          <th style="padding:8px 10px;text-align:center;font-weight:700;color:var(--txt3)">Saves</th>
+          <th style="padding:8px 10px;text-align:center;font-weight:700;color:var(--txt3)">Ast</th>
+          <th style="padding:8px 10px;text-align:right;font-weight:700;color:var(--txt3)">Total</th>
+        </tr>
+      </thead>
+      <tbody>${rows}</tbody>
+    </table>
+  </div>`;
 }
 
 // Computes Qualify/Win advancement bonuses (not written by scorer.py)
@@ -4836,12 +5128,13 @@ function renderMatchCenter() {
         <div style="font-size:11px;color:var(--txt3);margin-top:3px">${fmtTime(m.utc)}</div>`;
     }
 
-    // Fantasy pts row
+    // Fantasy pts row — show for all KO matches with results
     let ptsRow = '';
-    if (res && res.teams) {
+    if (res && res.teams && isPast) {
       const hPts = (res.teams[_fbKey(homeTeam)]||{}).fantasyPoints;
       const aPts = (res.teams[_fbKey(awayTeam)]||{}).fantasyPoints;
-      if (hPts != null || aPts != null) {
+      // Always show for KO matches (R32+)
+      if (m.id >= 73) {
         const hBd = ((res.teams[_fbKey(homeTeam)]||{}).breakdown||[]);
         const aBd = ((res.teams[_fbKey(awayTeam)]||{}).breakdown||[]);
         ptsRow = `<div style="display:grid;grid-template-columns:1fr auto 1fr;align-items:start;gap:8px;padding:10px 14px;background:var(--bg-alt);border-top:1px solid var(--border2)">
@@ -5179,6 +5472,7 @@ const FB_CONFIG = {
 };
 
 let _fbDb = null, _fbLeagueRef = null, _fbResultsRef = null, _fbSyncTimer = null;
+let _eotBonuses = {}; // Firebase /eotBonuses — end-of-tournament award bonuses per team
 
 function initFirebase() {
   try {
@@ -5203,6 +5497,10 @@ function connectFirebaseResults() {
     LEAGUE.results = results;
     renderAll();
   });
+  _fbDb.ref('eotBonuses').on('value', snap => {
+    _eotBonuses = snap.val() || {};
+    renderAll();
+  }, err => console.warn('Firebase /eotBonuses read denied:', err));
 }
 
 function connectFirebaseLeague(code) {
