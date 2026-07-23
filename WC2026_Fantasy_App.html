@@ -5472,7 +5472,17 @@ const FB_CONFIG = {
 };
 
 let _fbDb = null, _fbLeagueRef = null, _fbResultsRef = null, _fbSyncTimer = null;
-let _eotBonuses = {}; // Firebase /eotBonuses — end-of-tournament award bonuses per team
+// WC 2026 final EOT bonuses — hardcoded since tournament is over and Firebase /eotBonuses requires auth.
+// Firebase listener will override if it can read the node; otherwise these values are used.
+let _eotBonuses = {
+  Netherlands: [{label:"PPG Best Points Per Game",pts:25},{label:"1G Single-Game Best",pts:15},{label:"GSW Group Stage Warrior",pts:15}],
+  Spain:       [{label:"DEF Best Tournament Defense",pts:20}],
+  Germany:     [{label:"OFF Best Tournament Offense",pts:20}],
+  Argentina:   [{label:"CBK Comeback King",pts:12},{label:"DRM Most Dramatic",pts:10}],
+  Paraguay:    [{label:"GK Golden Glove",pts:15}],
+  Austria:     [{label:"CLN Clinical Finisher",pts:15}],
+  Norway:      [{label:"DIS Iron Discipline",pts:10}]
+};
 
 function initFirebase() {
   try {
