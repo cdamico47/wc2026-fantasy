@@ -1,16 +1,8 @@
 name: WC 2026 Fantasy Scorer
 
 on:
-  # Run every 5 min only during WC 2026 match windows (North America hosting)
-  # Kickoff slots: 16:00, 19:00, 22:00, 01:00 UTC (~9 AM, noon, 3 PM, 6 PM PDT)
-  # Each game ~2 hrs; 30-min buffer added on each side
-  # Window 1: 15:30–00:00 UTC  →  cron covers 15–23 UTC
-  # Window 2: 00:00–06:00 UTC  →  cron covers 0–6 UTC
-  # Note: some games kick off at midnight ET (04:00 UTC); window 2 covers full game
-  schedule:
-    - cron: "*/5 15-23 * * *"
-    - cron: "*/5 0-6 * * *"
-  # Allow manual trigger from GitHub Actions tab
+  # WC 2026 tournament ended July 2026. Cron disabled — all 104 matches finalized.
+  # Manual trigger kept for diagnostics/reruns if needed.
   workflow_dispatch:
 
 jobs:
