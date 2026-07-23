@@ -1,0 +1,9 @@
+[[redirects]]
+  from = "/"
+  to = "/WC2026_Fantasy_App.html"
+  status = 302
+
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
