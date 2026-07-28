@@ -5508,7 +5508,8 @@ function connectFirebaseResults() {
     renderAll();
   });
   _fbDb.ref('eotBonuses').on('value', snap => {
-    _eotBonuses = snap.val() || {};
+    const val = snap.val();
+    if (val) { _eotBonuses = val; }  // only override hardcoded values if Firebase has real data
     renderAll();
   }, err => console.warn('Firebase /eotBonuses read denied:', err));
 }
