@@ -2963,7 +2963,23 @@ function _teamPerMatchBdHTML(teamName, flagMap) {
   }
 
   if (!rowParts.length) return '';
-  return `<div style="background:var(--bg-alt);border-radius:6px;margin-top:6px;overflow:hidden">${rowParts.join('')}</div>`;
+  const eotBlockHTML = (() => {
+    const eotData = (_eotBonuses || {})[_fbKey(teamName)];
+    if (!eotData) return '';
+    const awards = Array.isArray(eotData) ? eotData : Object.values(eotData);
+    const valid = awards.filter(a => a && a.pts != null);
+    if (!valid.length) return '';
+    const totalEot = valid.reduce((s,a) => s + a.pts, 0);
+    return `<div style="display:grid;grid-template-columns:36px 1fr auto;align-items:start;gap:6px;padding:6px 10px;border-top:1px solid var(--border2);background:rgba(180,120,0,0.08)">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;color:#8B6000;padding-top:2px;line-height:1.2">EOT<br>BONUS</div>
+      <div>
+        <div style="font-size:12px;font-weight:700;color:#8B6000">End-of-Tournament Awards</div>
+        <div style="font-size:11px;color:var(--txt2);font-weight:500;margin-top:2px;line-height:1.5">${valid.map(a => esc(a.label || '') + ' +' + a.pts).join('<br>')}</div>
+      </div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:900;color:#8B6000;white-space:nowrap">+${totalEot}</div>
+    </div>`;
+  })();
+  return `<div style="background:var(--bg-alt);border-radius:6px;margin-top:6px;overflow:hidden">${rowParts.join('')}${eotBlockHTML}</div>`;
 }
 
 // Returns a Set of team names still in the tournament.
@@ -3345,7 +3361,20 @@ function _teamMatchStatsHTML(teamName, flagMap) {
         <th title="Assists">Ast</th>
         <th>Total ▾</th>
       </tr></thead>
-      <tbody>${rows}${koRows}${pendingKORows.join('')}</tbody>
+      <tbody>${rows}${koRows}${pendingKORows.join('')}${(() => {
+        const eotData = (_eotBonuses || {})[_fbKey(teamName)];
+        if (!eotData) return '';
+        const awards = Array.isArray(eotData) ? eotData : Object.values(eotData);
+        const validAwards = awards.filter(a => a && a.pts != null);
+        if (!validAwards.length) return '';
+        const totalEot = validAwards.reduce((s,a) => s + a.pts, 0);
+        const labels = validAwards.map(a => esc(a.label || '') + ' +' + a.pts).join(' · ');
+        return `<tr style="background:rgba(180,120,0,0.08)">
+          <td style="font-weight:700;color:#8B6000;font-size:11px">EOT</td>
+          <td colspan="6" style="color:#8B6000;font-weight:600;font-size:12px">End-of-Tournament Awards<br><span style="font-size:10px;font-weight:400;color:var(--txt2)">${labels}</span></td>
+          <td class="ls-ms-pts" style="color:#8B6000;font-weight:700">+${totalEot}</td>
+        </tr>`;
+      })()}</tbody>
     </table>
     <div style="font-size:10px;color:var(--txt3);margin-top:6px;font-style:italic">Click any Total to see point breakdown</div>
   </div>`;
